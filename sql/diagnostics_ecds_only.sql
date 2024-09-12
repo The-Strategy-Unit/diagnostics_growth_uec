@@ -194,14 +194,15 @@ WHERE ec.Der_Financial_Year IN (
     (NOT ArrivalModeDescription IS NULL)
     AND -- ATTENDANCE CATEGORY IS AN UNPLANNED FIRST (NOT FOLLOW UP / UNKNOWN):
     EC_AttendanceCategory = '1'
-    AND -- NOT BROUGHT IN DEAD:
-    (NOT Der_AEA_Patient_Group = '70')
-    AND -- DURING ATTENDANCE DID NOT: DIE / LEAVE / UNKNOWN DISPOSAL / NOT STREAMED PATIENTS (GENERALLY)
-    (
-        DischargeStatusDescription = 'Treatment completed (situation)'
-        OR DischargeStatusDescription = 'Streamed to emergency department following initial assessment (situation)'
-        OR Discharge_Destination_SNOMED_CT = '305398007' -- died
-    )
+    AND -- NOT BROUGHT IN DEAD OR DIED DURING ATTENDANCE:
+      (
+      NOT (Der_AEA_Patient_Group = '70' OR Discharge_Destination_SNOMED_CT = '305398007') -- died
+      )
+    AND -- DURING ATTENDANCE DID NOT LEAVE / UNKNOWN DISPOSAL / NOT STREAMED PATIENTS (GENERALLY)
+      (
+      DischargeStatusDescription = 'Treatment completed (situation)'
+      OR DischargeStatusDescription = 'Streamed to emergency department following initial assessment (situation)'
+      )
     AND SEX IN ('1', '2') 
     -- FROM PS'S INDUSTRIAL ACTION CODE:
     AND Der_Dupe_Flag = 0
