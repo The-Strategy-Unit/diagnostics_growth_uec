@@ -6,7 +6,7 @@ This repository contains the code for a project carried out by the Strategy Unit
 
 ## Running the code
 
-### First time setup
+### First time setup (for SU team)
 
 We have setup a powershell script to create a set of empty directories that are used by the code within this project. Open a terminal window. You can do this by clicking the terminal tab within RStudio, cmd prompt, or opening powershell directly. Navigate to the project root directory and run: powershell .\create_directory_structure.ps1 If you get an error about running scripts being disabled you can temporarily enable local scripts by running:
 `powershell .\create_directory_structure.ps1` 
