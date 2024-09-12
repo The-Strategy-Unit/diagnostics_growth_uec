@@ -47,9 +47,10 @@ SELECT 'ecds' as data_source,
 	    WHEN Index_Of_Multiple_Deprivation_Decile IN (1,2) THEN 1
 		ELSE 0
 	END AS imd_quint_1,
+	-- SEE 2001 CENSUS URBAN AND RURAL CLASSIFICATION OF OUTPUT AREAS:
 	CASE 
 	    WHEN Rural_Urban_Indicator IN ('1', '5') THEN 1
-		ELSE 0
+		  ELSE 0
 	END AS is_urban,
     COUNT(*) AS n
 INTO [NHSE_Sandbox_StrategyUnit].[dbo].[2232_diagnostics_provider_representation_stats]
