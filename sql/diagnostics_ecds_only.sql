@@ -33,7 +33,7 @@ SELECT 'ecds' as data_source,
     EC_Seen_For_Treatment_Time AS time_treat,
     EC_Conclusion_Time AS time_concl,
     -- convert(DATE, EC_Departure_Date) AS date_depart,
-	  -- EC_Departure_Time AS time_depart,
+  	-- EC_Departure_Time AS time_depart,
     Der_EC_Departure_Date_Time AS dttm_depart,
 	  -- THIS MAY BE DIFFERENT FROM THE ABOVE:
     --cast(EC_Departure_Date AS DATETIME) + cast(EC_Departure_Time AS DATETIME) AS depart_dttm_manual,
@@ -58,7 +58,7 @@ SELECT 'ecds' as data_source,
         WHEN ref_arr_mode.ArrivalModeKey IS NULL THEN 'walk_in'
         ELSE CAST(ref_arr_mode.ArrivalModeKey AS VARCHAR(2))
     END AS arr_mode,
-    Discharge_Destination_SNOMED_CT AS disdest,
+     Discharge_Destination_SNOMED_CT AS disdest,
     ref_dis_dest.DischargeDestinationDescription AS disdest_desc,
     -- see ECDS_Group1 field, tab 26.4, ECDS_ETOS_v4.0.7
     CASE
@@ -92,38 +92,38 @@ SELECT 'ecds' as data_source,
     ref_acuity.AcuityDescription AS acuity_desc,
     ec.EC_Chief_Complaint_SNOMED_CT AS chief_comp, -- 149 DISTINCT CHIEF COMPLAINTS
     ref_chief_comp.ChiefComplaintDescription AS chief_comp_desc,
-	  Clinical_Chief_Complaint_Code_Approved,
+  	Clinical_Chief_Complaint_Code_Approved,
     ref_chief_comp_grp.ChiefComplaintGrouping AS chief_comp_grp, -- 15 CHIEF COMPLAINT GROUPS
     ec_diag.EC_Diagnosis_01 AS diag01_ec,
     ref_diag.DiagnosisDescription AS diag01_ec_desc,
 	  -- DERIVED FROM CHIEF COMPLAINT BUT MAY STILL BE USEFUL IF USING COMPLAINT GROUP
     Clinical_Chief_Complaint_Injury_Related AS inj_flag,
   	Der_Number_EC_Investigation AS n_invst_ec,
-    Der_Number_EC_Diagnosis AS n_diag_ec,
+	  Der_Number_EC_Diagnosis AS n_diag_ec,
     Der_Number_EC_Treatment AS n_treat_ec,
 	  -- MAY NOT BE ALL THAT WELL RECORDED (?):
     CASE
         WHEN ec_comorb.Comorbidity_01 IS NOT NULL THEN 1
         ELSE 0
-    END + CASE
+      END + CASE
         WHEN ec_comorb.Comorbidity_02 IS NOT NULL THEN 1
         ELSE 0
-    END + CASE
+      END + CASE
         WHEN ec_comorb.Comorbidity_03 IS NOT NULL THEN 1
         ELSE 0
-    END + CASE
+      END + CASE
         WHEN ec_comorb.Comorbidity_04 IS NOT NULL THEN 1
         ELSE 0
-	  END + CASE
+    	END + CASE
         WHEN ec_comorb.Comorbidity_05 IS NOT NULL THEN 1
         ELSE 0
-	  END + CASE
+      END + CASE
         WHEN ec_comorb.Comorbidity_06 IS NOT NULL THEN 1
         ELSE 0
-	END AS n_cmrbd,
-	Der_EC_Diagnosis_All,
-	Der_EC_Investigation_All,
-	Der_EC_Treatment_All,
+	  END AS n_cmrbd,
+	  Der_EC_Diagnosis_All,
+	  Der_EC_Investigation_All,
+	  Der_EC_Treatment_All,
    
 /* DEMOGRAPHIC VARIABLES */
 
@@ -164,7 +164,7 @@ SELECT 'ecds' as data_source,
 
 /* GEOGRAPHICAL VARIABLES */
 
-    Provider_Code AS procode,
+    LEFT(Provider_Code, 3) AS procode,
     Der_Postcode_Dist_Unitary_Auth AS lacd,
     Government_Office_Region AS region,
     Der_Postcode_LSOA_2011_Code AS lsoa11cd
@@ -188,7 +188,7 @@ WHERE ec.Der_Financial_Year IN (
         --'2022/23',
         '2023/24'
     )
-    AND -- EXCLUSIONS MIRRORING SW PREVIOUS WORK BUT TYPE 1s ONLY (ECDS EQUIVALENTS TO AEA): 
+    AND -- EXCLUSIONS MIRRORING SW'S PREVIOUS WORK BUT TYPE 1s ONLY (ECDS EQUIVALENTS TO AEA): 
     EC_Department_Type IN ('01')
     AND -- ARRIVAL MODE KNOWN (AMBULANCE OR, IN ECDS, VARIOUS NAMED OTHERS) :
     (NOT ArrivalModeDescription IS NULL)
@@ -203,9 +203,7 @@ WHERE ec.Der_Financial_Year IN (
         OR Discharge_Destination_SNOMED_CT = '305398007' -- died
     )
     AND SEX IN ('1', '2') 
-    -- FROM PS INDUSTRIAL ACTION CODE:
+    -- FROM PS'S INDUSTRIAL ACTION CODE:
     AND Der_Dupe_Flag = 0
     AND LEFT(Der_Postcode_Dist_Unitary_Auth, 1) = 'E'
     AND LEFT(Provider_Code, 1) = 'R'
-
-
