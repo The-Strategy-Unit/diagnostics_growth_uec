@@ -2,8 +2,8 @@
 -- How representative are the provider samples used in our analyses?
 -- The table output of this query can be used to answer the question 
 -- above for both the trends work (using the table as is) and for 
--- the modelling work (by setting na_arrival = 0).
--- Note: We use only ECDS (19/20 to 23/24) to establish representation.
+-- the modelling work (by setting na_arrival = 0 and covid exclusion = 0).
+-- Note: We use only ECDS (19/20 to 23/24) to establish representation for trend.
 
 --  ___  ___ __| |___ 
 -- / _ \/ __/ _` / __|
@@ -16,6 +16,12 @@ SELECT 'ecds' as data_source,
         WHEN ArrivalModeDescription IS NULL THEN 1
         ELSE 0
     END AS na_arrival,
+  	CASE
+        WHEN YEAR(Arrival_Date) IN (2020, 2024) AND 
+		MONTH(Arrival_Date) = 3
+		THEN 1
+        ELSE 0
+    END AS covid_exclusion,
     ec.Der_Financial_Year as fyear,
     LEFT(Provider_Code, 3) AS procode,
     -- EC_Department_Type,
@@ -90,6 +96,12 @@ WHERE ec.Der_Financial_Year IN (
 GROUP BY  
     CASE
         WHEN ArrivalModeDescription IS NULL THEN 1
+        ELSE 0
+    END,
+  	CASE
+        WHEN YEAR(Arrival_Date) IN (2020, 2024) AND 
+		MONTH(Arrival_Date) = 3
+		THEN 1
         ELSE 0
     END,
     ec.Der_Financial_Year,
