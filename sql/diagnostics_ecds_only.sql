@@ -67,7 +67,7 @@ SELECT 'ecds' as data_source,
         WHEN Discharge_Destination_SNOMED_CT = '306694006' THEN 'discharged'
         WHEN Discharge_Destination_SNOMED_CT = '306705005' THEN 'discharged'
         WHEN Discharge_Destination_SNOMED_CT = '50861005' THEN 'discharged'
-        WHEN Discharge_Destination_SNOMED_CT = '1066331000000109' THEN 'ambulatory'
+        WHEN Discharge_Destination_SNOMED_CT = '1066331000000109' THEN 'admitted'
         WHEN Discharge_Destination_SNOMED_CT = '1066341000000100' THEN 'ambulatory'
         WHEN Discharge_Destination_SNOMED_CT = '1066351000000102' THEN 'ambulatory'
         WHEN Discharge_Destination_SNOMED_CT = '306706006' THEN 'admitted'

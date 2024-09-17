@@ -16,6 +16,11 @@
  
 SELECT * INTO [NHSE_Sandbox_StrategyUnit].[dbo].[2232_diagnostics_trend]
 FROM (
+--  __ _  ___  __ _ 
+-- / _` |/ _ \/ _` |
+--| (_| |  __/ (_| |
+-- \__,_|\___|\__,_|
+
       SELECT 'aea' as data_source,
           aea.Der_Financial_Year as fyear,
           -- AEA_Department_Type,
@@ -119,7 +124,7 @@ FROM (
               WHEN Discharge_Destination_SNOMED_CT = '306694006' THEN 'discharged'
               WHEN Discharge_Destination_SNOMED_CT = '306705005' THEN 'discharged'
               WHEN Discharge_Destination_SNOMED_CT = '50861005' THEN 'discharged'
-              WHEN Discharge_Destination_SNOMED_CT = '1066331000000109' THEN 'ambulatory'
+              WHEN Discharge_Destination_SNOMED_CT = '1066331000000109' THEN 'admitted'
               WHEN Discharge_Destination_SNOMED_CT = '1066341000000100' THEN 'ambulatory'
               WHEN Discharge_Destination_SNOMED_CT = '1066351000000102' THEN 'ambulatory'
               WHEN Discharge_Destination_SNOMED_CT = '306706006' THEN 'admitted'
@@ -188,7 +193,7 @@ FROM (
               WHEN Discharge_Destination_SNOMED_CT = '306694006' THEN 'discharged'
               WHEN Discharge_Destination_SNOMED_CT = '306705005' THEN 'discharged'
               WHEN Discharge_Destination_SNOMED_CT = '50861005' THEN 'discharged'
-              WHEN Discharge_Destination_SNOMED_CT = '1066331000000109' THEN 'ambulatory'
+              WHEN Discharge_Destination_SNOMED_CT = '1066331000000109' THEN 'admitted'
               WHEN Discharge_Destination_SNOMED_CT = '1066341000000100' THEN 'ambulatory'
               WHEN Discharge_Destination_SNOMED_CT = '1066351000000102' THEN 'ambulatory'
               WHEN Discharge_Destination_SNOMED_CT = '306706006' THEN 'admitted'
