@@ -26,9 +26,14 @@ SELECT 'ecds' as data_source,
 /* TIME-RELATED VARIABLES */
 
 	  ec.Der_Financial_Year as fyear, 
+    CASE
+        WHEN MONTH(Arrival_Date) = 3 THEN 1
+        ELSE 0
+    END AS is_march,
     -- ec.EC_Ident AS id,
     Der_EC_Arrival_Date_Time AS dttm_arr,
     -- Arrival_Date,
+    cast(EC_Initial_Assessment_Date AS DATETIME) + cast(EC_Initial_Assessment_Time AS DATETIME) AS dttm_assess,
     EC_Initial_Assessment_Time AS time_assess,
     EC_Seen_For_Treatment_Time AS time_treat,
     EC_Conclusion_Time AS time_concl,
@@ -36,7 +41,6 @@ SELECT 'ecds' as data_source,
   	-- EC_Departure_Time AS time_depart,
     Der_EC_Departure_Date_Time AS dttm_depart,
 	  -- THIS MAY BE DIFFERENT FROM THE ABOVE:
-    --cast(EC_Departure_Date AS DATETIME) + cast(EC_Departure_Time AS DATETIME) AS depart_dttm_manual,
     CAST(EC_Initial_Assessment_Time_Since_Arrival AS INT) AS dur_arr_assess,
     CAST(EC_Seen_For_Treatment_Time_Since_Arrival AS INT) AS dur_arr_treat,
     CAST(EC_Conclusion_Time_Since_Arrival AS INT) AS dur_arr_concl,
