@@ -35,14 +35,14 @@ SELECT 'ecds' as data_source,
     -- Arrival_Date,
     cast(EC_Initial_Assessment_Date AS DATETIME) + cast(EC_Initial_Assessment_Time AS DATETIME) AS dttm_assess,
     EC_Initial_Assessment_Time AS time_assess,
-    EC_Seen_For_Treatment_Time AS time_treat,
+    -- EC_Seen_For_Treatment_Time AS time_treat,
     EC_Conclusion_Time AS time_concl,
     -- convert(DATE, EC_Departure_Date) AS date_depart,
   	-- EC_Departure_Time AS time_depart,
     Der_EC_Departure_Date_Time AS dttm_depart,
 	  -- THIS MAY BE DIFFERENT FROM THE ABOVE:
     CAST(EC_Initial_Assessment_Time_Since_Arrival AS INT) AS dur_arr_assess,
-    CAST(EC_Seen_For_Treatment_Time_Since_Arrival AS INT) AS dur_arr_treat,
+    -- CAST(EC_Seen_For_Treatment_Time_Since_Arrival AS INT) AS dur_arr_treat,
     CAST(EC_Conclusion_Time_Since_Arrival AS INT) AS dur_arr_concl,
     CASE
         WHEN Der_EC_Duration < 0 THEN NULL -- 4320 mins = 72 hours = 3 days
@@ -86,8 +86,8 @@ SELECT 'ecds' as data_source,
         WHEN Discharge_Destination_SNOMED_CT = '305398007' THEN 'died'
         ELSE Discharge_Destination_SNOMED_CT
     END AS disdest_grp,
-    EC_Discharge_Status_SNOMED_CT AS dis_status,
-    ref_dis_stat.DischargeStatusDescription AS dis_status_desc,
+    -- EC_Discharge_Status_SNOMED_CT AS dis_status,
+    -- ref_dis_stat.DischargeStatusDescription AS dis_status_desc,
 
 /* CARE-RELATED (INVEST-DIAG-TREAT) VARIABLES */
 
@@ -96,15 +96,15 @@ SELECT 'ecds' as data_source,
     ref_acuity.AcuityDescription AS acuity_desc,
     ec.EC_Chief_Complaint_SNOMED_CT AS chief_comp, -- 149 DISTINCT CHIEF COMPLAINTS
     ref_chief_comp.ChiefComplaintDescription AS chief_comp_desc,
-  	Clinical_Chief_Complaint_Code_Approved,
+  	-- Clinical_Chief_Complaint_Code_Approved,
     ref_chief_comp_grp.ChiefComplaintGrouping AS chief_comp_grp, -- 15 CHIEF COMPLAINT GROUPS
     ec_diag.EC_Diagnosis_01 AS diag01_ec,
     ref_diag.DiagnosisDescription AS diag01_ec_desc,
 	  -- DERIVED FROM CHIEF COMPLAINT BUT MAY STILL BE USEFUL IF USING COMPLAINT GROUP
     Clinical_Chief_Complaint_Injury_Related AS inj_flag,
-  	Der_Number_EC_Investigation AS n_invst_ec,
+  	-- Der_Number_EC_Investigation AS n_invst_ec,
 	  Der_Number_EC_Diagnosis AS n_diag_ec,
-    Der_Number_EC_Treatment AS n_treat_ec,
+    -- Der_Number_EC_Treatment AS n_treat_ec,
 	  -- MAY NOT BE ALL THAT WELL RECORDED (?):
     CASE
         WHEN ec_comorb.Comorbidity_01 IS NOT NULL THEN 1
@@ -127,7 +127,8 @@ SELECT 'ecds' as data_source,
 	  END AS n_cmrbd,
 	  Der_EC_Diagnosis_All,
 	  Der_EC_Investigation_All,
-	  Der_EC_Treatment_All,
+	  Der_AEA_Investigation_All,
+	  -- Der_EC_Treatment_All,
    
 /* DEMOGRAPHIC VARIABLES */
 
