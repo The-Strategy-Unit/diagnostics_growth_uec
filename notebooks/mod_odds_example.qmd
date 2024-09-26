@@ -1,0 +1,220 @@
+---
+title: "Experimental 'Odds of Test' Models"
+subtitle: "Project: Diagnostic Growth UEC"
+date: 2024-09-24
+format:
+  html:
+    html-table-processing: none
+    # code-fold: true
+    code-tools: true
+    embed-resources: true
+    grid:
+      margin-width: 350px
+  pdf: default
+reference-location: margin
+citation-location: margin
+toc: true
+toc-title: Contents
+toc-location: left
+theme: journal
+fig-cap-location: top
+number-sections: true
+title-block-banner: '#f8be06'
+title-block-banner-color: '#242322'
+# mainfont: Gill Sans MT
+# mainfont: Helvetica
+editor_options: 
+  chunk_output_type: console
+---
+
+# Introduction
+
+Having settled on our "ecds_only" data sample (containing 16 providers), we will build a basic, experimental, case-mix adjusted "odds of test" model. A model of this type will be used to address project Question 2. This document outlines some of the thought processes and questions we had during this model building exercise.
+
+# Preparing the data
+
+From the data set summary report, we know that our sample of the "ecds_only" table, based on provider data quality, contains measurements of 38 variables for about 3 million ED attendances across 16 providers.
+
+## Variables: treatment and removal 
+
+Using the *is_march* variable, we have removed attendances in March from both 2020 and 2024 to avoid any bias that may arise due to the onset of the pandemic in March 2020. We then removed the *is_march* variable.
+
+Over 96% of values for *number of comorbidities* variable are zero. (This seems improbable and was therefore deemed to be a quality issue?) This variable has therefore been ignored.
+
+We don't plan to use *provider code* in the model.
+
+We have added time-related variables (month, weekday, and hour of attendance).
+
+### Diagnosis codes and reverse causality?
+
+As mentioned in an earlier document, it was our intention to use *acuity*, c*hief complaint group* and the *injury flag* (which is derived from *chief complaint* (ungrouped)), rather than the lower quality diagnoses fields.
+
+We must also consider that *successful* *diagnosis may be the result of testing*. Is it therefore valid to use diagnosis codes as a predictor of whether a patient will receive a test? If we were indeed to rule out the use of diagnosis codes, we could not use *number of diagnoses* as proxy for number of commodities, either.
+
+### Chief complaint group
+
+This leaves us with the *chief complaint* or *chief complaint group* fields. The values of *chief complaint (description)* are vague enough that they should reflect a clinician's initial observation, yet detailed enough to be informative. We've engineered to contain 84 levels from the original 146 (by grouping levels that are rare (occurring in \<1 in 600 attendances) in the dataset).
+
+## Missing Values: treatment
+
+It's likely that we will rely on a logistic regression model of some description, and this model type will not handle missing values. In the interests of time, we have, by default, decided to delete records with missing values for any of the variables. This approach will reduce our sample size, increase the standard error of our model coefficients, and could feasibly bias these coefficients if the data are not missing completely at random. These risks may be mitigated (and our approach may be easier to justify) given that records have already been vetted for high levels of completeness. In any case, the table, below, shows the variables implicated.
+
+| Variable              | Approx no. missing values |
+|-----------------------|---------------------------|
+| Chief complaint group | 80,000                    |
+| Acuity                | 40,000                    |
+| Injury flag           | 30,000                    |
+| Der investigation all | 12,000                    |
+| IMD decile            | 500                       |
+| Age                   | 100                       |
+
+These groups are not mutually exclusive, so the result of deleting all records with missing values is that we lose 3.6% (113k) records.
+
+## Outcome Variable: Treatment
+
+Here, we're using EC-style (SNOMED?) investigation codes, rather than AEA-style codes, as in the past, on the assumptions that EC-style codes:
+
+-   Better reflect current tests and current practice
+
+-   Are more specific about the test performed
+
+-   Are likely to be more future-proof
+
+There are 48 different EC investigations (removing the code for no investigation stated). These are numbered from 50 to 97 (presumably to avoid overlap with AEA-style numbering.)
+
+Some of these tests are provided infrequently (they have a low event rate) which will make them more difficult to visualise and model. We may wish to create an "other test" category which could contain, for example, tests conducted in less than 1 in 250 ED attendances.
+
+@fig-outcomes shows that if we set the threshold at 1/250, we will still have a number of tests with a relatively low event rate that don't fall into this "other" category. This is something to remain aware of, since most models will overfit to the majority class. When that majority class contains the vast majority of observations, models will be poorly calibrated. [Subsampling](https://www.tidymodels.org/learn/models/sub-sampling/) is a potential solution.
+
+We can run models for AEA-style codes if necessary and/or map EC to AEA codes.
+
+```{r}
+#| label: setup
+#| include: false
+ 
+library("gt")
+library("here")
+library("dplyr")
+library("tidyr")
+library("skimr")
+library("ggplot2")
+library("stringr")
+```
+
+```{r}
+#| label: fig-outcomes
+#| warning: false
+#| echo: false
+#| fig-cap: "Appearance of each test type, by financial year"
+
+# list.files(here("data_raw"))
+
+readRDS(here("data_raw", "from_ncdr_mod_odds_ex_240924_preplot_outcome_counts.rds")) |> 
+  ggplot()+
+  geom_col(
+    aes(
+      reorder(str_c(name, "_", InvestigationDescription), value),
+      value/443275,  # nrow(df_odds_invst),
+      fill = fyear
+    ),
+    position = "dodge"
+  )+
+  theme_minimal()+ 
+  # scale_y_continuous(labels = scales::comma)+
+  scale_y_continuous(labels = scales::percent, limits = c(0, .26))+
+  coord_flip()+
+  # 1 IN 3000 CUTOFF WILL ENSURE ~ 1000 INSTANCES FOR 10% SAMPLE
+  # LINE IS AT 0.3% OF CASES:
+  # geom_hline(yintercept = 1/500, lty = "dashed", alpha = 0.3)+
+  # geom_text(x = 33, y = .003, label = "1/500", alpha = .1)+
+  labs(y = "% of all attendances in the dataset")+
+  theme(
+    axis.title.y = element_blank()
+  )
+```
+
+# Building the models
+
+In these examples, we will examine whether the odds of a patient receiving a **CT test** has changed between 2019/20 and 2023/24. We will employ a Generalised Additive Model (GAM) from the `mgcv` package. We will use sample of 15% of the data set (\~300k records).
+
+For this first attempt at a model, Model 1, we will use *chief complaint group* together with the *injury flag* in our case-mix adjustment. We will exclude *attendance source* and *ethnic group.* (Note that we checked that we had no near-zero variance or highly correlated predictors, both of which are undesirable when performing logistic regression.) The full model specification for Model 1 was:
+
+```{r}
+#| eval: false
+
+mgcv::gam(
+  formula = invst_73 ~ fyear + 
+    ## DEMOGRAPHICS ######
+    s(age) + sex + imd_dec +
+    ## CASE-MIX-RELATED ##
+    arr_mode + acuity + chief_comp_grp + inj_flag + 
+    ## TIME-RELATED ######
+    month + wkday + hour,
+  family = "binomial",
+  data = demo_processed
+  )
+```
+
+We will also specify a second model, Model 2, in which we will replace chief complaint group (15 levels) with the *chief complaint (description)*, which has 84 levels. This also makes the *injury flag* redundant. We will also remove weekday and hour.
+
+```{r}
+#| eval: false
+
+mgcv::gam(
+  formula = invst_73 ~ fyear + 
+    ## DEMOGRAPHICS ######
+    s(age) + sex + imd_dec +
+    ## CASE-MIX-RELATED ##
+    arr_mode + acuity + chief_comp_desc +  
+    ## TIME-RELATED ######
+    month,
+  family = "binomial",
+  data = demo_processed
+  )
+```
+
+# Results
+
+Model 1 and Model 2 had adjusted R squared values of 0.18 and 0.25, respectively. Model coefficients can be seen in the tabs below. Model 1 indicates that, having adjusted for case-mix, the odds of receiving a CT scan in 2023/24 were 1.78 times higher than the odds in 2019/20. For Model 2, the estimate was 1.77. In both cases, these coefficients were highly significant.
+
+::: panel-tabset
+## Model 1
+
+```{r}
+#| echo: false
+
+readRDS(here("data_raw", "from_ncdr_model_odds_ex_240925_broom_1.rds")) |> 
+    gt() |> 
+     tab_options(
+    data_row.padding = px(1),
+       table.font.size = "small"
+    )
+```
+
+## Model 2
+
+```{r}
+#| echo: false
+
+readRDS(here("data_raw", "from_ncdr_model_odds_ex_240925_broom_2.rds")) |> 
+    gt() |> 
+     tab_options(
+    data_row.padding = px(1),
+       table.font.size = "small"
+    )
+```
+:::
+
+## Possible improvements
+
+-   Arrival source may contain useful information.
+
+-   Interactions? e.g. acuity may have a different effect on chances of test for each chief complaint. Age may have different effect on chances of test for each group of chief comp, arrival mode, acuity?
+
+-   ...?
+
+# Other reflections
+
+-   Do we wish to look at whether the odds of a patient receiving any type of test has changed in this time?
+
+-   Could be of interest to model likelihood of two or more tests of same type?
