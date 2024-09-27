@@ -35,7 +35,7 @@ Having settled on our "ecds_only" data sample (containing 16 providers), we will
 
 From the data set summary report, we know that our sample of the "ecds_only" table, based on provider data quality, contains measurements of 38 variables for about 3 million ED attendances across 16 providers.
 
-## Variables: treatment and removal 
+## Variables: treatment and removal
 
 Using the *is_march* variable, we have removed attendances in March from both 2020 and 2024 to avoid any bias that may arise due to the onset of the pandemic in March 2020. We then removed the *is_march* variable.
 
@@ -45,11 +45,11 @@ We don't plan to use *provider code* in the model.
 
 We have added time-related variables (month, weekday, and hour of attendance).
 
-### Diagnosis codes and reverse causality?
+### Diagnosis codes and causality
 
 As mentioned in an earlier document, it was our intention to use *acuity*, c*hief complaint group* and the *injury flag* (which is derived from *chief complaint* (ungrouped)), rather than the lower quality diagnoses fields.
 
-We must also consider that *successful* *diagnosis may be the result of testing*. Is it therefore valid to use diagnosis codes as a predictor of whether a patient will receive a test? If we were indeed to rule out the use of diagnosis codes, we could not use *number of diagnoses* as proxy for number of commodities, either.
+We must also consider that *diagnosis is often the result of testing*. (Is it therefore valid to use diagnosis codes as a predictor of whether a patient will receive a test?) If we were to rule out the use of diagnosis codes on this basis, we must also rule out use of *number of diagnoses,* as proxy for number of commodities.
 
 ### Chief complaint group
 

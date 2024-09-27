@@ -3128,7 +3128,7 @@ background: #f8be06;
   <ul class="collapse">
   <li><a href="#variables-treatment-and-removal" id="toc-variables-treatment-and-removal" class="nav-link" data-scroll-target="#variables-treatment-and-removal"><span class="header-section-number">2.1</span> Variables: treatment and removal</a>
   <ul class="collapse">
-  <li><a href="#diagnosis-codes-and-reverse-causality" id="toc-diagnosis-codes-and-reverse-causality" class="nav-link" data-scroll-target="#diagnosis-codes-and-reverse-causality"><span class="header-section-number">2.1.1</span> Diagnosis codes and reverse causality?</a></li>
+  <li><a href="#diagnosis-codes-and-causality" id="toc-diagnosis-codes-and-causality" class="nav-link" data-scroll-target="#diagnosis-codes-and-causality"><span class="header-section-number">2.1.1</span> Diagnosis codes and causality</a></li>
   <li><a href="#chief-complaint-group" id="toc-chief-complaint-group" class="nav-link" data-scroll-target="#chief-complaint-group"><span class="header-section-number">2.1.2</span> Chief complaint group</a></li>
   </ul></li>
   <li><a href="#missing-values-treatment" id="toc-missing-values-treatment" class="nav-link" data-scroll-target="#missing-values-treatment"><span class="header-section-number">2.2</span> Missing Values: treatment</a></li>
@@ -3164,10 +3164,10 @@ background: #f8be06;
 <p>Over 96% of values for <em>number of comorbidities</em> variable are zero. (This seems improbable and was therefore deemed to be a quality issue?) This variable has therefore been ignored.</p>
 <p>We don’t plan to use <em>provider code</em> in the model.</p>
 <p>We have added time-related variables (month, weekday, and hour of attendance).</p>
-<section id="diagnosis-codes-and-reverse-causality" class="level3" data-number="2.1.1">
-<h3 data-number="2.1.1" class="anchored" data-anchor-id="diagnosis-codes-and-reverse-causality"><span class="header-section-number">2.1.1</span> Diagnosis codes and reverse causality?</h3>
+<section id="diagnosis-codes-and-causality" class="level3" data-number="2.1.1">
+<h3 data-number="2.1.1" class="anchored" data-anchor-id="diagnosis-codes-and-causality"><span class="header-section-number">2.1.1</span> Diagnosis codes and causality</h3>
 <p>As mentioned in an earlier document, it was our intention to use <em>acuity</em>, c<em>hief complaint group</em> and the <em>injury flag</em> (which is derived from <em>chief complaint</em> (ungrouped)), rather than the lower quality diagnoses fields.</p>
-<p>We must also consider that <em>successful</em> <em>diagnosis may be the result of testing</em>. Is it therefore valid to use diagnosis codes as a predictor of whether a patient will receive a test? If we were indeed to rule out the use of diagnosis codes, we could not use <em>number of diagnoses</em> as proxy for number of commodities, either.</p>
+<p>We must also consider that <em>diagnosis is often the result of testing</em>. (Is it therefore valid to use diagnosis codes as a predictor of whether a patient will receive a test?) If we were to rule out the use of diagnosis codes on this basis, we must also rule out use of <em>number of diagnoses,</em> as proxy for number of commodities.</p>
 </section>
 <section id="chief-complaint-group" class="level3" data-number="2.1.2">
 <h3 data-number="2.1.2" class="anchored" data-anchor-id="chief-complaint-group"><span class="header-section-number">2.1.2</span> Chief complaint group</h3>
@@ -3282,20 +3282,20 @@ Figure 1: Appearance of each test type, by financial year
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <div class="cell">
 <div class="cell-output-display">
-<div id="dgugbnvhjw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#dgugbnvhjw table {
+<div id="ioqfpkpeze" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ioqfpkpeze table {
 font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
-#dgugbnvhjw thead, #dgugbnvhjw tbody, #dgugbnvhjw tfoot, #dgugbnvhjw tr, #dgugbnvhjw td, #dgugbnvhjw th {
+#ioqfpkpeze thead, #ioqfpkpeze tbody, #ioqfpkpeze tfoot, #ioqfpkpeze tr, #ioqfpkpeze td, #ioqfpkpeze th {
 border-style: none;
 }
-#dgugbnvhjw p {
+#ioqfpkpeze p {
 margin: 0;
 padding: 0;
 }
-#dgugbnvhjw .gt_table {
+#ioqfpkpeze .gt_table {
 display: table;
 border-collapse: collapse;
 line-height: normal;
@@ -3320,11 +3320,11 @@ border-left-style: none;
 border-left-width: 2px;
 border-left-color: #D3D3D3;
 }
-#dgugbnvhjw .gt_caption {
+#ioqfpkpeze .gt_caption {
 padding-top: 4px;
 padding-bottom: 4px;
 }
-#dgugbnvhjw .gt_title {
+#ioqfpkpeze .gt_title {
 color: #333333;
 font-size: 125%;
 font-weight: initial;
@@ -3335,7 +3335,7 @@ padding-right: 5px;
 border-bottom-color: #FFFFFF;
 border-bottom-width: 0;
 }
-#dgugbnvhjw .gt_subtitle {
+#ioqfpkpeze .gt_subtitle {
 color: #333333;
 font-size: 85%;
 font-weight: initial;
@@ -3346,7 +3346,7 @@ padding-right: 5px;
 border-top-color: #FFFFFF;
 border-top-width: 0;
 }
-#dgugbnvhjw .gt_heading {
+#ioqfpkpeze .gt_heading {
 background-color: #FFFFFF;
 text-align: center;
 border-bottom-color: #FFFFFF;
@@ -3357,12 +3357,12 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#dgugbnvhjw .gt_bottom_border {
+#ioqfpkpeze .gt_bottom_border {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#dgugbnvhjw .gt_col_headings {
+#ioqfpkpeze .gt_col_headings {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -3376,7 +3376,7 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#dgugbnvhjw .gt_col_heading {
+#ioqfpkpeze .gt_col_heading {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -3395,7 +3395,7 @@ padding-left: 5px;
 padding-right: 5px;
 overflow-x: hidden;
 }
-#dgugbnvhjw .gt_column_spanner_outer {
+#ioqfpkpeze .gt_column_spanner_outer {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -3406,13 +3406,13 @@ padding-bottom: 0;
 padding-left: 4px;
 padding-right: 4px;
 }
-#dgugbnvhjw .gt_column_spanner_outer:first-child {
+#ioqfpkpeze .gt_column_spanner_outer:first-child {
 padding-left: 0;
 }
-#dgugbnvhjw .gt_column_spanner_outer:last-child {
+#ioqfpkpeze .gt_column_spanner_outer:last-child {
 padding-right: 0;
 }
-#dgugbnvhjw .gt_column_spanner {
+#ioqfpkpeze .gt_column_spanner {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
@@ -3423,10 +3423,10 @@ overflow-x: hidden;
 display: inline-block;
 width: 100%;
 }
-#dgugbnvhjw .gt_spanner_row {
+#ioqfpkpeze .gt_spanner_row {
 border-bottom-style: hidden;
 }
-#dgugbnvhjw .gt_group_heading {
+#ioqfpkpeze .gt_group_heading {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3451,7 +3451,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 text-align: left;
 }
-#dgugbnvhjw .gt_empty_group_heading {
+#ioqfpkpeze .gt_empty_group_heading {
 padding: 0.5px;
 color: #333333;
 background-color: #FFFFFF;
@@ -3465,13 +3465,13 @@ border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 vertical-align: middle;
 }
-#dgugbnvhjw .gt_from_md > :first-child {
+#ioqfpkpeze .gt_from_md > :first-child {
 margin-top: 0;
 }
-#dgugbnvhjw .gt_from_md > :last-child {
+#ioqfpkpeze .gt_from_md > :last-child {
 margin-bottom: 0;
 }
-#dgugbnvhjw .gt_row {
+#ioqfpkpeze .gt_row {
 padding-top: 1px;
 padding-bottom: 1px;
 padding-left: 5px;
@@ -3489,7 +3489,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 overflow-x: hidden;
 }
-#dgugbnvhjw .gt_stub {
+#ioqfpkpeze .gt_stub {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -3501,7 +3501,7 @@ border-right-color: #D3D3D3;
 padding-left: 5px;
 padding-right: 5px;
 }
-#dgugbnvhjw .gt_stub_row_group {
+#ioqfpkpeze .gt_stub_row_group {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -3514,13 +3514,13 @@ padding-left: 5px;
 padding-right: 5px;
 vertical-align: top;
 }
-#dgugbnvhjw .gt_row_group_first td {
+#ioqfpkpeze .gt_row_group_first td {
 border-top-width: 2px;
 }
-#dgugbnvhjw .gt_row_group_first th {
+#ioqfpkpeze .gt_row_group_first th {
 border-top-width: 2px;
 }
-#dgugbnvhjw .gt_summary_row {
+#ioqfpkpeze .gt_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -3529,14 +3529,14 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#dgugbnvhjw .gt_first_summary_row {
+#ioqfpkpeze .gt_first_summary_row {
 border-top-style: solid;
 border-top-color: #D3D3D3;
 }
-#dgugbnvhjw .gt_first_summary_row.thick {
+#ioqfpkpeze .gt_first_summary_row.thick {
 border-top-width: 2px;
 }
-#dgugbnvhjw .gt_last_summary_row {
+#ioqfpkpeze .gt_last_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3545,7 +3545,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#dgugbnvhjw .gt_grand_summary_row {
+#ioqfpkpeze .gt_grand_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -3554,7 +3554,7 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#dgugbnvhjw .gt_first_grand_summary_row {
+#ioqfpkpeze .gt_first_grand_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3563,7 +3563,7 @@ border-top-style: double;
 border-top-width: 6px;
 border-top-color: #D3D3D3;
 }
-#dgugbnvhjw .gt_last_grand_summary_row_top {
+#ioqfpkpeze .gt_last_grand_summary_row_top {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3572,10 +3572,10 @@ border-bottom-style: double;
 border-bottom-width: 6px;
 border-bottom-color: #D3D3D3;
 }
-#dgugbnvhjw .gt_striped {
+#ioqfpkpeze .gt_striped {
 background-color: rgba(128, 128, 128, 0.05);
 }
-#dgugbnvhjw .gt_table_body {
+#ioqfpkpeze .gt_table_body {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -3583,7 +3583,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#dgugbnvhjw .gt_footnotes {
+#ioqfpkpeze .gt_footnotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -3596,7 +3596,7 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#dgugbnvhjw .gt_footnote {
+#ioqfpkpeze .gt_footnote {
 margin: 0px;
 font-size: 90%;
 padding-top: 4px;
@@ -3604,7 +3604,7 @@ padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#dgugbnvhjw .gt_sourcenotes {
+#ioqfpkpeze .gt_sourcenotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -3617,64 +3617,64 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#dgugbnvhjw .gt_sourcenote {
+#ioqfpkpeze .gt_sourcenote {
 font-size: 90%;
 padding-top: 4px;
 padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#dgugbnvhjw .gt_left {
+#ioqfpkpeze .gt_left {
 text-align: left;
 }
-#dgugbnvhjw .gt_center {
+#ioqfpkpeze .gt_center {
 text-align: center;
 }
-#dgugbnvhjw .gt_right {
+#ioqfpkpeze .gt_right {
 text-align: right;
 font-variant-numeric: tabular-nums;
 }
-#dgugbnvhjw .gt_font_normal {
+#ioqfpkpeze .gt_font_normal {
 font-weight: normal;
 }
-#dgugbnvhjw .gt_font_bold {
+#ioqfpkpeze .gt_font_bold {
 font-weight: bold;
 }
-#dgugbnvhjw .gt_font_italic {
+#ioqfpkpeze .gt_font_italic {
 font-style: italic;
 }
-#dgugbnvhjw .gt_super {
+#ioqfpkpeze .gt_super {
 font-size: 65%;
 }
-#dgugbnvhjw .gt_footnote_marks {
+#ioqfpkpeze .gt_footnote_marks {
 font-size: 75%;
 vertical-align: 0.4em;
 position: initial;
 }
-#dgugbnvhjw .gt_asterisk {
+#ioqfpkpeze .gt_asterisk {
 font-size: 100%;
 vertical-align: 0;
 }
-#dgugbnvhjw .gt_indent_1 {
+#ioqfpkpeze .gt_indent_1 {
 text-indent: 5px;
 }
-#dgugbnvhjw .gt_indent_2 {
+#ioqfpkpeze .gt_indent_2 {
 text-indent: 10px;
 }
-#dgugbnvhjw .gt_indent_3 {
+#ioqfpkpeze .gt_indent_3 {
 text-indent: 15px;
 }
-#dgugbnvhjw .gt_indent_4 {
+#ioqfpkpeze .gt_indent_4 {
 text-indent: 20px;
 }
-#dgugbnvhjw .gt_indent_5 {
+#ioqfpkpeze .gt_indent_5 {
 text-indent: 25px;
 }
-#dgugbnvhjw .katex-display {
+#ioqfpkpeze .katex-display {
 display: inline-flex !important;
 margin-bottom: 0.75em !important;
 }
-#dgugbnvhjw div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#ioqfpkpeze div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
 height: 0px !important;
 }
 </style>
@@ -4121,20 +4121,20 @@ height: 0px !important;
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
 <div class="cell">
 <div class="cell-output-display">
-<div id="yzblquvdvp" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#yzblquvdvp table {
+<div id="nafznwfjzu" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#nafznwfjzu table {
 font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
-#yzblquvdvp thead, #yzblquvdvp tbody, #yzblquvdvp tfoot, #yzblquvdvp tr, #yzblquvdvp td, #yzblquvdvp th {
+#nafznwfjzu thead, #nafznwfjzu tbody, #nafznwfjzu tfoot, #nafznwfjzu tr, #nafznwfjzu td, #nafznwfjzu th {
 border-style: none;
 }
-#yzblquvdvp p {
+#nafznwfjzu p {
 margin: 0;
 padding: 0;
 }
-#yzblquvdvp .gt_table {
+#nafznwfjzu .gt_table {
 display: table;
 border-collapse: collapse;
 line-height: normal;
@@ -4159,11 +4159,11 @@ border-left-style: none;
 border-left-width: 2px;
 border-left-color: #D3D3D3;
 }
-#yzblquvdvp .gt_caption {
+#nafznwfjzu .gt_caption {
 padding-top: 4px;
 padding-bottom: 4px;
 }
-#yzblquvdvp .gt_title {
+#nafznwfjzu .gt_title {
 color: #333333;
 font-size: 125%;
 font-weight: initial;
@@ -4174,7 +4174,7 @@ padding-right: 5px;
 border-bottom-color: #FFFFFF;
 border-bottom-width: 0;
 }
-#yzblquvdvp .gt_subtitle {
+#nafznwfjzu .gt_subtitle {
 color: #333333;
 font-size: 85%;
 font-weight: initial;
@@ -4185,7 +4185,7 @@ padding-right: 5px;
 border-top-color: #FFFFFF;
 border-top-width: 0;
 }
-#yzblquvdvp .gt_heading {
+#nafznwfjzu .gt_heading {
 background-color: #FFFFFF;
 text-align: center;
 border-bottom-color: #FFFFFF;
@@ -4196,12 +4196,12 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#yzblquvdvp .gt_bottom_border {
+#nafznwfjzu .gt_bottom_border {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#yzblquvdvp .gt_col_headings {
+#nafznwfjzu .gt_col_headings {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -4215,7 +4215,7 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#yzblquvdvp .gt_col_heading {
+#nafznwfjzu .gt_col_heading {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -4234,7 +4234,7 @@ padding-left: 5px;
 padding-right: 5px;
 overflow-x: hidden;
 }
-#yzblquvdvp .gt_column_spanner_outer {
+#nafznwfjzu .gt_column_spanner_outer {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -4245,13 +4245,13 @@ padding-bottom: 0;
 padding-left: 4px;
 padding-right: 4px;
 }
-#yzblquvdvp .gt_column_spanner_outer:first-child {
+#nafznwfjzu .gt_column_spanner_outer:first-child {
 padding-left: 0;
 }
-#yzblquvdvp .gt_column_spanner_outer:last-child {
+#nafznwfjzu .gt_column_spanner_outer:last-child {
 padding-right: 0;
 }
-#yzblquvdvp .gt_column_spanner {
+#nafznwfjzu .gt_column_spanner {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
@@ -4262,10 +4262,10 @@ overflow-x: hidden;
 display: inline-block;
 width: 100%;
 }
-#yzblquvdvp .gt_spanner_row {
+#nafznwfjzu .gt_spanner_row {
 border-bottom-style: hidden;
 }
-#yzblquvdvp .gt_group_heading {
+#nafznwfjzu .gt_group_heading {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -4290,7 +4290,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 text-align: left;
 }
-#yzblquvdvp .gt_empty_group_heading {
+#nafznwfjzu .gt_empty_group_heading {
 padding: 0.5px;
 color: #333333;
 background-color: #FFFFFF;
@@ -4304,13 +4304,13 @@ border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 vertical-align: middle;
 }
-#yzblquvdvp .gt_from_md > :first-child {
+#nafznwfjzu .gt_from_md > :first-child {
 margin-top: 0;
 }
-#yzblquvdvp .gt_from_md > :last-child {
+#nafznwfjzu .gt_from_md > :last-child {
 margin-bottom: 0;
 }
-#yzblquvdvp .gt_row {
+#nafznwfjzu .gt_row {
 padding-top: 1px;
 padding-bottom: 1px;
 padding-left: 5px;
@@ -4328,7 +4328,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 overflow-x: hidden;
 }
-#yzblquvdvp .gt_stub {
+#nafznwfjzu .gt_stub {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -4340,7 +4340,7 @@ border-right-color: #D3D3D3;
 padding-left: 5px;
 padding-right: 5px;
 }
-#yzblquvdvp .gt_stub_row_group {
+#nafznwfjzu .gt_stub_row_group {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -4353,13 +4353,13 @@ padding-left: 5px;
 padding-right: 5px;
 vertical-align: top;
 }
-#yzblquvdvp .gt_row_group_first td {
+#nafznwfjzu .gt_row_group_first td {
 border-top-width: 2px;
 }
-#yzblquvdvp .gt_row_group_first th {
+#nafznwfjzu .gt_row_group_first th {
 border-top-width: 2px;
 }
-#yzblquvdvp .gt_summary_row {
+#nafznwfjzu .gt_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -4368,14 +4368,14 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#yzblquvdvp .gt_first_summary_row {
+#nafznwfjzu .gt_first_summary_row {
 border-top-style: solid;
 border-top-color: #D3D3D3;
 }
-#yzblquvdvp .gt_first_summary_row.thick {
+#nafznwfjzu .gt_first_summary_row.thick {
 border-top-width: 2px;
 }
-#yzblquvdvp .gt_last_summary_row {
+#nafznwfjzu .gt_last_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -4384,7 +4384,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#yzblquvdvp .gt_grand_summary_row {
+#nafznwfjzu .gt_grand_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -4393,7 +4393,7 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#yzblquvdvp .gt_first_grand_summary_row {
+#nafznwfjzu .gt_first_grand_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -4402,7 +4402,7 @@ border-top-style: double;
 border-top-width: 6px;
 border-top-color: #D3D3D3;
 }
-#yzblquvdvp .gt_last_grand_summary_row_top {
+#nafznwfjzu .gt_last_grand_summary_row_top {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -4411,10 +4411,10 @@ border-bottom-style: double;
 border-bottom-width: 6px;
 border-bottom-color: #D3D3D3;
 }
-#yzblquvdvp .gt_striped {
+#nafznwfjzu .gt_striped {
 background-color: rgba(128, 128, 128, 0.05);
 }
-#yzblquvdvp .gt_table_body {
+#nafznwfjzu .gt_table_body {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -4422,7 +4422,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#yzblquvdvp .gt_footnotes {
+#nafznwfjzu .gt_footnotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -4435,7 +4435,7 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#yzblquvdvp .gt_footnote {
+#nafznwfjzu .gt_footnote {
 margin: 0px;
 font-size: 90%;
 padding-top: 4px;
@@ -4443,7 +4443,7 @@ padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#yzblquvdvp .gt_sourcenotes {
+#nafznwfjzu .gt_sourcenotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -4456,64 +4456,64 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#yzblquvdvp .gt_sourcenote {
+#nafznwfjzu .gt_sourcenote {
 font-size: 90%;
 padding-top: 4px;
 padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#yzblquvdvp .gt_left {
+#nafznwfjzu .gt_left {
 text-align: left;
 }
-#yzblquvdvp .gt_center {
+#nafznwfjzu .gt_center {
 text-align: center;
 }
-#yzblquvdvp .gt_right {
+#nafznwfjzu .gt_right {
 text-align: right;
 font-variant-numeric: tabular-nums;
 }
-#yzblquvdvp .gt_font_normal {
+#nafznwfjzu .gt_font_normal {
 font-weight: normal;
 }
-#yzblquvdvp .gt_font_bold {
+#nafznwfjzu .gt_font_bold {
 font-weight: bold;
 }
-#yzblquvdvp .gt_font_italic {
+#nafznwfjzu .gt_font_italic {
 font-style: italic;
 }
-#yzblquvdvp .gt_super {
+#nafznwfjzu .gt_super {
 font-size: 65%;
 }
-#yzblquvdvp .gt_footnote_marks {
+#nafznwfjzu .gt_footnote_marks {
 font-size: 75%;
 vertical-align: 0.4em;
 position: initial;
 }
-#yzblquvdvp .gt_asterisk {
+#nafznwfjzu .gt_asterisk {
 font-size: 100%;
 vertical-align: 0;
 }
-#yzblquvdvp .gt_indent_1 {
+#nafznwfjzu .gt_indent_1 {
 text-indent: 5px;
 }
-#yzblquvdvp .gt_indent_2 {
+#nafznwfjzu .gt_indent_2 {
 text-indent: 10px;
 }
-#yzblquvdvp .gt_indent_3 {
+#nafznwfjzu .gt_indent_3 {
 text-indent: 15px;
 }
-#yzblquvdvp .gt_indent_4 {
+#nafznwfjzu .gt_indent_4 {
 text-indent: 20px;
 }
-#yzblquvdvp .gt_indent_5 {
+#nafznwfjzu .gt_indent_5 {
 text-indent: 25px;
 }
-#yzblquvdvp .katex-display {
+#nafznwfjzu .katex-display {
 display: inline-flex !important;
 margin-bottom: 0.75em !important;
 }
-#yzblquvdvp div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#nafznwfjzu div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
 height: 0px !important;
 }
 </style>
@@ -5728,7 +5728,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>From the data set summary report, we know that our sample of the &quot;ecds_only&quot; table, based on provider data quality, contains measurements of 38 variables for about 3 million ED attendances across 16 providers.</span>
 <span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a><span class="fu">## Variables: treatment and removal </span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a><span class="fu">## Variables: treatment and removal</span></span>
 <span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>Using the *is_march* variable, we have removed attendances in March from both 2020 and 2024 to avoid any bias that may arise due to the onset of the pandemic in March 2020. We then removed the *is_march* variable.</span>
 <span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a></span>
@@ -5738,11 +5738,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>We have added time-related variables (month, weekday, and hour of attendance).</span>
 <span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a><span class="fu">### Diagnosis codes and reverse causality?</span></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a><span class="fu">### Diagnosis codes and causality</span></span>
 <span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>As mentioned in an earlier document, it was our intention to use *acuity*, c*hief complaint group* and the *injury flag* (which is derived from *chief complaint* (ungrouped)), rather than the lower quality diagnoses fields.</span>
 <span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>We must also consider that *successful* *diagnosis may be the result of testing*. Is it therefore valid to use diagnosis codes as a predictor of whether a patient will receive a test? If we were indeed to rule out the use of diagnosis codes, we could not use *number of diagnoses* as proxy for number of commodities, either.</span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>We must also consider that *diagnosis is often the result of testing*. (Is it therefore valid to use diagnosis codes as a predictor of whether a patient will receive a test?) If we were to rule out the use of diagnosis codes on this basis, we must also rule out use of *number of diagnoses,* as proxy for number of commodities.</span>
 <span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a><span class="fu">### Chief complaint group</span></span>
 <span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a></span>
