@@ -47,9 +47,7 @@ Using the *is_march* variable, we have removed attendances in March from both 20
 
 Over 96% of values for *number of comorbidities* variable are zero. (This seems improbable and was therefore deemed to be a quality issue?) This variable has therefore been ignored.
 
-We don't plan to use *provider code* in the model.
-
-We have added time-related variables (month, weekday, and hour of attendance).
+We have added time-related variables (month, weekday, and hour of attendance, as well as binary variables, is_winter, is_wkend, and is_night).
 
 ### Diagnosis codes and causality
 
@@ -59,7 +57,7 @@ Must we also consider that a *diagnosis is often the result of testing*? (Is it 
 
 ### Chief complaint group
 
-This leaves us with the *chief complaint* or *chief complaint group* fields, which have 146 and 15 categories, respectively. The values of *chief complaint (description)* are vague enough that they should reflect a clinician's initial observation, yet detailed enough to be informative. We re-engineered the original variable, reducing the 146 levels down to 84 (by grouping levels that are rare (occurring in \<1 in 600 attendances) in the dataset).
+This leaves us with the *chief complaint* or *chief complaint group* fields, which have 146 and 15 categories, respectively. The values of *chief complaint (description)* should be akin to presentation codes - vague enough that they should reflect a clinician's initial observation, yet detailed enough to be informative. We re-engineered the original variable, reducing the 146 levels down to 84 (by grouping levels that are rare (occurring in \<1 in 600 attendances) in the dataset).
 
 ## Missing Values: treatment
 
@@ -227,3 +225,42 @@ readRDS(here("data_raw", "from_ncdr_model_odds_ex_240925_broom_2.rds")) |>
 -   Do we wish to look at whether the odds of a patient receiving all types of test (aggregated) has changed in this time?
 
 -   Could be of interest to model likelihood of two or more tests of same type?
+
+# Update following feedback (01 Oct)
+
+-   Reference level for *Chief Complaint* set as "chest pain".
+
+-   Removed IMD - not significant and no change to coefficients
+
+-   Tried *is_winter* (months Dec to March). Seems useful.
+
+-   On the other hand, *is_night* (tried a few different intervals) and *is_wkend* did not appear to be helpful.
+
+-   TODO *procode* as random effect. Didn't have time to implement but quickly found [this](https://r.qcbs.ca/workshop08/book-en/introduction-to-generalized-additive-mixed-models-gamms.html) and [this](https://fromthebottomoftheheap.net/2021/02/02/random-effects-in-gams/), which may or may not be helpful.
+
+-   TODO Unadjusted model. Should be easy to do.
+
+-   TODO larger sample size. 1 million?
+
+So, current working model looks like:
+
+```{r}
+#| eval: false
+
+ mgcv::gam(
+      formula = invst ~
+        # VAR OF INTEREST:
+        fyear +
+        # DEMOGRAPHICS:
+        s(age) + sex + # imd_dec +
+        # CASE-MIX-RELATED:
+        arr_mode + acuity + chief_comp_desc +
+        # TIME-RELATED:
+        is_winter +
+        # PROVIDER (TODO: RANDOM EFFECT):
+        procode,
+      family = "binomial",
+      data = df
+    )
+
+```

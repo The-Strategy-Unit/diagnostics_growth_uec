@@ -3140,6 +3140,7 @@ background: #f8be06;
   <li><a href="#possible-improvements" id="toc-possible-improvements" class="nav-link" data-scroll-target="#possible-improvements"><span class="header-section-number">4.1</span> Possible improvements</a></li>
   </ul></li>
   <li><a href="#other-reflections" id="toc-other-reflections" class="nav-link" data-scroll-target="#other-reflections"><span class="header-section-number">5</span> Other reflections</a></li>
+  <li><a href="#update-following-feedback-01-oct" id="toc-update-following-feedback-01-oct" class="nav-link" data-scroll-target="#update-following-feedback-01-oct"><span class="header-section-number">6</span> Update following feedback (01 Oct)</a></li>
   </ul>
 <div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="mod_odds_example.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
 </div>
@@ -3173,8 +3174,7 @@ background: #f8be06;
 <h2 data-number="2.1" class="anchored" data-anchor-id="variables-treatment-and-removal"><span class="header-section-number">2.1</span> Variables: treatment and removal</h2>
 <p>Using the <em>is_march</em> variable, we have removed attendances in March from both 2020 and 2024 to avoid any bias that may arise due to the onset of the pandemic in March 2020. We then removed the <em>is_march</em> variable.</p>
 <p>Over 96% of values for <em>number of comorbidities</em> variable are zero. (This seems improbable and was therefore deemed to be a quality issue?) This variable has therefore been ignored.</p>
-<p>We don’t plan to use <em>provider code</em> in the model.</p>
-<p>We have added time-related variables (month, weekday, and hour of attendance).</p>
+<p>We have added time-related variables (month, weekday, and hour of attendance, as well as binary variables, is_winter, is_wkend, and is_night).</p>
 <section id="diagnosis-codes-and-causality" class="level3" data-number="2.1.1">
 <h3 data-number="2.1.1" class="anchored" data-anchor-id="diagnosis-codes-and-causality"><span class="header-section-number">2.1.1</span> Diagnosis codes and causality</h3>
 <p>As mentioned in an earlier document, it was our intention to use <em>acuity</em>, c<em>hief complaint group</em> and the <em>injury flag</em> (which is derived from <em>chief complaint</em> (ungrouped)), rather than the lower quality diagnoses fields.</p>
@@ -3182,7 +3182,7 @@ background: #f8be06;
 </section>
 <section id="chief-complaint-group" class="level3" data-number="2.1.2">
 <h3 data-number="2.1.2" class="anchored" data-anchor-id="chief-complaint-group"><span class="header-section-number">2.1.2</span> Chief complaint group</h3>
-<p>This leaves us with the <em>chief complaint</em> or <em>chief complaint group</em> fields, which have 146 and 15 categories, respectively. The values of <em>chief complaint (description)</em> are vague enough that they should reflect a clinician’s initial observation, yet detailed enough to be informative. We re-engineered the original variable, reducing the 146 levels down to 84 (by grouping levels that are rare (occurring in &lt;1 in 600 attendances) in the dataset).</p>
+<p>This leaves us with the <em>chief complaint</em> or <em>chief complaint group</em> fields, which have 146 and 15 categories, respectively. The values of <em>chief complaint (description)</em> should be akin to presentation codes - vague enough that they should reflect a clinician’s initial observation, yet detailed enough to be informative. We re-engineered the original variable, reducing the 146 levels down to 84 (by grouping levels that are rare (occurring in &lt;1 in 600 attendances) in the dataset).</p>
 </section>
 </section>
 <section id="missing-values-treatment" class="level2" data-number="2.2">
@@ -3292,20 +3292,20 @@ Figure 1: Appearance of each test type, by financial year
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <div class="cell">
 <div class="cell-output-display">
-<div id="yfczzynduh" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#yfczzynduh table {
+<div id="aplipxxsxa" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#aplipxxsxa table {
 font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
-#yfczzynduh thead, #yfczzynduh tbody, #yfczzynduh tfoot, #yfczzynduh tr, #yfczzynduh td, #yfczzynduh th {
+#aplipxxsxa thead, #aplipxxsxa tbody, #aplipxxsxa tfoot, #aplipxxsxa tr, #aplipxxsxa td, #aplipxxsxa th {
 border-style: none;
 }
-#yfczzynduh p {
+#aplipxxsxa p {
 margin: 0;
 padding: 0;
 }
-#yfczzynduh .gt_table {
+#aplipxxsxa .gt_table {
 display: table;
 border-collapse: collapse;
 line-height: normal;
@@ -3330,11 +3330,11 @@ border-left-style: none;
 border-left-width: 2px;
 border-left-color: #D3D3D3;
 }
-#yfczzynduh .gt_caption {
+#aplipxxsxa .gt_caption {
 padding-top: 4px;
 padding-bottom: 4px;
 }
-#yfczzynduh .gt_title {
+#aplipxxsxa .gt_title {
 color: #333333;
 font-size: 125%;
 font-weight: initial;
@@ -3345,7 +3345,7 @@ padding-right: 5px;
 border-bottom-color: #FFFFFF;
 border-bottom-width: 0;
 }
-#yfczzynduh .gt_subtitle {
+#aplipxxsxa .gt_subtitle {
 color: #333333;
 font-size: 85%;
 font-weight: initial;
@@ -3356,7 +3356,7 @@ padding-right: 5px;
 border-top-color: #FFFFFF;
 border-top-width: 0;
 }
-#yfczzynduh .gt_heading {
+#aplipxxsxa .gt_heading {
 background-color: #FFFFFF;
 text-align: center;
 border-bottom-color: #FFFFFF;
@@ -3367,12 +3367,12 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#yfczzynduh .gt_bottom_border {
+#aplipxxsxa .gt_bottom_border {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#yfczzynduh .gt_col_headings {
+#aplipxxsxa .gt_col_headings {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -3386,7 +3386,7 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#yfczzynduh .gt_col_heading {
+#aplipxxsxa .gt_col_heading {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -3405,7 +3405,7 @@ padding-left: 5px;
 padding-right: 5px;
 overflow-x: hidden;
 }
-#yfczzynduh .gt_column_spanner_outer {
+#aplipxxsxa .gt_column_spanner_outer {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -3416,13 +3416,13 @@ padding-bottom: 0;
 padding-left: 4px;
 padding-right: 4px;
 }
-#yfczzynduh .gt_column_spanner_outer:first-child {
+#aplipxxsxa .gt_column_spanner_outer:first-child {
 padding-left: 0;
 }
-#yfczzynduh .gt_column_spanner_outer:last-child {
+#aplipxxsxa .gt_column_spanner_outer:last-child {
 padding-right: 0;
 }
-#yfczzynduh .gt_column_spanner {
+#aplipxxsxa .gt_column_spanner {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
@@ -3433,10 +3433,10 @@ overflow-x: hidden;
 display: inline-block;
 width: 100%;
 }
-#yfczzynduh .gt_spanner_row {
+#aplipxxsxa .gt_spanner_row {
 border-bottom-style: hidden;
 }
-#yfczzynduh .gt_group_heading {
+#aplipxxsxa .gt_group_heading {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3461,7 +3461,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 text-align: left;
 }
-#yfczzynduh .gt_empty_group_heading {
+#aplipxxsxa .gt_empty_group_heading {
 padding: 0.5px;
 color: #333333;
 background-color: #FFFFFF;
@@ -3475,13 +3475,13 @@ border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 vertical-align: middle;
 }
-#yfczzynduh .gt_from_md > :first-child {
+#aplipxxsxa .gt_from_md > :first-child {
 margin-top: 0;
 }
-#yfczzynduh .gt_from_md > :last-child {
+#aplipxxsxa .gt_from_md > :last-child {
 margin-bottom: 0;
 }
-#yfczzynduh .gt_row {
+#aplipxxsxa .gt_row {
 padding-top: 1px;
 padding-bottom: 1px;
 padding-left: 5px;
@@ -3499,7 +3499,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 overflow-x: hidden;
 }
-#yfczzynduh .gt_stub {
+#aplipxxsxa .gt_stub {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -3511,7 +3511,7 @@ border-right-color: #D3D3D3;
 padding-left: 5px;
 padding-right: 5px;
 }
-#yfczzynduh .gt_stub_row_group {
+#aplipxxsxa .gt_stub_row_group {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -3524,13 +3524,13 @@ padding-left: 5px;
 padding-right: 5px;
 vertical-align: top;
 }
-#yfczzynduh .gt_row_group_first td {
+#aplipxxsxa .gt_row_group_first td {
 border-top-width: 2px;
 }
-#yfczzynduh .gt_row_group_first th {
+#aplipxxsxa .gt_row_group_first th {
 border-top-width: 2px;
 }
-#yfczzynduh .gt_summary_row {
+#aplipxxsxa .gt_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -3539,14 +3539,14 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#yfczzynduh .gt_first_summary_row {
+#aplipxxsxa .gt_first_summary_row {
 border-top-style: solid;
 border-top-color: #D3D3D3;
 }
-#yfczzynduh .gt_first_summary_row.thick {
+#aplipxxsxa .gt_first_summary_row.thick {
 border-top-width: 2px;
 }
-#yfczzynduh .gt_last_summary_row {
+#aplipxxsxa .gt_last_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3555,7 +3555,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#yfczzynduh .gt_grand_summary_row {
+#aplipxxsxa .gt_grand_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -3564,7 +3564,7 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#yfczzynduh .gt_first_grand_summary_row {
+#aplipxxsxa .gt_first_grand_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3573,7 +3573,7 @@ border-top-style: double;
 border-top-width: 6px;
 border-top-color: #D3D3D3;
 }
-#yfczzynduh .gt_last_grand_summary_row_top {
+#aplipxxsxa .gt_last_grand_summary_row_top {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3582,10 +3582,10 @@ border-bottom-style: double;
 border-bottom-width: 6px;
 border-bottom-color: #D3D3D3;
 }
-#yfczzynduh .gt_striped {
+#aplipxxsxa .gt_striped {
 background-color: rgba(128, 128, 128, 0.05);
 }
-#yfczzynduh .gt_table_body {
+#aplipxxsxa .gt_table_body {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -3593,7 +3593,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#yfczzynduh .gt_footnotes {
+#aplipxxsxa .gt_footnotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -3606,7 +3606,7 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#yfczzynduh .gt_footnote {
+#aplipxxsxa .gt_footnote {
 margin: 0px;
 font-size: 90%;
 padding-top: 4px;
@@ -3614,7 +3614,7 @@ padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#yfczzynduh .gt_sourcenotes {
+#aplipxxsxa .gt_sourcenotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -3627,64 +3627,64 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#yfczzynduh .gt_sourcenote {
+#aplipxxsxa .gt_sourcenote {
 font-size: 90%;
 padding-top: 4px;
 padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#yfczzynduh .gt_left {
+#aplipxxsxa .gt_left {
 text-align: left;
 }
-#yfczzynduh .gt_center {
+#aplipxxsxa .gt_center {
 text-align: center;
 }
-#yfczzynduh .gt_right {
+#aplipxxsxa .gt_right {
 text-align: right;
 font-variant-numeric: tabular-nums;
 }
-#yfczzynduh .gt_font_normal {
+#aplipxxsxa .gt_font_normal {
 font-weight: normal;
 }
-#yfczzynduh .gt_font_bold {
+#aplipxxsxa .gt_font_bold {
 font-weight: bold;
 }
-#yfczzynduh .gt_font_italic {
+#aplipxxsxa .gt_font_italic {
 font-style: italic;
 }
-#yfczzynduh .gt_super {
+#aplipxxsxa .gt_super {
 font-size: 65%;
 }
-#yfczzynduh .gt_footnote_marks {
+#aplipxxsxa .gt_footnote_marks {
 font-size: 75%;
 vertical-align: 0.4em;
 position: initial;
 }
-#yfczzynduh .gt_asterisk {
+#aplipxxsxa .gt_asterisk {
 font-size: 100%;
 vertical-align: 0;
 }
-#yfczzynduh .gt_indent_1 {
+#aplipxxsxa .gt_indent_1 {
 text-indent: 5px;
 }
-#yfczzynduh .gt_indent_2 {
+#aplipxxsxa .gt_indent_2 {
 text-indent: 10px;
 }
-#yfczzynduh .gt_indent_3 {
+#aplipxxsxa .gt_indent_3 {
 text-indent: 15px;
 }
-#yfczzynduh .gt_indent_4 {
+#aplipxxsxa .gt_indent_4 {
 text-indent: 20px;
 }
-#yfczzynduh .gt_indent_5 {
+#aplipxxsxa .gt_indent_5 {
 text-indent: 25px;
 }
-#yfczzynduh .katex-display {
+#aplipxxsxa .katex-display {
 display: inline-flex !important;
 margin-bottom: 0.75em !important;
 }
-#yfczzynduh div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#aplipxxsxa div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
 height: 0px !important;
 }
 </style>
@@ -4131,20 +4131,20 @@ height: 0px !important;
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
 <div class="cell">
 <div class="cell-output-display">
-<div id="cotxswqgoy" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#cotxswqgoy table {
+<div id="hmhmglccjv" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#hmhmglccjv table {
 font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
-#cotxswqgoy thead, #cotxswqgoy tbody, #cotxswqgoy tfoot, #cotxswqgoy tr, #cotxswqgoy td, #cotxswqgoy th {
+#hmhmglccjv thead, #hmhmglccjv tbody, #hmhmglccjv tfoot, #hmhmglccjv tr, #hmhmglccjv td, #hmhmglccjv th {
 border-style: none;
 }
-#cotxswqgoy p {
+#hmhmglccjv p {
 margin: 0;
 padding: 0;
 }
-#cotxswqgoy .gt_table {
+#hmhmglccjv .gt_table {
 display: table;
 border-collapse: collapse;
 line-height: normal;
@@ -4169,11 +4169,11 @@ border-left-style: none;
 border-left-width: 2px;
 border-left-color: #D3D3D3;
 }
-#cotxswqgoy .gt_caption {
+#hmhmglccjv .gt_caption {
 padding-top: 4px;
 padding-bottom: 4px;
 }
-#cotxswqgoy .gt_title {
+#hmhmglccjv .gt_title {
 color: #333333;
 font-size: 125%;
 font-weight: initial;
@@ -4184,7 +4184,7 @@ padding-right: 5px;
 border-bottom-color: #FFFFFF;
 border-bottom-width: 0;
 }
-#cotxswqgoy .gt_subtitle {
+#hmhmglccjv .gt_subtitle {
 color: #333333;
 font-size: 85%;
 font-weight: initial;
@@ -4195,7 +4195,7 @@ padding-right: 5px;
 border-top-color: #FFFFFF;
 border-top-width: 0;
 }
-#cotxswqgoy .gt_heading {
+#hmhmglccjv .gt_heading {
 background-color: #FFFFFF;
 text-align: center;
 border-bottom-color: #FFFFFF;
@@ -4206,12 +4206,12 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#cotxswqgoy .gt_bottom_border {
+#hmhmglccjv .gt_bottom_border {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#cotxswqgoy .gt_col_headings {
+#hmhmglccjv .gt_col_headings {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -4225,7 +4225,7 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#cotxswqgoy .gt_col_heading {
+#hmhmglccjv .gt_col_heading {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -4244,7 +4244,7 @@ padding-left: 5px;
 padding-right: 5px;
 overflow-x: hidden;
 }
-#cotxswqgoy .gt_column_spanner_outer {
+#hmhmglccjv .gt_column_spanner_outer {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -4255,13 +4255,13 @@ padding-bottom: 0;
 padding-left: 4px;
 padding-right: 4px;
 }
-#cotxswqgoy .gt_column_spanner_outer:first-child {
+#hmhmglccjv .gt_column_spanner_outer:first-child {
 padding-left: 0;
 }
-#cotxswqgoy .gt_column_spanner_outer:last-child {
+#hmhmglccjv .gt_column_spanner_outer:last-child {
 padding-right: 0;
 }
-#cotxswqgoy .gt_column_spanner {
+#hmhmglccjv .gt_column_spanner {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
@@ -4272,10 +4272,10 @@ overflow-x: hidden;
 display: inline-block;
 width: 100%;
 }
-#cotxswqgoy .gt_spanner_row {
+#hmhmglccjv .gt_spanner_row {
 border-bottom-style: hidden;
 }
-#cotxswqgoy .gt_group_heading {
+#hmhmglccjv .gt_group_heading {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -4300,7 +4300,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 text-align: left;
 }
-#cotxswqgoy .gt_empty_group_heading {
+#hmhmglccjv .gt_empty_group_heading {
 padding: 0.5px;
 color: #333333;
 background-color: #FFFFFF;
@@ -4314,13 +4314,13 @@ border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 vertical-align: middle;
 }
-#cotxswqgoy .gt_from_md > :first-child {
+#hmhmglccjv .gt_from_md > :first-child {
 margin-top: 0;
 }
-#cotxswqgoy .gt_from_md > :last-child {
+#hmhmglccjv .gt_from_md > :last-child {
 margin-bottom: 0;
 }
-#cotxswqgoy .gt_row {
+#hmhmglccjv .gt_row {
 padding-top: 1px;
 padding-bottom: 1px;
 padding-left: 5px;
@@ -4338,7 +4338,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 overflow-x: hidden;
 }
-#cotxswqgoy .gt_stub {
+#hmhmglccjv .gt_stub {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -4350,7 +4350,7 @@ border-right-color: #D3D3D3;
 padding-left: 5px;
 padding-right: 5px;
 }
-#cotxswqgoy .gt_stub_row_group {
+#hmhmglccjv .gt_stub_row_group {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -4363,13 +4363,13 @@ padding-left: 5px;
 padding-right: 5px;
 vertical-align: top;
 }
-#cotxswqgoy .gt_row_group_first td {
+#hmhmglccjv .gt_row_group_first td {
 border-top-width: 2px;
 }
-#cotxswqgoy .gt_row_group_first th {
+#hmhmglccjv .gt_row_group_first th {
 border-top-width: 2px;
 }
-#cotxswqgoy .gt_summary_row {
+#hmhmglccjv .gt_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -4378,14 +4378,14 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#cotxswqgoy .gt_first_summary_row {
+#hmhmglccjv .gt_first_summary_row {
 border-top-style: solid;
 border-top-color: #D3D3D3;
 }
-#cotxswqgoy .gt_first_summary_row.thick {
+#hmhmglccjv .gt_first_summary_row.thick {
 border-top-width: 2px;
 }
-#cotxswqgoy .gt_last_summary_row {
+#hmhmglccjv .gt_last_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -4394,7 +4394,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#cotxswqgoy .gt_grand_summary_row {
+#hmhmglccjv .gt_grand_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -4403,7 +4403,7 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#cotxswqgoy .gt_first_grand_summary_row {
+#hmhmglccjv .gt_first_grand_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -4412,7 +4412,7 @@ border-top-style: double;
 border-top-width: 6px;
 border-top-color: #D3D3D3;
 }
-#cotxswqgoy .gt_last_grand_summary_row_top {
+#hmhmglccjv .gt_last_grand_summary_row_top {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -4421,10 +4421,10 @@ border-bottom-style: double;
 border-bottom-width: 6px;
 border-bottom-color: #D3D3D3;
 }
-#cotxswqgoy .gt_striped {
+#hmhmglccjv .gt_striped {
 background-color: rgba(128, 128, 128, 0.05);
 }
-#cotxswqgoy .gt_table_body {
+#hmhmglccjv .gt_table_body {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -4432,7 +4432,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#cotxswqgoy .gt_footnotes {
+#hmhmglccjv .gt_footnotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -4445,7 +4445,7 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#cotxswqgoy .gt_footnote {
+#hmhmglccjv .gt_footnote {
 margin: 0px;
 font-size: 90%;
 padding-top: 4px;
@@ -4453,7 +4453,7 @@ padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#cotxswqgoy .gt_sourcenotes {
+#hmhmglccjv .gt_sourcenotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -4466,64 +4466,64 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#cotxswqgoy .gt_sourcenote {
+#hmhmglccjv .gt_sourcenote {
 font-size: 90%;
 padding-top: 4px;
 padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#cotxswqgoy .gt_left {
+#hmhmglccjv .gt_left {
 text-align: left;
 }
-#cotxswqgoy .gt_center {
+#hmhmglccjv .gt_center {
 text-align: center;
 }
-#cotxswqgoy .gt_right {
+#hmhmglccjv .gt_right {
 text-align: right;
 font-variant-numeric: tabular-nums;
 }
-#cotxswqgoy .gt_font_normal {
+#hmhmglccjv .gt_font_normal {
 font-weight: normal;
 }
-#cotxswqgoy .gt_font_bold {
+#hmhmglccjv .gt_font_bold {
 font-weight: bold;
 }
-#cotxswqgoy .gt_font_italic {
+#hmhmglccjv .gt_font_italic {
 font-style: italic;
 }
-#cotxswqgoy .gt_super {
+#hmhmglccjv .gt_super {
 font-size: 65%;
 }
-#cotxswqgoy .gt_footnote_marks {
+#hmhmglccjv .gt_footnote_marks {
 font-size: 75%;
 vertical-align: 0.4em;
 position: initial;
 }
-#cotxswqgoy .gt_asterisk {
+#hmhmglccjv .gt_asterisk {
 font-size: 100%;
 vertical-align: 0;
 }
-#cotxswqgoy .gt_indent_1 {
+#hmhmglccjv .gt_indent_1 {
 text-indent: 5px;
 }
-#cotxswqgoy .gt_indent_2 {
+#hmhmglccjv .gt_indent_2 {
 text-indent: 10px;
 }
-#cotxswqgoy .gt_indent_3 {
+#hmhmglccjv .gt_indent_3 {
 text-indent: 15px;
 }
-#cotxswqgoy .gt_indent_4 {
+#hmhmglccjv .gt_indent_4 {
 text-indent: 20px;
 }
-#cotxswqgoy .gt_indent_5 {
+#hmhmglccjv .gt_indent_5 {
 text-indent: 25px;
 }
-#cotxswqgoy .katex-display {
+#hmhmglccjv .katex-display {
 display: inline-flex !important;
 margin-bottom: 0.75em !important;
 }
-#cotxswqgoy div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#hmhmglccjv div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
 height: 0px !important;
 }
 </style>
@@ -5226,6 +5226,36 @@ height: 0px !important;
 <li><p>Do we wish to look at whether the odds of a patient receiving all types of test (aggregated) has changed in this time?</p></li>
 <li><p>Could be of interest to model likelihood of two or more tests of same type?</p></li>
 </ul>
+</section>
+<section id="update-following-feedback-01-oct" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Update following feedback (01 Oct)</h1>
+<ul>
+<li><p>Reference level for <em>Chief Complaint</em> set as “chest pain”.</p></li>
+<li><p>Removed IMD - not significant and no change to coefficients</p></li>
+<li><p>Tried <em>is_winter</em> (months Dec to March). Seems useful.</p></li>
+<li><p>On the other hand, <em>is_night</em> (tried a few different intervals) and <em>is_wkend</em> did not appear to be helpful.</p></li>
+<li><p>TODO <em>procode</em> as random effect. Didn’t have time to implement but quickly found <a href="https://r.qcbs.ca/workshop08/book-en/introduction-to-generalized-additive-mixed-models-gamms.html">this</a> and <a href="https://fromthebottomoftheheap.net/2021/02/02/random-effects-in-gams/">this</a>, which may or may not be helpful.</p></li>
+<li><p>TODO Unadjusted model. Should be easy to do.</p></li>
+<li><p>TODO larger sample size. 1 million?</p></li>
+</ul>
+<p>So, current working model looks like:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a> mgcv<span class="sc">::</span><span class="fu">gam</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">formula =</span> invst <span class="sc">~</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        <span class="co"># VAR OF INTEREST:</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        fyear <span class="sc">+</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        <span class="co"># DEMOGRAPHICS:</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        <span class="fu">s</span>(age) <span class="sc">+</span> sex <span class="sc">+</span> <span class="co"># imd_dec +</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        <span class="co"># CASE-MIX-RELATED:</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        arr_mode <span class="sc">+</span> acuity <span class="sc">+</span> chief_comp_desc <span class="sc">+</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        <span class="co"># TIME-RELATED:</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        is_winter <span class="sc">+</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        <span class="co"># PROVIDER (</span><span class="al">TODO</span><span class="co">: RANDOM EFFECT):</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        procode,</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>,</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">data =</span> df</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <!-- -->
 
 </section>
@@ -5703,235 +5733,272 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class>
-<div class="sourceCode" id="cb3" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> &quot;Experimental &#39;Odds of Test&#39; Models&quot;</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> &quot;Project: Diagnostic Growth UEC&quot;</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> 2024-09-24</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">    html-table-processing: none</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">    # code-fold: true</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co">    embed-resources: true</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">    grid:</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">      margin-width: 350px</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co">  pdf: default</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="an">reference-location:</span><span class="co"> margin</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="an">citation-location:</span><span class="co"> margin</span></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="an">toc:</span><span class="co"> true</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="an">toc-title:</span><span class="co"> Contents</span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="an">toc-location:</span><span class="co"> left</span></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="an">theme:</span><span class="co"> journal</span></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="an">fig-cap-location:</span><span class="co"> top</span></span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="an">number-sections:</span><span class="co"> true</span></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="an">title-block-banner:</span><span class="co"> &#39;#f8be06&#39;</span></span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="an">title-block-banner-color:</span><span class="co"> &#39;#242322&#39;</span></span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="co"># mainfont: Gill Sans MT</span></span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="co"># mainfont: Helvetica</span></span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="an">editor_options:</span><span class="co"> </span></span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="co">  chunk_output_type: console</span></span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="fu"># Introduction</span></span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>Having settled on our &quot;ecds_only&quot; data sample (containing 16 providers), we will build a basic, experimental, case-mix adjusted &quot;odds of test&quot; model. A model of this type will be used to address project Question 2:</span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>::: {.callout-note appearance=&quot;minimal&quot;}</span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>For each test type, how much more likely is it that a patient will receive the test in ED in 2023/24 compared to 2019/20?</span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>This document outlines some of the thought processes and questions we had during this model building exercise.</span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="fu"># Preparing the data</span></span>
-<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>From the data set summary report, we know that our sample of the &quot;ecds_only&quot; table, based on provider data quality, contains measurements of 38 variables for about 3 million ED attendances across 16 providers.</span>
-<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a><span class="fu">## Variables: treatment and removal</span></span>
-<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>Using the *is_march* variable, we have removed attendances in March from both 2020 and 2024 to avoid any bias that may arise due to the onset of the pandemic in March 2020. We then removed the *is_march* variable.</span>
-<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>Over 96% of values for *number of comorbidities* variable are zero. (This seems improbable and was therefore deemed to be a quality issue?) This variable has therefore been ignored.</span>
-<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>We don&#39;t plan to use *provider code* in the model.</span>
-<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>We have added time-related variables (month, weekday, and hour of attendance).</span>
-<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a><span class="fu">### Diagnosis codes and causality</span></span>
-<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>As mentioned in an earlier document, it was our intention to use *acuity*, c*hief complaint group* and the *injury flag* (which is derived from *chief complaint* (ungrouped)), rather than the lower quality diagnoses fields.</span>
-<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>Must we also consider that a *diagnosis is often the result of testing*? (Is it therefore valid to use diagnosis codes as a predictor of whether a patient will receive a test?) If we were to rule out the use of diagnosis codes on this basis, we must also rule out use of *number of diagnoses,* as proxy for number of commodities.</span>
-<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a><span class="fu">### Chief complaint group</span></span>
-<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>This leaves us with the *chief complaint* or *chief complaint group* fields, which have 146 and 15 categories, respectively. The values of *chief complaint (description)* are vague enough that they should reflect a clinician&#39;s initial observation, yet detailed enough to be informative. We re-engineered the original variable, reducing the 146 levels down to 84 (by grouping levels that are rare (occurring in <span class="sc">\&lt;</span>1 in 600 attendances) in the dataset).</span>
-<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a><span class="fu">## Missing Values: treatment</span></span>
-<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>It&#39;s likely that we will rely on a logistic regression model of some description, and this model type will not accept missing values. In the interests of time, we have, by default, decided to delete records with missing values for any of the variables. This approach will reduce our sample size, increase the standard error of our model coefficients, and could feasibly bias these coefficients if the data are not missing completely at random. These risks may be mitigated (and our approach may be easier to justify) given that records have already been vetted for high levels of completeness. In any case, the table, below, shows the variables implicated.</span>
-<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>| Variable              | Approx no. missing values |</span>
-<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>|-----------------------|---------------------------|</span>
-<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>| Chief complaint group | 80,000                    |</span>
-<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>| Acuity                | 40,000                    |</span>
-<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>| Injury flag           | 30,000                    |</span>
-<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>| Der investigation all | 12,000                    |</span>
-<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>| IMD decile            | 500                       |</span>
-<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>| Age                   | 100                       |</span>
-<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a>These groups are not mutually exclusive, so the result of deleting all records with missing values is that we lose 3.6% (113k) records.</span>
-<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a><span class="fu">## Outcome Variable: Treatment</span></span>
-<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a>In what follows, we&#39;ve used EC-style (SNOMED?) investigation codes, rather than AEA-style codes, as in the past, on the assumptions that EC-style codes:</span>
-<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Better reflect current tests and current practice</span>
-<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Are more specific about the test being conducted</span>
-<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Are likely to be more future-proof</span>
-<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a>There are 48 different EC investigations (removing the code for no investigation stated). These are numbered from 50 to 97 (presumably to avoid overlap with AEA-style numbering). For reference, there were around 20 (valid) AEA investigation types. Note: It should be relatively simple to map EC to AEA codes and/or run models for AEA-style codes, if necessary.</span>
-<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a>Some of the EC-style tests are provided infrequently (they have a low event rate) which will make them more difficult to visualise and model than those with a higher event rate. We may wish to create an &quot;other test&quot; category which could contain, for example, tests conducted in less than 1 in 250 ED attendances.</span>
-<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a>@fig-outcomes shows that if we set the threshold at 1/250, we will still have a number of tests with a relatively low event rate that don&#39;t fall into this &quot;other&quot; category. This is something to remain aware of, since most models will overfit to the majority class. When that majority class contains the vast majority of observations, models will be poorly calibrated. <span class="co">[</span><span class="ot">Subsampling</span><span class="co">](https://www.tidymodels.org/learn/models/sub-sampling/)</span> is a potential solution.</span>
-<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup</span></span>
-<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
-<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a> </span>
-<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;gt&quot;</span>)</span>
-<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;here&quot;</span>)</span>
-<span id="cb3-103"><a href="#cb3-103" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;dplyr&quot;</span>)</span>
-<span id="cb3-104"><a href="#cb3-104" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;tidyr&quot;</span>)</span>
-<span id="cb3-105"><a href="#cb3-105" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;skimr&quot;</span>)</span>
-<span id="cb3-106"><a href="#cb3-106" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;ggplot2&quot;</span>)</span>
-<span id="cb3-107"><a href="#cb3-107" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;stringr&quot;</span>)</span>
-<span id="cb3-108"><a href="#cb3-108" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb3-109"><a href="#cb3-109" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-112"><a href="#cb3-112" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb3-113"><a href="#cb3-113" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-outcomes</span></span>
-<span id="cb3-114"><a href="#cb3-114" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb3-115"><a href="#cb3-115" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb3-116"><a href="#cb3-116" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: &quot;Appearance of each test type, by financial year&quot;</span></span>
-<span id="cb3-117"><a href="#cb3-117" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-118"><a href="#cb3-118" aria-hidden="true" tabindex="-1"></a><span class="co"># list.files(here(&quot;data_raw&quot;))</span></span>
-<span id="cb3-119"><a href="#cb3-119" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-120"><a href="#cb3-120" aria-hidden="true" tabindex="-1"></a><span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">&quot;data_raw&quot;</span>, <span class="st">&quot;from_ncdr_mod_odds_ex_240924_preplot_outcome_counts.rds&quot;</span>)) <span class="sc">|&gt;</span> <span class="fu">ggplot</span>()<span class="sc">+</span></span>
-<span id="cb3-121"><a href="#cb3-121" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(</span>
-<span id="cb3-122"><a href="#cb3-122" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(</span>
-<span id="cb3-123"><a href="#cb3-123" aria-hidden="true" tabindex="-1"></a>      <span class="fu">reorder</span>(<span class="fu">str_c</span>(name, <span class="st">&quot;_&quot;</span>, InvestigationDescription), value),</span>
-<span id="cb3-124"><a href="#cb3-124" aria-hidden="true" tabindex="-1"></a>      value<span class="sc">/</span><span class="dv">443275</span>,  <span class="co"># nrow(df_odds_invst),</span></span>
-<span id="cb3-125"><a href="#cb3-125" aria-hidden="true" tabindex="-1"></a>      <span class="at">fill =</span> fyear</span>
-<span id="cb3-126"><a href="#cb3-126" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb3-127"><a href="#cb3-127" aria-hidden="true" tabindex="-1"></a>    <span class="at">position =</span> <span class="st">&quot;dodge&quot;</span></span>
-<span id="cb3-128"><a href="#cb3-128" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">+</span></span>
-<span id="cb3-129"><a href="#cb3-129" aria-hidden="true" tabindex="-1"></a>  <span class="co"># scale_fill_manual(values = c())+</span></span>
-<span id="cb3-130"><a href="#cb3-130" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()<span class="sc">+</span> </span>
-<span id="cb3-131"><a href="#cb3-131" aria-hidden="true" tabindex="-1"></a>  <span class="co"># theme_bw()+ </span></span>
-<span id="cb3-132"><a href="#cb3-132" aria-hidden="true" tabindex="-1"></a>  <span class="co"># scale_y_continuous(labels = scales::comma)+</span></span>
-<span id="cb3-133"><a href="#cb3-133" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>percent, <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, .<span class="dv">26</span>))<span class="sc">+</span></span>
-<span id="cb3-134"><a href="#cb3-134" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>()<span class="sc">+</span></span>
-<span id="cb3-135"><a href="#cb3-135" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 1 IN 3000 CUTOFF WILL ENSURE ~ 1000 INSTANCES FOR 10% SAMPLE</span></span>
-<span id="cb3-136"><a href="#cb3-136" aria-hidden="true" tabindex="-1"></a>  <span class="co"># LINE IS AT 0.3% OF CASES:</span></span>
-<span id="cb3-137"><a href="#cb3-137" aria-hidden="true" tabindex="-1"></a>  <span class="co"># geom_hline(yintercept = 1/500, lty = &quot;dashed&quot;, alpha = 0.3)+</span></span>
-<span id="cb3-138"><a href="#cb3-138" aria-hidden="true" tabindex="-1"></a>  <span class="co"># geom_text(x = 33, y = .003, label = &quot;1/500&quot;, alpha = .1)+</span></span>
-<span id="cb3-139"><a href="#cb3-139" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">&quot;% of all attendances in the dataset&quot;</span>)<span class="sc">+</span></span>
-<span id="cb3-140"><a href="#cb3-140" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
-<span id="cb3-141"><a href="#cb3-141" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title.y =</span> <span class="fu">element_blank</span>()</span>
-<span id="cb3-142"><a href="#cb3-142" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb3-143"><a href="#cb3-143" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb3-144"><a href="#cb3-144" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-145"><a href="#cb3-145" aria-hidden="true" tabindex="-1"></a><span class="fu"># Building the models</span></span>
-<span id="cb3-146"><a href="#cb3-146" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-147"><a href="#cb3-147" aria-hidden="true" tabindex="-1"></a>In the following examples, we will examine whether the odds of a patient receiving a **CT test** have changed between 2019/20 and 2023/24. We will employ a Generalised Additive Model (GAM) from the <span class="in">`mgcv`</span> package, using a sample of 10% of the data set (\~300k records).</span>
-<span id="cb3-148"><a href="#cb3-148" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-149"><a href="#cb3-149" aria-hidden="true" tabindex="-1"></a>For this first attempt at a model, Model 1, we will use *chief complaint group* (15 levels) together with the *injury flag* in our case-mix adjustment. We will exclude *attendance source* and *ethnic group,* which might ultimately contain useful information*.* (Note that we checked that we had no near-zero variance or highly correlated ( r <span class="sc">\&gt;</span> 0.7) predictors, both of which are undesirable when performing logistic regression.) The full model specification for Model 1 was:</span>
-<span id="cb3-150"><a href="#cb3-150" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-153"><a href="#cb3-153" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb3-154"><a href="#cb3-154" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb3-155"><a href="#cb3-155" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-156"><a href="#cb3-156" aria-hidden="true" tabindex="-1"></a>mgcv<span class="sc">::</span><span class="fu">gam</span>(</span>
-<span id="cb3-157"><a href="#cb3-157" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> invst_73 <span class="sc">~</span> fyear <span class="sc">+</span> </span>
-<span id="cb3-158"><a href="#cb3-158" aria-hidden="true" tabindex="-1"></a>    <span class="do">## DEMOGRAPHICS ######</span></span>
-<span id="cb3-159"><a href="#cb3-159" aria-hidden="true" tabindex="-1"></a>    <span class="fu">s</span>(age) <span class="sc">+</span> sex <span class="sc">+</span> imd_dec <span class="sc">+</span></span>
-<span id="cb3-160"><a href="#cb3-160" aria-hidden="true" tabindex="-1"></a>    <span class="do">## CASE-MIX-RELATED ##</span></span>
-<span id="cb3-161"><a href="#cb3-161" aria-hidden="true" tabindex="-1"></a>    arr_mode <span class="sc">+</span> acuity <span class="sc">+</span> chief_comp_grp <span class="sc">+</span> inj_flag <span class="sc">+</span> </span>
-<span id="cb3-162"><a href="#cb3-162" aria-hidden="true" tabindex="-1"></a>    <span class="do">## TIME-RELATED ######</span></span>
-<span id="cb3-163"><a href="#cb3-163" aria-hidden="true" tabindex="-1"></a>    month <span class="sc">+</span> wkday <span class="sc">+</span> hour,</span>
-<span id="cb3-164"><a href="#cb3-164" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>,</span>
-<span id="cb3-165"><a href="#cb3-165" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> demo_processed</span>
-<span id="cb3-166"><a href="#cb3-166" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb3-167"><a href="#cb3-167" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb3-168"><a href="#cb3-168" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-169"><a href="#cb3-169" aria-hidden="true" tabindex="-1"></a>We will also specify a second model, Model 2, in which we will replace chief complaint group with the (engineered) *chief complaint (description)*, which has 84 levels. This also makes the *injury flag* redundant. At the same time we will remove weekday and hour.</span>
-<span id="cb3-170"><a href="#cb3-170" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-173"><a href="#cb3-173" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb3-174"><a href="#cb3-174" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb3-175"><a href="#cb3-175" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-176"><a href="#cb3-176" aria-hidden="true" tabindex="-1"></a>mgcv<span class="sc">::</span><span class="fu">gam</span>(</span>
-<span id="cb3-177"><a href="#cb3-177" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> invst_73 <span class="sc">~</span> fyear <span class="sc">+</span> </span>
-<span id="cb3-178"><a href="#cb3-178" aria-hidden="true" tabindex="-1"></a>    <span class="do">## DEMOGRAPHICS ######</span></span>
-<span id="cb3-179"><a href="#cb3-179" aria-hidden="true" tabindex="-1"></a>    <span class="fu">s</span>(age) <span class="sc">+</span> sex <span class="sc">+</span> imd_dec <span class="sc">+</span></span>
-<span id="cb3-180"><a href="#cb3-180" aria-hidden="true" tabindex="-1"></a>    <span class="do">## CASE-MIX-RELATED ##</span></span>
-<span id="cb3-181"><a href="#cb3-181" aria-hidden="true" tabindex="-1"></a>    arr_mode <span class="sc">+</span> acuity <span class="sc">+</span> chief_comp_desc <span class="sc">+</span>  </span>
-<span id="cb3-182"><a href="#cb3-182" aria-hidden="true" tabindex="-1"></a>    <span class="do">## TIME-RELATED ######</span></span>
-<span id="cb3-183"><a href="#cb3-183" aria-hidden="true" tabindex="-1"></a>    month,</span>
-<span id="cb3-184"><a href="#cb3-184" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>,</span>
-<span id="cb3-185"><a href="#cb3-185" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> demo_processed</span>
-<span id="cb3-186"><a href="#cb3-186" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb3-187"><a href="#cb3-187" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb3-188"><a href="#cb3-188" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-189"><a href="#cb3-189" aria-hidden="true" tabindex="-1"></a><span class="fu"># Results</span></span>
-<span id="cb3-190"><a href="#cb3-190" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-191"><a href="#cb3-191" aria-hidden="true" tabindex="-1"></a>Model 1 and Model 2 had adjusted R squared values of 0.18 and 0.25, respectively. Model coefficients can be seen in the tabs below. Model 1 indicates that, having adjusted for case-mix, the odds of receiving a CT scan in 2023/24 were 1.78 times higher than the odds in 2019/20. For Model 2, the estimate was 1.77. In both cases, these coefficients were highly significant.</span>
-<span id="cb3-192"><a href="#cb3-192" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-193"><a href="#cb3-193" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
-<span id="cb3-194"><a href="#cb3-194" aria-hidden="true" tabindex="-1"></a><span class="fu">## Model 1</span></span>
-<span id="cb3-195"><a href="#cb3-195" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-198"><a href="#cb3-198" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb3-199"><a href="#cb3-199" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb3-200"><a href="#cb3-200" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-201"><a href="#cb3-201" aria-hidden="true" tabindex="-1"></a><span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">&quot;data_raw&quot;</span>, <span class="st">&quot;from_ncdr_model_odds_ex_240925_broom_1.rds&quot;</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb3-202"><a href="#cb3-202" aria-hidden="true" tabindex="-1"></a>    <span class="fu">gt</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb3-203"><a href="#cb3-203" aria-hidden="true" tabindex="-1"></a>     <span class="fu">tab_options</span>(</span>
-<span id="cb3-204"><a href="#cb3-204" aria-hidden="true" tabindex="-1"></a>    <span class="at">data_row.padding =</span> <span class="fu">px</span>(<span class="dv">1</span>),</span>
-<span id="cb3-205"><a href="#cb3-205" aria-hidden="true" tabindex="-1"></a>       <span class="at">table.font.size =</span> <span class="st">&quot;small&quot;</span></span>
-<span id="cb3-206"><a href="#cb3-206" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb3-207"><a href="#cb3-207" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb3-208"><a href="#cb3-208" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-209"><a href="#cb3-209" aria-hidden="true" tabindex="-1"></a><span class="fu">## Model 2</span></span>
-<span id="cb3-210"><a href="#cb3-210" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-213"><a href="#cb3-213" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb3-214"><a href="#cb3-214" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb3-215"><a href="#cb3-215" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-216"><a href="#cb3-216" aria-hidden="true" tabindex="-1"></a><span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">&quot;data_raw&quot;</span>, <span class="st">&quot;from_ncdr_model_odds_ex_240925_broom_2.rds&quot;</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb3-217"><a href="#cb3-217" aria-hidden="true" tabindex="-1"></a>    <span class="fu">gt</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb3-218"><a href="#cb3-218" aria-hidden="true" tabindex="-1"></a>     <span class="fu">tab_options</span>(</span>
-<span id="cb3-219"><a href="#cb3-219" aria-hidden="true" tabindex="-1"></a>    <span class="at">data_row.padding =</span> <span class="fu">px</span>(<span class="dv">1</span>),</span>
-<span id="cb3-220"><a href="#cb3-220" aria-hidden="true" tabindex="-1"></a>       <span class="at">table.font.size =</span> <span class="st">&quot;small&quot;</span></span>
-<span id="cb3-221"><a href="#cb3-221" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb3-222"><a href="#cb3-222" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb3-223"><a href="#cb3-223" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb3-224"><a href="#cb3-224" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-225"><a href="#cb3-225" aria-hidden="true" tabindex="-1"></a><span class="fu">## Possible improvements</span></span>
-<span id="cb3-226"><a href="#cb3-226" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-227"><a href="#cb3-227" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Arrival source may contain useful information.</span>
-<span id="cb3-228"><a href="#cb3-228" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-229"><a href="#cb3-229" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Interactions? e.g. acuity may have a different effect on chances of test for each chief complaint. Age may have different effect on chances of test for each group of chief comp, arrival mode, acuity?</span>
-<span id="cb3-230"><a href="#cb3-230" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-231"><a href="#cb3-231" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>...?</span>
-<span id="cb3-232"><a href="#cb3-232" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-233"><a href="#cb3-233" aria-hidden="true" tabindex="-1"></a><span class="fu"># Other reflections</span></span>
-<span id="cb3-234"><a href="#cb3-234" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-235"><a href="#cb3-235" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>What size sample to use for these models? 500k?</span>
-<span id="cb3-236"><a href="#cb3-236" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-237"><a href="#cb3-237" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Stick with GAMs or try glmnet or something else?</span>
-<span id="cb3-238"><a href="#cb3-238" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-239"><a href="#cb3-239" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Do we wish to look at whether the odds of a patient receiving all types of test (aggregated) has changed in this time?</span>
-<span id="cb3-240"><a href="#cb3-240" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-241"><a href="#cb3-241" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Could be of interest to model likelihood of two or more tests of same type?</span>
+<div class="sourceCode" id="cb4" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> &quot;Experimental &#39;Odds of Test&#39; Models&quot;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> &quot;Project: Diagnostic Growth UEC&quot;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> 2024-09-24</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">    html-table-processing: none</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">    # code-fold: true</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">    embed-resources: true</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">    grid:</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">      margin-width: 350px</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co">  pdf: default</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="an">reference-location:</span><span class="co"> margin</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="an">citation-location:</span><span class="co"> margin</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="an">toc:</span><span class="co"> true</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="an">toc-title:</span><span class="co"> Contents</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="an">toc-location:</span><span class="co"> left</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="an">theme:</span><span class="co"> journal</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="an">fig-cap-location:</span><span class="co"> top</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="an">number-sections:</span><span class="co"> true</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="an">title-block-banner:</span><span class="co"> &#39;#f8be06&#39;</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="an">title-block-banner-color:</span><span class="co"> &#39;#242322&#39;</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="co"># mainfont: Gill Sans MT</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="co"># mainfont: Helvetica</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="an">editor_options:</span><span class="co"> </span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="co">  chunk_output_type: console</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a><span class="fu"># Introduction</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>Having settled on our &quot;ecds_only&quot; data sample (containing 16 providers), we will build a basic, experimental, case-mix adjusted &quot;odds of test&quot; model. A model of this type will be used to address project Question 2:</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>::: {.callout-note appearance=&quot;minimal&quot;}</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>For each test type, how much more likely is it that a patient will receive the test in ED in 2023/24 compared to 2019/20?</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>This document outlines some of the thought processes and questions we had during this model building exercise.</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a><span class="fu"># Preparing the data</span></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>From the data set summary report, we know that our sample of the &quot;ecds_only&quot; table, based on provider data quality, contains measurements of 38 variables for about 3 million ED attendances across 16 providers.</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a><span class="fu">## Variables: treatment and removal</span></span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>Using the *is_march* variable, we have removed attendances in March from both 2020 and 2024 to avoid any bias that may arise due to the onset of the pandemic in March 2020. We then removed the *is_march* variable.</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>Over 96% of values for *number of comorbidities* variable are zero. (This seems improbable and was therefore deemed to be a quality issue?) This variable has therefore been ignored.</span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>We have added time-related variables (month, weekday, and hour of attendance, as well as binary variables, is_winter, is_wkend, and is_night).</span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a><span class="fu">### Diagnosis codes and causality</span></span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>As mentioned in an earlier document, it was our intention to use *acuity*, c*hief complaint group* and the *injury flag* (which is derived from *chief complaint* (ungrouped)), rather than the lower quality diagnoses fields.</span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>Must we also consider that a *diagnosis is often the result of testing*? (Is it therefore valid to use diagnosis codes as a predictor of whether a patient will receive a test?) If we were to rule out the use of diagnosis codes on this basis, we must also rule out use of *number of diagnoses,* as proxy for number of commodities.</span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a><span class="fu">### Chief complaint group</span></span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>This leaves us with the *chief complaint* or *chief complaint group* fields, which have 146 and 15 categories, respectively. The values of *chief complaint (description)* should be akin to presentation codes - vague enough that they should reflect a clinician&#39;s initial observation, yet detailed enough to be informative. We re-engineered the original variable, reducing the 146 levels down to 84 (by grouping levels that are rare (occurring in <span class="sc">\&lt;</span>1 in 600 attendances) in the dataset).</span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a><span class="fu">## Missing Values: treatment</span></span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>It&#39;s likely that we will rely on a logistic regression model of some description, and this model type will not accept missing values. In the interests of time, we have, by default, decided to delete records with missing values for any of the variables. This approach will reduce our sample size, increase the standard error of our model coefficients, and could feasibly bias these coefficients if the data are not missing completely at random. These risks may be mitigated (and our approach may be easier to justify) given that records have already been vetted for high levels of completeness. In any case, the table, below, shows the variables implicated.</span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a>| Variable              | Approx no. missing values |</span>
+<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a>|-----------------------|---------------------------|</span>
+<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a>| Chief complaint group | 80,000                    |</span>
+<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a>| Acuity                | 40,000                    |</span>
+<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a>| Injury flag           | 30,000                    |</span>
+<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a>| Der investigation all | 12,000                    |</span>
+<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a>| IMD decile            | 500                       |</span>
+<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a>| Age                   | 100                       |</span>
+<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a>These groups are not mutually exclusive, so the result of deleting all records with missing values is that we lose 3.6% (113k) records.</span>
+<span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a><span class="fu">## Outcome Variable: Treatment</span></span>
+<span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a>In what follows, we&#39;ve used EC-style (SNOMED?) investigation codes, rather than AEA-style codes, as in the past, on the assumptions that EC-style codes:</span>
+<span id="cb4-80"><a href="#cb4-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Better reflect current tests and current practice</span>
+<span id="cb4-82"><a href="#cb4-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-83"><a href="#cb4-83" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Are more specific about the test being conducted</span>
+<span id="cb4-84"><a href="#cb4-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-85"><a href="#cb4-85" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Are likely to be more future-proof</span>
+<span id="cb4-86"><a href="#cb4-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-87"><a href="#cb4-87" aria-hidden="true" tabindex="-1"></a>There are 48 different EC investigations (removing the code for no investigation stated). These are numbered from 50 to 97 (presumably to avoid overlap with AEA-style numbering). For reference, there were around 20 (valid) AEA investigation types. Note: It should be relatively simple to map EC to AEA codes and/or run models for AEA-style codes, if necessary.</span>
+<span id="cb4-88"><a href="#cb4-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-89"><a href="#cb4-89" aria-hidden="true" tabindex="-1"></a>Some of the EC-style tests are provided infrequently (they have a low event rate) which will make them more difficult to visualise and model than those with a higher event rate. We may wish to create an &quot;other test&quot; category which could contain, for example, tests conducted in less than 1 in 250 ED attendances.</span>
+<span id="cb4-90"><a href="#cb4-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-91"><a href="#cb4-91" aria-hidden="true" tabindex="-1"></a>@fig-outcomes shows that if we set the threshold at 1/250, we will still have a number of tests with a relatively low event rate that don&#39;t fall into this &quot;other&quot; category. This is something to remain aware of, since most models will overfit to the majority class. When that majority class contains the vast majority of observations, models will be poorly calibrated. <span class="co">[</span><span class="ot">Subsampling</span><span class="co">](https://www.tidymodels.org/learn/models/sub-sampling/)</span> is a potential solution.</span>
+<span id="cb4-92"><a href="#cb4-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-95"><a href="#cb4-95" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb4-96"><a href="#cb4-96" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup</span></span>
+<span id="cb4-97"><a href="#cb4-97" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb4-98"><a href="#cb4-98" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb4-99"><a href="#cb4-99" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;gt&quot;</span>)</span>
+<span id="cb4-100"><a href="#cb4-100" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;here&quot;</span>)</span>
+<span id="cb4-101"><a href="#cb4-101" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;dplyr&quot;</span>)</span>
+<span id="cb4-102"><a href="#cb4-102" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;tidyr&quot;</span>)</span>
+<span id="cb4-103"><a href="#cb4-103" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;skimr&quot;</span>)</span>
+<span id="cb4-104"><a href="#cb4-104" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;ggplot2&quot;</span>)</span>
+<span id="cb4-105"><a href="#cb4-105" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;stringr&quot;</span>)</span>
+<span id="cb4-106"><a href="#cb4-106" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-107"><a href="#cb4-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-110"><a href="#cb4-110" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb4-111"><a href="#cb4-111" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-outcomes</span></span>
+<span id="cb4-112"><a href="#cb4-112" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb4-113"><a href="#cb4-113" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb4-114"><a href="#cb4-114" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: &quot;Appearance of each test type, by financial year&quot;</span></span>
+<span id="cb4-115"><a href="#cb4-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-116"><a href="#cb4-116" aria-hidden="true" tabindex="-1"></a><span class="co"># list.files(here(&quot;data_raw&quot;))</span></span>
+<span id="cb4-117"><a href="#cb4-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-118"><a href="#cb4-118" aria-hidden="true" tabindex="-1"></a><span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">&quot;data_raw&quot;</span>, <span class="st">&quot;from_ncdr_mod_odds_ex_240924_preplot_outcome_counts.rds&quot;</span>)) <span class="sc">|&gt;</span> <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb4-119"><a href="#cb4-119" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(</span>
+<span id="cb4-120"><a href="#cb4-120" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(</span>
+<span id="cb4-121"><a href="#cb4-121" aria-hidden="true" tabindex="-1"></a>      <span class="fu">reorder</span>(<span class="fu">str_c</span>(name, <span class="st">&quot;_&quot;</span>, InvestigationDescription), value),</span>
+<span id="cb4-122"><a href="#cb4-122" aria-hidden="true" tabindex="-1"></a>      value<span class="sc">/</span><span class="dv">443275</span>,  <span class="co"># nrow(df_odds_invst),</span></span>
+<span id="cb4-123"><a href="#cb4-123" aria-hidden="true" tabindex="-1"></a>      <span class="at">fill =</span> fyear</span>
+<span id="cb4-124"><a href="#cb4-124" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb4-125"><a href="#cb4-125" aria-hidden="true" tabindex="-1"></a>    <span class="at">position =</span> <span class="st">&quot;dodge&quot;</span></span>
+<span id="cb4-126"><a href="#cb4-126" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">+</span></span>
+<span id="cb4-127"><a href="#cb4-127" aria-hidden="true" tabindex="-1"></a>  <span class="co"># scale_fill_manual(values = c())+</span></span>
+<span id="cb4-128"><a href="#cb4-128" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()<span class="sc">+</span> </span>
+<span id="cb4-129"><a href="#cb4-129" aria-hidden="true" tabindex="-1"></a>  <span class="co"># theme_bw()+ </span></span>
+<span id="cb4-130"><a href="#cb4-130" aria-hidden="true" tabindex="-1"></a>  <span class="co"># scale_y_continuous(labels = scales::comma)+</span></span>
+<span id="cb4-131"><a href="#cb4-131" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>percent, <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, .<span class="dv">26</span>))<span class="sc">+</span></span>
+<span id="cb4-132"><a href="#cb4-132" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>()<span class="sc">+</span></span>
+<span id="cb4-133"><a href="#cb4-133" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 1 IN 3000 CUTOFF WILL ENSURE ~ 1000 INSTANCES FOR 10% SAMPLE</span></span>
+<span id="cb4-134"><a href="#cb4-134" aria-hidden="true" tabindex="-1"></a>  <span class="co"># LINE IS AT 0.3% OF CASES:</span></span>
+<span id="cb4-135"><a href="#cb4-135" aria-hidden="true" tabindex="-1"></a>  <span class="co"># geom_hline(yintercept = 1/500, lty = &quot;dashed&quot;, alpha = 0.3)+</span></span>
+<span id="cb4-136"><a href="#cb4-136" aria-hidden="true" tabindex="-1"></a>  <span class="co"># geom_text(x = 33, y = .003, label = &quot;1/500&quot;, alpha = .1)+</span></span>
+<span id="cb4-137"><a href="#cb4-137" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">&quot;% of all attendances in the dataset&quot;</span>)<span class="sc">+</span></span>
+<span id="cb4-138"><a href="#cb4-138" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb4-139"><a href="#cb4-139" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title.y =</span> <span class="fu">element_blank</span>()</span>
+<span id="cb4-140"><a href="#cb4-140" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb4-141"><a href="#cb4-141" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-142"><a href="#cb4-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-143"><a href="#cb4-143" aria-hidden="true" tabindex="-1"></a><span class="fu"># Building the models</span></span>
+<span id="cb4-144"><a href="#cb4-144" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-145"><a href="#cb4-145" aria-hidden="true" tabindex="-1"></a>In the following examples, we will examine whether the odds of a patient receiving a **CT test** have changed between 2019/20 and 2023/24. We will employ a Generalised Additive Model (GAM) from the <span class="in">`mgcv`</span> package, using a sample of 10% of the data set (\~300k records).</span>
+<span id="cb4-146"><a href="#cb4-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-147"><a href="#cb4-147" aria-hidden="true" tabindex="-1"></a>For this first attempt at a model, Model 1, we will use *chief complaint group* (15 levels) together with the *injury flag* in our case-mix adjustment. We will exclude *attendance source* and *ethnic group,* which might ultimately contain useful information*.* (Note that we checked that we had no near-zero variance or highly correlated ( r <span class="sc">\&gt;</span> 0.7) predictors, both of which are undesirable when performing logistic regression.) The full model specification for Model 1 was:</span>
+<span id="cb4-148"><a href="#cb4-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-151"><a href="#cb4-151" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb4-152"><a href="#cb4-152" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb4-153"><a href="#cb4-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-154"><a href="#cb4-154" aria-hidden="true" tabindex="-1"></a>mgcv<span class="sc">::</span><span class="fu">gam</span>(</span>
+<span id="cb4-155"><a href="#cb4-155" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> invst_73 <span class="sc">~</span> fyear <span class="sc">+</span> </span>
+<span id="cb4-156"><a href="#cb4-156" aria-hidden="true" tabindex="-1"></a>    <span class="do">## DEMOGRAPHICS ######</span></span>
+<span id="cb4-157"><a href="#cb4-157" aria-hidden="true" tabindex="-1"></a>    <span class="fu">s</span>(age) <span class="sc">+</span> sex <span class="sc">+</span> imd_dec <span class="sc">+</span></span>
+<span id="cb4-158"><a href="#cb4-158" aria-hidden="true" tabindex="-1"></a>    <span class="do">## CASE-MIX-RELATED ##</span></span>
+<span id="cb4-159"><a href="#cb4-159" aria-hidden="true" tabindex="-1"></a>    arr_mode <span class="sc">+</span> acuity <span class="sc">+</span> chief_comp_grp <span class="sc">+</span> inj_flag <span class="sc">+</span> </span>
+<span id="cb4-160"><a href="#cb4-160" aria-hidden="true" tabindex="-1"></a>    <span class="do">## TIME-RELATED ######</span></span>
+<span id="cb4-161"><a href="#cb4-161" aria-hidden="true" tabindex="-1"></a>    month <span class="sc">+</span> wkday <span class="sc">+</span> hour,</span>
+<span id="cb4-162"><a href="#cb4-162" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>,</span>
+<span id="cb4-163"><a href="#cb4-163" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> demo_processed</span>
+<span id="cb4-164"><a href="#cb4-164" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb4-165"><a href="#cb4-165" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-166"><a href="#cb4-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-167"><a href="#cb4-167" aria-hidden="true" tabindex="-1"></a>We will also specify a second model, Model 2, in which we will replace chief complaint group with the (engineered) *chief complaint (description)*, which has 84 levels. This also makes the *injury flag* redundant. At the same time we will remove weekday and hour.</span>
+<span id="cb4-168"><a href="#cb4-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-171"><a href="#cb4-171" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb4-172"><a href="#cb4-172" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb4-173"><a href="#cb4-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-174"><a href="#cb4-174" aria-hidden="true" tabindex="-1"></a>mgcv<span class="sc">::</span><span class="fu">gam</span>(</span>
+<span id="cb4-175"><a href="#cb4-175" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> invst_73 <span class="sc">~</span> fyear <span class="sc">+</span> </span>
+<span id="cb4-176"><a href="#cb4-176" aria-hidden="true" tabindex="-1"></a>    <span class="do">## DEMOGRAPHICS ######</span></span>
+<span id="cb4-177"><a href="#cb4-177" aria-hidden="true" tabindex="-1"></a>    <span class="fu">s</span>(age) <span class="sc">+</span> sex <span class="sc">+</span> imd_dec <span class="sc">+</span></span>
+<span id="cb4-178"><a href="#cb4-178" aria-hidden="true" tabindex="-1"></a>    <span class="do">## CASE-MIX-RELATED ##</span></span>
+<span id="cb4-179"><a href="#cb4-179" aria-hidden="true" tabindex="-1"></a>    arr_mode <span class="sc">+</span> acuity <span class="sc">+</span> chief_comp_desc <span class="sc">+</span>  </span>
+<span id="cb4-180"><a href="#cb4-180" aria-hidden="true" tabindex="-1"></a>    <span class="do">## TIME-RELATED ######</span></span>
+<span id="cb4-181"><a href="#cb4-181" aria-hidden="true" tabindex="-1"></a>    month,</span>
+<span id="cb4-182"><a href="#cb4-182" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>,</span>
+<span id="cb4-183"><a href="#cb4-183" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> demo_processed</span>
+<span id="cb4-184"><a href="#cb4-184" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb4-185"><a href="#cb4-185" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-186"><a href="#cb4-186" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-187"><a href="#cb4-187" aria-hidden="true" tabindex="-1"></a><span class="fu"># Results</span></span>
+<span id="cb4-188"><a href="#cb4-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-189"><a href="#cb4-189" aria-hidden="true" tabindex="-1"></a>Model 1 and Model 2 had adjusted R squared values of 0.18 and 0.25, respectively. Model coefficients can be seen in the tabs below. Model 1 indicates that, having adjusted for case-mix, the odds of receiving a CT scan in 2023/24 were 1.78 times higher than the odds in 2019/20. For Model 2, the estimate was 1.77. In both cases, these coefficients were highly significant.</span>
+<span id="cb4-190"><a href="#cb4-190" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-191"><a href="#cb4-191" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb4-192"><a href="#cb4-192" aria-hidden="true" tabindex="-1"></a><span class="fu">## Model 1</span></span>
+<span id="cb4-193"><a href="#cb4-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-196"><a href="#cb4-196" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb4-197"><a href="#cb4-197" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb4-198"><a href="#cb4-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-199"><a href="#cb4-199" aria-hidden="true" tabindex="-1"></a><span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">&quot;data_raw&quot;</span>, <span class="st">&quot;from_ncdr_model_odds_ex_240925_broom_1.rds&quot;</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb4-200"><a href="#cb4-200" aria-hidden="true" tabindex="-1"></a>    <span class="fu">gt</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb4-201"><a href="#cb4-201" aria-hidden="true" tabindex="-1"></a>     <span class="fu">tab_options</span>(</span>
+<span id="cb4-202"><a href="#cb4-202" aria-hidden="true" tabindex="-1"></a>    <span class="at">data_row.padding =</span> <span class="fu">px</span>(<span class="dv">1</span>),</span>
+<span id="cb4-203"><a href="#cb4-203" aria-hidden="true" tabindex="-1"></a>       <span class="at">table.font.size =</span> <span class="st">&quot;small&quot;</span></span>
+<span id="cb4-204"><a href="#cb4-204" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-205"><a href="#cb4-205" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-206"><a href="#cb4-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-207"><a href="#cb4-207" aria-hidden="true" tabindex="-1"></a><span class="fu">## Model 2</span></span>
+<span id="cb4-208"><a href="#cb4-208" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-211"><a href="#cb4-211" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb4-212"><a href="#cb4-212" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb4-213"><a href="#cb4-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-214"><a href="#cb4-214" aria-hidden="true" tabindex="-1"></a><span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">&quot;data_raw&quot;</span>, <span class="st">&quot;from_ncdr_model_odds_ex_240925_broom_2.rds&quot;</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb4-215"><a href="#cb4-215" aria-hidden="true" tabindex="-1"></a>    <span class="fu">gt</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb4-216"><a href="#cb4-216" aria-hidden="true" tabindex="-1"></a>     <span class="fu">tab_options</span>(</span>
+<span id="cb4-217"><a href="#cb4-217" aria-hidden="true" tabindex="-1"></a>    <span class="at">data_row.padding =</span> <span class="fu">px</span>(<span class="dv">1</span>),</span>
+<span id="cb4-218"><a href="#cb4-218" aria-hidden="true" tabindex="-1"></a>       <span class="at">table.font.size =</span> <span class="st">&quot;small&quot;</span></span>
+<span id="cb4-219"><a href="#cb4-219" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-220"><a href="#cb4-220" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-221"><a href="#cb4-221" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb4-222"><a href="#cb4-222" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-223"><a href="#cb4-223" aria-hidden="true" tabindex="-1"></a><span class="fu">## Possible improvements</span></span>
+<span id="cb4-224"><a href="#cb4-224" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-225"><a href="#cb4-225" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Arrival source may contain useful information.</span>
+<span id="cb4-226"><a href="#cb4-226" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-227"><a href="#cb4-227" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Interactions? e.g. acuity may have a different effect on chances of test for each chief complaint. Age may have different effect on chances of test for each group of chief comp, arrival mode, acuity?</span>
+<span id="cb4-228"><a href="#cb4-228" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-229"><a href="#cb4-229" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>...?</span>
+<span id="cb4-230"><a href="#cb4-230" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-231"><a href="#cb4-231" aria-hidden="true" tabindex="-1"></a><span class="fu"># Other reflections</span></span>
+<span id="cb4-232"><a href="#cb4-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-233"><a href="#cb4-233" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>What size sample to use for these models? 500k?</span>
+<span id="cb4-234"><a href="#cb4-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-235"><a href="#cb4-235" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Stick with GAMs or try glmnet or something else?</span>
+<span id="cb4-236"><a href="#cb4-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-237"><a href="#cb4-237" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Do we wish to look at whether the odds of a patient receiving all types of test (aggregated) has changed in this time?</span>
+<span id="cb4-238"><a href="#cb4-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-239"><a href="#cb4-239" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Could be of interest to model likelihood of two or more tests of same type?</span>
+<span id="cb4-240"><a href="#cb4-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-241"><a href="#cb4-241" aria-hidden="true" tabindex="-1"></a><span class="fu"># Update following feedback (01 Oct)</span></span>
+<span id="cb4-242"><a href="#cb4-242" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-243"><a href="#cb4-243" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Reference level for *Chief Complaint* set as &quot;chest pain&quot;.</span>
+<span id="cb4-244"><a href="#cb4-244" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-245"><a href="#cb4-245" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Removed IMD - not significant and no change to coefficients</span>
+<span id="cb4-246"><a href="#cb4-246" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-247"><a href="#cb4-247" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Tried *is_winter* (months Dec to March). Seems useful.</span>
+<span id="cb4-248"><a href="#cb4-248" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-249"><a href="#cb4-249" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>On the other hand, *is_night* (tried a few different intervals) and *is_wkend* did not appear to be helpful.</span>
+<span id="cb4-250"><a href="#cb4-250" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-251"><a href="#cb4-251" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>TODO *procode* as random effect. Didn&#39;t have time to implement but quickly found <span class="co">[</span><span class="ot">this</span><span class="co">](https://r.qcbs.ca/workshop08/book-en/introduction-to-generalized-additive-mixed-models-gamms.html)</span> and <span class="co">[</span><span class="ot">this</span><span class="co">](https://fromthebottomoftheheap.net/2021/02/02/random-effects-in-gams/)</span>, which may or may not be helpful.</span>
+<span id="cb4-252"><a href="#cb4-252" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-253"><a href="#cb4-253" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>TODO Unadjusted model. Should be easy to do.</span>
+<span id="cb4-254"><a href="#cb4-254" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-255"><a href="#cb4-255" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>TODO larger sample size. 1 million?</span>
+<span id="cb4-256"><a href="#cb4-256" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-257"><a href="#cb4-257" aria-hidden="true" tabindex="-1"></a>So, current working model looks like:</span>
+<span id="cb4-258"><a href="#cb4-258" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-261"><a href="#cb4-261" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb4-262"><a href="#cb4-262" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb4-263"><a href="#cb4-263" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-264"><a href="#cb4-264" aria-hidden="true" tabindex="-1"></a> mgcv<span class="sc">::</span><span class="fu">gam</span>(</span>
+<span id="cb4-265"><a href="#cb4-265" aria-hidden="true" tabindex="-1"></a>      <span class="at">formula =</span> invst <span class="sc">~</span></span>
+<span id="cb4-266"><a href="#cb4-266" aria-hidden="true" tabindex="-1"></a>        <span class="co"># VAR OF INTEREST:</span></span>
+<span id="cb4-267"><a href="#cb4-267" aria-hidden="true" tabindex="-1"></a>        fyear <span class="sc">+</span></span>
+<span id="cb4-268"><a href="#cb4-268" aria-hidden="true" tabindex="-1"></a>        <span class="co"># DEMOGRAPHICS:</span></span>
+<span id="cb4-269"><a href="#cb4-269" aria-hidden="true" tabindex="-1"></a>        <span class="fu">s</span>(age) <span class="sc">+</span> sex <span class="sc">+</span> <span class="co"># imd_dec +</span></span>
+<span id="cb4-270"><a href="#cb4-270" aria-hidden="true" tabindex="-1"></a>        <span class="co"># CASE-MIX-RELATED:</span></span>
+<span id="cb4-271"><a href="#cb4-271" aria-hidden="true" tabindex="-1"></a>        arr_mode <span class="sc">+</span> acuity <span class="sc">+</span> chief_comp_desc <span class="sc">+</span></span>
+<span id="cb4-272"><a href="#cb4-272" aria-hidden="true" tabindex="-1"></a>        <span class="co"># TIME-RELATED:</span></span>
+<span id="cb4-273"><a href="#cb4-273" aria-hidden="true" tabindex="-1"></a>        is_winter <span class="sc">+</span></span>
+<span id="cb4-274"><a href="#cb4-274" aria-hidden="true" tabindex="-1"></a>        <span class="co"># PROVIDER (</span><span class="al">TODO</span><span class="co">: RANDOM EFFECT):</span></span>
+<span id="cb4-275"><a href="#cb4-275" aria-hidden="true" tabindex="-1"></a>        procode,</span>
+<span id="cb4-276"><a href="#cb4-276" aria-hidden="true" tabindex="-1"></a>      <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>,</span>
+<span id="cb4-277"><a href="#cb4-277" aria-hidden="true" tabindex="-1"></a>      <span class="at">data =</span> df</span>
+<span id="cb4-278"><a href="#cb4-278" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-279"><a href="#cb4-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-280"><a href="#cb4-280" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
