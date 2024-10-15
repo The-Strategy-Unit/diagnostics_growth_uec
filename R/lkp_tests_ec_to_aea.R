@@ -45,6 +45,7 @@ lkp_tests_ec_to_aea <- pared_provider_sample |>
   select(Der_EC_Investigation_All, Der_AEA_Investigation_All) |> 
   filter(str_length(Der_AEA_Investigation_All) == 2) |> 
   distinct(Der_AEA_Investigation_All, Der_EC_Investigation_All) |> 
+  add_row(Der_AEA_Investigation_All = "03", Der_EC_Investigation_All = "56027003") |> 
   arrange(Der_AEA_Investigation_All) |> 
   left_join(lkp_invst_aea, join_by(Der_AEA_Investigation_All == AEA_Investigation)) |> 
   left_join(lkp_invst, join_by(Der_EC_Investigation_All == InvestigationCode)) |> 
