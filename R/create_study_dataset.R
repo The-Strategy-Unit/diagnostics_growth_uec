@@ -63,12 +63,9 @@ gc()
 # 1. MASTER DF ------------------------------------------------------------
 # FOR ALL MODELLING EXERCISES
 
-pared_provider_sample <- raw_provider_sample |>
-  filter(is_march == 0) 
-
 ## a. data types ---------------------------------------------------------
 
-pared_provider_sample <- pared_provider_sample |> 
+provider_sample <- raw_provider_sample |> 
   mutate(inj_flag = as.factor(as.numeric(as.logical(inj_flag)))) |> 
   mutate(age = as.integer(age)) |> 
   mutate(across(
@@ -78,6 +75,6 @@ pared_provider_sample <- pared_provider_sample |>
   mutate(acuity = as.ordered(acuity)) 
 
 # TO SUMMARISE IN SKIM QUARTO:
-# pared_provider_sample |>
+# provider_sample |>
 #   skimr::skim() |> 
 #   saveRDS("from_ncdr_ecds_only_240924_skim.rds")
