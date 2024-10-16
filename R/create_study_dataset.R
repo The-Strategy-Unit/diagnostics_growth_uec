@@ -1,7 +1,7 @@
 # README
-# Pulls the provider sample from ecds_only table, removes march, 
-# and fixes data types. The resulting study data frame should serve
-# as the basis for all modelling work in the project. (NCDR)
+# Pulls the provider sample from ecds_only table and fixes data types. 
+# The resulting study data frame should serve as the basis for all 
+# modelling work in the project. (NCDR)
 
 library("DBI")
 library("here")
