@@ -72,7 +72,14 @@ provider_sample <- raw_provider_sample |>
     matches("fyear|att_|arr_mode|^disd|^acu|^chief|^inj|^sex|_grp|^imd|procode|lacd|region|lsoa"),
     ~ as.factor(.)
   )) |>
-  mutate(acuity = as.ordered(acuity)) 
+  mutate(acuity = as.ordered(acuity)) |>
+  # ADD ASSESSMENT TO CONCLUSION DURATION (AND FLAG FOR ANOMALIES):
+  mutate(dur_assess_concl = dur_arr_concl - as.numeric(difftime(dttm_arr, dttm_assess, units = "mins"))) |> 
+  mutate(flag_odd_time = if_else(dttm_arr > dttm_assess, 1, 0)) |> 
+  mutate(flag_odd_time = if_else(dur_assess_concl < 0, 1, flag_odd_time)) |>
+  # NOTE: WE MAY WANT TO BE EVEN MORE CONSERVATIVE HERE:
+  mutate(flag_odd_time = if_else(dur_arr_concl >= 96*60, 1, flag_odd_time))
+
 
 # TO SUMMARISE IN SKIM QUARTO:
 # provider_sample |>
