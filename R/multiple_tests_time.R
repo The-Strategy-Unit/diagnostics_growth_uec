@@ -368,3 +368,21 @@ df_multiple_tests |>
   labs(title = 'Median duration and number of tests by test type',
        subtitle = 'Selected providers | Apr19-Feb20 & Apr23-Feb24')
 
+
+
+
+# 6 explore unusual shape of curve (time vs number of tests) for admitted patients in 2023/24 --
+
+df_multiple_tests |> 
+  filter(disdest_grp == "admitted") |> 
+  #filter(is.na(inj_flag) | inj_flag == 0) |> 
+  #filter(inj_flag == 1) |> 
+  filter(n_tests_all == 2)  |> 
+  group_by(fyear, n_tests_Imaging) |> 
+  summarise(n = n()) |> 
+  mutate(p = n / sum(n))
+
+# of those admitted following 2 (and only 2 tests) in 2019/20 - only about a third (36.0%) had an imaging investigation
+# of those admitted following 2 (and only 2 tests) in 2023/24 - about two thirds (63.7%) had an imaging investigation
+# imaging takes longer than other tests
+  
