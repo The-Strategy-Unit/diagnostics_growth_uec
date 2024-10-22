@@ -73,12 +73,14 @@ provider_sample <- raw_provider_sample |>
     ~ as.factor(.)
   )) |>
   mutate(acuity = as.ordered(acuity)) |>
-  # ADD ASSESSMENT TO CONCLUSION DURATION (AND FLAG FOR ANOMALIES):
-  mutate(dur_assess_concl = dur_arr_concl - as.numeric(difftime(dttm_arr, dttm_assess, units = "mins"))) |> 
+  # (REMOVED DUE DQ) ADD ASSESSMENT TO CONCLUSION DURATION (AND FLAG FOR ANOMALIES):
+  # mutate(dur_assess_concl = dur_arr_concl - as.numeric(difftime(dttm_arr, dttm_assess, units = "mins"))) |> 
+  # REPLACE ABOVE WITH ASSESSMENT TO DEPARTURE DURATION:
+  mutate(dur_assess_depart = duration_ed - as.numeric(difftime(dttm_arr, dttm_assess, units = "mins"))) |> 
   mutate(flag_odd_time = if_else(dttm_arr > dttm_assess, 1, 0)) |> 
-  mutate(flag_odd_time = if_else(dur_assess_concl < 0, 1, flag_odd_time)) |>
+  mutate(flag_odd_time = if_else(dur_assess_depart < 0, 1, flag_odd_time)) |>
   # NOTE: WE MAY WANT TO BE EVEN MORE CONSERVATIVE HERE:
-  mutate(flag_odd_time = if_else(dur_arr_concl >= 96*60, 1, flag_odd_time))
+  mutate(flag_odd_time = if_else(dur_assess_depart >= 96*60, 1, flag_odd_time))
 
 
 # TO SUMMARISE IN SKIM QUARTO:
