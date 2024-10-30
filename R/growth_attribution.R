@@ -17,8 +17,9 @@
 # 3 establish change in attendances [dA]
 # 4 use this to derive demand growth [dD]
 # 5 predict tests in yr2, as if in yr1 (i.e. under practice conditions from yr1)
-#   use this and [dD] to derive casemix growth [dM]
-# 6 anything left is practice growth [dP]
+#   use this and [dD] to derive practice growth [dP]
+# 6 Solve equation for case-mix growth [dC]
+# 7 Calculate contribution of interaction terms [dI]
 
 # 0. SET UP ---------------------------------------------------------------
 
