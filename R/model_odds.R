@@ -1,5 +1,5 @@
 # README
-# Model odds of ED test 19/20 vs 23/24 (NCDR)
+# Model odds of ED test in 23/24 vs 19/20 (NCDR)
 
 # TODO POSSIBILITIES:
 # - WORTH LOOKING AT ODDS OF GETTING *ANY* TEST (REGARDLESS OF TYPE)?
@@ -10,6 +10,7 @@
 library("DBI")
 library("here")
 library("purrr")
+library("furrr") 
 library("arrow")
 library("dplyr")
 library("tidyr")
@@ -34,16 +35,10 @@ df_odds <- provider_sample |>
 
 # 2. MISSING VALUES - DELETE ---------------------------------------------------
 
-# df_odds |> 
-#   filter(is.na(chief_comp_desc) & !is.na(chief_comp)) |> 
-#   count(chief_comp, sort = T)
-#   count(is.na(chief_comp_grp), is.na(chief_comp_desc), is.na(chief_comp)) |> 
-#   mutate(p = n/sum(n))
-
 df_odds_na_rm <- df_odds |>
   filter(!is.na(acuity)) |>
   filter(!is.na(chief_comp_grp)) |>
-  # TODO COULD ASSUME NA IS NO INVESTIGATION? (I.E. IMPUTATION)
+  # ALTERNATIVELY, COULD ASSUME NA IS NO INVESTIGATION? (AND IMPUTE)
   filter(!is.na(Der_EC_Investigation_All)) |>
   filter(!is.na(age)) |>
   # NOT USING IN FINAL MODEL:
@@ -84,7 +79,7 @@ lkp_chief_comp_small <- df_odds_na_rm |>
   select(-c(chief_comp_grp, n))
 
 df_odds_fe1 <- df_odds_na_rm |> 
-# REPLACE CHIEF COMPLAINT WITH ENGINEERED VERSION:
+  # REPLACE CHIEF COMPLAINT WITH ENGINEERED VERSION:
   left_join(lkp_chief_comp_small, join_by(chief_comp_desc)) |>
   mutate(chief_comp_desc = if_else(
     !is.na(chief_comp_desc_small),
@@ -115,7 +110,7 @@ df_odds_fe2 <- df_odds_fe1 |>
   # SET REFERENCE LEVEL AS SELF-REFERRAL:
   mutate(refer_sorc = fct_relevel(refer_sorc, "self")) |> 
   select(-starts_with("att")) 
-  
+
 
 ## c. TIME-RELATED VARS ----------------------------------------------------
 
@@ -134,12 +129,18 @@ df_odds_fe3 <- df_odds_fe2 |>
 
 # 4. SAMPLE 35% (OR > 1 MILLION RECORDS) ------------------------
 
-# SHORTER MODEL RUN TIME FOR FASTER FEEDBACK
 set.seed(1822)
 df_odds_sample <- df_odds_fe3 |>
   slice_sample(prop = 0.35)
 
 gc()
+
+# # SHORTER MODEL RUN TIME FOR FASTER FEEDBACK
+# set.seed(1822)
+# df_odds_sample <- df_odds_fe3 |>
+#   slice_sample(prop = 0.17)
+ 
+# gc()
 
 # 5. OUTCOME VARIABLES ------------------------------------------
 
@@ -163,10 +164,11 @@ df_odds_invst <- list_invst_counts |>
   reduce(bind_cols) |>
   bind_cols(df_odds_sample, y = _)
 
+gc()
 
-## b. eda groups ----------------------------------------------------------------
-#
-# # FOR BINARY OUTCOME TEST/NOT:
+## ** b. eda groups ----------------------------------------------------------------
+
+# FOR BINARY OUTCOME TEST/NOT:
 # outcome_binary_counts <- df_odds_invst |>
 #   mutate(across(starts_with("invst_"), ~ if_else(. > 0 , 1, 0))) |>
 #   group_by(fyear) |>
@@ -177,7 +179,7 @@ df_odds_invst <- list_invst_counts |>
 #   mutate(name = as.numeric(str_remove_all(name, "invst_"))) |>
 #   right_join(lkp_invst, join_by(name == InvestigationKey)) |>
 #   mutate(InvestigationDescription = str_remove_all(InvestigationDescription, " \\(procedure\\)| \\(situation\\)"))
-#
+# 
 # vec_group_other <- outcome_binary_counts |>
 #   group_by(across(-c(fyear, value))) |>
 #   mutate(value = sum(value)) |>
@@ -191,7 +193,7 @@ df_odds_invst <- list_invst_counts |>
 #   pull(InvestigationCode)
 #
 #
-## c. * plot outcomes * -------------------------------------------------------------------
+## ** c. plot outcomes  -------------------------------------------------------------------
 #
 # preplot_outcome_counts <- outcome_binary_counts |>
 #   mutate(InvestigationDescription = case_when(
@@ -254,9 +256,14 @@ glimpse(df_prep_binary)
 
 # ~~~~~~~~~ -------------------------------------------------------------------
 
-# THE FUNCTIONAL PROGRAMMING FOR MULTIPLE MODELS ---------------------
+# 7. FUNCTIONAL PROGRAMMING SETUP (FOR MULTIPLE MODELS) ---------------------
+# FOUR MODELS RUN IN PARALLEL USING FURRR PACKAGE
+
 # (SINGLE MODEL ALSO DEMO'ED)
 
+# LOOK AT THE TOP 32 TESTS BY FREQUENCY 
+# (THERE COULD BE UP TO 4 "OTHER" GROUPS FOR LOW FREQ TESTS BASED ON THE
+# FOUR INVESTIGATION CLASSES WE MAY USE.)
 
 # CREATE DATA FRAME FOR FUNCTIONAL PROGRAMMING:
 # (TOP 10 TESTS BY APPEARANCE)
@@ -264,11 +271,12 @@ df1 <- df_prep_binary |>
   summarise(across(starts_with("invst_"), ~ sum(.))) |>
   pivot_longer(cols = everything()) |>
   arrange(-value) |>
-  # TOP 10 BY APPEARANCES:
-  slice(1:10) |>
+  mutate(id = row_number()) |> 
+  # X to Y (OF TOP Z) BY APPEARANCES:
+  slice(1:4) |>
   mutate(InvestigationKey = as.numeric(str_extract(name, "[:digit:]{2}"))) |>
   left_join(lkp_invst, join_by(InvestigationKey)) |>
-  select(name, value, InvestigationDescription) |> 
+  select(name, value, InvestigationDescription, id) |> 
   # REMOVE SUPERFLUOUS TEXT:
   mutate(InvestigationDescription = str_remove_all(InvestigationDescription, "[:punct:]")) |>
   mutate(InvestigationDescription = str_remove_all(InvestigationDescription, " procedure")) |> 
@@ -297,119 +305,122 @@ gc()
 df2
 
 
-## a1. demo for one simple model -----------------------------------------------
+## ** a1. demo for one simple model -----------------------------------------------
 # NOT TESTED:
 
-df2$data[[9]] # ROW 9 = CT. USE AS DATA ARGUMENT BELOW
+# df2$data[[9]] # ROW 9 = CT. USE AS DATA ARGUMENT BELOW
+# 
+# demo_model <- 
+#   mgcv::gam(
+#     formula = invst ~
+#       # VAR OF INTEREST:
+#       fyear +
+#       # DEMOGRAPHICS:
+#       s(age) + sex + # imd_dec +
+#       # CASE-MIX-RELATED:
+#       arr_mode + acuity + chief_comp_desc +
+#       # TIME-RELATED:
+#       is_winter +
+#       # PROVIDER (TODO: RANDOM EFFECT):
+#       procode,
+#     family = "binomial",
+#     data = df2$data[[9]]
+#   )
+# 
+# summary(demo_model)
+# 
+# demo_model |>
+#   broom::tidy(parametric = TRUE) |>
+#   mutate(odds = exp(estimate), .before = estimate) |>
+#   mutate(across(where(is.numeric), ~ round(., 4))) |>
+#   select(-std.error, statistic) |>
+#   mutate(sig = case_when(
+#     p.value < 0.05 & p.value > 0.01 ~ "*",
+#     p.value < 0.01 & p.value > 0.001 ~ "**",
+#     p.value < 0.001 ~ "***",
+#     T ~ ""
+#   )) |>
+#   view("ct_model_results")
+# 
+# df2$data[[9]] |>
+#   mutate(class_1 = predict(demo_model, newdata = df2$data[[9]], type = "response")) |> 
+#   select(invst, class_1) |> 
+#   mutate(class_0 = 1 - class_1, .before = class_1) |> 
+#   yardstick::roc_auc(invst, class_0)
+# 
+# df2$data[[9]] |>
+#   mutate(class_1 = predict(demo_model, newdata = df2$data[[9]], type = "response")) |> 
+#   select(invst, class_1) |> 
+#   mutate(class_0 = 1 - class_1, .before = class_1) |> 
+#   mutate(predicted = as.factor(if_else(class_1 >= 0.4, 1, 0))) |> 
+#   yardstick::metrics(invst, predicted)
 
-demo_model <- 
-  mgcv::gam(
-    formula = invst ~
-      # VAR OF INTEREST:
-      fyear +
-      # DEMOGRAPHICS:
-      s(age) + sex + # imd_dec +
-      # CASE-MIX-RELATED:
-      arr_mode + acuity + chief_comp_desc +
-      # TIME-RELATED:
-      is_winter +
-      # PROVIDER (TODO: RANDOM EFFECT):
-      procode,
-    family = "binomial",
-    data = df2$data[[9]]
-  )
 
-summary(demo_model)
-
-demo_model |>
-  broom::tidy(parametric = TRUE) |>
-  mutate(odds = exp(estimate), .before = estimate) |>
-  mutate(across(where(is.numeric), ~ round(., 4))) |>
-  select(-std.error, statistic) |>
-  mutate(sig = case_when(
-    p.value < 0.05 & p.value > 0.01 ~ "*",
-    p.value < 0.01 & p.value > 0.001 ~ "**",
-    p.value < 0.001 ~ "***",
-    T ~ ""
-  )) |>
-  view("ct_model_results")
-
-df2$data[[9]] |>
-  mutate(class_1 = predict(demo_model, newdata = df2$data[[9]], type = "response")) |> 
-  select(invst, class_1) |> 
-  mutate(class_0 = 1 - class_1, .before = class_1) |> 
-  yardstick::roc_auc(invst, class_0)
-
-df2$data[[9]] |>
-  mutate(class_1 = predict(demo_model, newdata = df2$data[[9]], type = "response")) |> 
-  select(invst, class_1) |> 
-  mutate(class_0 = 1 - class_1, .before = class_1) |> 
-  mutate(predicted = as.factor(if_else(class_1 >= 0.4, 1, 0))) |> 
-  yardstick::metrics(invst, predicted)
-
-
-## a2. demo for final model spec -----------------------------------------------
+## ** a2. demo with  final model spec -----------------------------------------------
 # NOT TESTED:
 
-df2$data[[9]] # ROW 9 = CT. USE AS DATA ARGUMENT BELOW
+# df2$data[[9]] # ROW 9 = CT. USE AS DATA ARGUMENT BELOW
+# 
+# tictoc::tic()
+# demo_model_v2 <- 
+#   mgcv::gam(
+#     formula = invst ~
+#       # VAR OF INTEREST:
+#       fyear +
+#       # DEMOGRAPHICS:
+#       s(age, by = sex) + sex + # imd_dec +
+#       # CASE-MIX-RELATED:
+#       arr_mode + acuity + chief_comp_desc + refer_sorc +
+#       # TIME-RELATED:
+#       is_winter + is_wkend + is_night +
+#       # PROVIDER (RANDOM INTERCEPT):
+#       s(procode, bs = "re"),
+#     family = "binomial",
+#     method = "REML",
+#     data = df2$data[[9]]
+#   )
+# tictoc::toc()
+# # ~40 mins
+# 
+# summary(demo_model_v2)
+# 
+# demo_model_v2 |>
+#   broom::tidy(parametric = TRUE) |>
+#   mutate(odds = exp(estimate), .before = estimate) |>
+#   mutate(across(where(is.numeric), ~ round(., 4))) |>
+#   select(-std.error, statistic) |>
+#   mutate(sig = case_when(
+#     p.value < 0.05 & p.value > 0.01 ~ "*",
+#     p.value < 0.01 & p.value > 0.001 ~ "**",
+#     p.value < 0.001 ~ "***",
+#     T ~ ""
+#   )) |>
+#   view("ct_model_results")
+# 
+# head(predict(demo_model_v2, newdata = df2$data[[9]], type = "response")) # ranefs on
+# head(predict(demo_model_v2, newdata = df2$data[[9]], exclude = "s(procode)", type = "response")) # ranefs off
+# 
+# df2$data[[9]] |>
+#   mutate(class_1 = predict(demo_model_v2, newdata = df2$data[[9]], type = "response")) |> 
+#   select(invst, class_1) |> 
+#   mutate(class_0 = 1 - class_1, .before = class_1) |> 
+#   yardstick::roc_auc(invst, class_0)
+# 
+# df2$data[[9]] |>
+#   mutate(class_1 = predict(demo_model_v2, newdata = df2$data[[9]], type = "response")) |> 
+#   select(invst, class_1) |> 
+#   mutate(class_0 = 1 - class_1, .before = class_1) |> 
+#   mutate(predicted = as.factor(if_else(class_1 >= 0.38, 1, 0))) |> 
+#   yardstick::metrics(invst, predicted)
+
+
+# 8. MODELS FOR TESTS X TO Y --------------------------------------------------------
+
+plan(multisession, workers = 4)
 
 tictoc::tic()
-demo_model_v2 <- 
-  mgcv::gam(
-    formula = invst ~
-      # VAR OF INTEREST:
-      fyear +
-      # DEMOGRAPHICS:
-      s(age, by = sex) + sex + # imd_dec +
-      # CASE-MIX-RELATED:
-      arr_mode + acuity + chief_comp_desc + refer_sorc +
-      # TIME-RELATED:
-      is_winter + is_wkend + is_night +
-      # PROVIDER (RANDOM INTERCEPT):
-      s(procode, bs = "re"),
-    family = "binomial",
-    method = "REML",
-    data = df2$data[[9]]
-  )
-tictoc::toc()
-# ~40 mins
-
-summary(demo_model_v2)
-
-demo_model_v2 |>
-  broom::tidy(parametric = TRUE) |>
-  mutate(odds = exp(estimate), .before = estimate) |>
-  mutate(across(where(is.numeric), ~ round(., 4))) |>
-  select(-std.error, statistic) |>
-  mutate(sig = case_when(
-    p.value < 0.05 & p.value > 0.01 ~ "*",
-    p.value < 0.01 & p.value > 0.001 ~ "**",
-    p.value < 0.001 ~ "***",
-    T ~ ""
-  )) |>
-  view("ct_model_results")
-
-head(predict(demo_model_v2, newdata = df2$data[[9]], type = "response")) # ranefs on
-head(predict(demo_model_v2, newdata = df2$data[[9]], exclude = "s(procode)", type = "response")) # ranefs off
-
-df2$data[[9]] |>
-  mutate(class_1 = predict(demo_model_v2, newdata = df2$data[[9]], type = "response")) |> 
-  select(invst, class_1) |> 
-  mutate(class_0 = 1 - class_1, .before = class_1) |> 
-  yardstick::roc_auc(invst, class_0)
-
-df2$data[[9]] |>
-  mutate(class_1 = predict(demo_model_v2, newdata = df2$data[[9]], type = "response")) |> 
-  select(invst, class_1) |> 
-  mutate(class_0 = 1 - class_1, .before = class_1) |> 
-  mutate(predicted = as.factor(if_else(class_1 >= 0.38, 1, 0))) |> 
-  yardstick::metrics(invst, predicted)
-  
-
-##  b. Models for 10 tests --------------------------------------------------------
-
 df3 <- df2 |>
-  mutate(model = map(data, function(df) {
+  mutate(model = future_map(data, function(df) {
     mgcv::gam(
       formula = invst ~
         # VAR OF INTEREST:
@@ -426,31 +437,13 @@ df3 <- df2 |>
       method = "REML",
       data = df
     )
-  }))
-# ON 1M RECORDS THIS CHUNK WILL TAKE ~ 40 MINS PER MODEL
-
-# df3 |>
-#   select(-data) |>
-#   saveRDS("from_ncdr_model_odds_ex_241002_top_10.rds")
+  })) 
+tictoc::toc()
 
 gc()
 
-# PLOT ODDS ---------------------------------------------------------------
+# 9. SAVE MODEL RESULTS -------------------------------------------------------------
 
-df3 |>
-  mutate(odds = map_dbl(model, function(df) {
-    df |>
-      broom::tidy(parametric = TRUE) |>
-      mutate(odds = exp(estimate), .before = estimate) |>
-      filter(term == "fyear2023/24") |>
-      pull(odds)
-  })) |> 
-  ggplot() +
-  geom_col(aes(reorder(InvestigationDescription, odds), odds)) +
-  theme_bw() +
-  theme_minimal() +
-  coord_flip() +
-  theme(
-    axis.title.y = element_blank(),
-    axis.text = element_text(size = 12)
-  )
+df3 %>% 
+  saveRDS(str_c("models_odds_top_", min(.$id), "to", max(.$id), ".rds"))
+
