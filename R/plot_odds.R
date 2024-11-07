@@ -15,8 +15,8 @@ library("lubridate")
 
 
 df_odds_results <- bind_rows(
-  readRDS(here("data", "from_ncdr_growth_attrb_v3_1to16.rds"))
-  # TODO BRING THROUGH 17-32
+  readRDS(here("data", "from_ncdr_growth_attrb_v3_1to16.rds")),
+  # readRDS(here("data", "from_ncdr_growth_attrb_v3_17to32.rds"))
 )
 
 # 1. SIMPLE BARS ----------------------------------------------------------
