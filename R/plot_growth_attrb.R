@@ -14,12 +14,12 @@ library("lubridate")
 
 # 1. LOAD DATA AND PREP ---------------------------------------------------
 
-df_growth_components <- bind_rows(
+df_odds_results <- bind_rows(
   readRDS(here("data", "from_ncdr_growth_attrb_v3_1to16.rds")),
   # readRDS(here("data", "from_ncdr_growth_attrb_v3_17to32.rds"))
 )
 
-df_preplot_growth_components <- df_growth_components |>
+df_preplot_growth_components <- df_odds_results |>
   mutate(d0 = 1, .before = dT) |>
   relocate(dC, .before = dP) |>
   pivot_longer(cols = matches("^d|^abs"), names_to = "component", values_to = "value") |>
