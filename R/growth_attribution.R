@@ -39,6 +39,8 @@ library("lubridate")
 
 # 1. LOAD DATA AND CREATE ODDS MODEL --------------------------------------------
 
+# PROBABLY BEST TO RUN SCRIPT IN TWO BATCHES. 
+# SO BATCH 1:
 tictoc::tic()
 df3 <- bind_rows(
   readRDS("models_odds_top_1to4.rds"),
@@ -47,8 +49,19 @@ df3 <- bind_rows(
   readRDS("models_odds_top_13to16.rds")
 ) 
 tictoc::toc()
-# ~90 SECONDS FOR 1 GB
+# ~90 SECONDS PER GB
 gc()
+
+# SECOND BATCH:
+# df3 <- bind_rows(
+#   readRDS("models_odds_top_17to20.rds"),
+#   readRDS("models_odds_top_21to28.rds"),
+#   readRDS("models_odds_top_29to32.rds")
+# ) 
+# tictoc::toc()
+# # ~90 SECONDS PER GB
+# gc()
+
 
 # 2. [dT] ESTABLISH ABSOLUTE GROWTH IN ATTENDANCES WITH (1 OR MORE) TEST t ------
 
