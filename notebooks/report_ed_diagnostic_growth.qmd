@@ -36,6 +36,8 @@ editor_options:
   chunk_output_type: console
 ---
 
+**Steven: I've focussed on the parts that probably could be more easily done by me. (This includes insertion of the graphics/tables but also happens to be the necessary, concrete, but unlikely-to-be-read parts - eg. Methods, limitations). I thought I'd leave you to edit the analysis text and the write more subjective parts (e.g. framing).**
+
 # Executive Summary
 
 Andrew Jackson's suggested/preferred/desired template:
@@ -57,23 +59,23 @@ In this report, we revisit.... / update selected analyses from these past report
 we seek answers to SIX questions:
 
 ::: {.callout-note appearance="minimal" icon="false"}
-## Questions Addressed in This Report:
+## Questions on diagnostic testing in EDs that we address in this report:
 
 <br>
 
-1.  How has the number of tests per ED attendance changed over time?
+1.  How has the number of tests per attendance changed over time?
 
-2.  Are patients more likely to receive tests in EDs today than they were in 2019/20?
+2.  Can the rise in test rates be explained by changes to casemix?
 
-3.  What is driving test growth in EDs?
+3.  What is driving growth in testing?
 
-    <!--(Is it changes to demand, case-mix, or practice?)  -->
+    <!--(Is it changes to demand, casemix, or practice?)  -->
 
-4.  How much time do tests add to a patient’s stay in an ED?
+4.  Does testing result in shorter attendances? add net increase How much time do tests add to a patient’s stay in an ED?
 
 5.  How does time in ED change according to the number of tests conducted?
 
-6.  How do tests in EDs influence decisions to admit?
+6.  How do tests influence decisions to admit?
 :::
 
 It is hoped that answers to these questions .... \[how do we wish to frame this?\]
@@ -84,7 +86,7 @@ A second phase of this project, for which findings are due in the spring of 2025
 
 The analyses we present here investigates the effect of diagnostic testing on major emergency (Type 1) departments. To address the questions above, we relied on SUS A&E and EC data sets. These are patient-level data sets...
 
-### The use of provider sampling
+### The use of provider sampling {#sec-approach-sampling}
 
 Whilst SUS A&E and EC data sets are relatively high-quality sources, we observed considerable variation in recording practices, both across the population of provider trusts and over time. If overlooked, this variation would adversely affect both the *reliability* and *validity* of our results. \[links to meanings?\]
 
@@ -104,9 +106,9 @@ A large sample of providers is more likely to be representative of the populatio
 
 Details of the sampling approaches, and measures of representation, and our on the trade-off above, can be found in Appendix 1.
 
-### Attendances examined {#sec-approach-attd}
+### Excluded attendances {#sec-approach-attd}
 
-For providers within our samples, we included all unplanned attendances of persons with a postcode in England. We excluded cases were a person left the ED before being treated, and persons streamed to other care services. In addition, we excluded cases where the patient died during an attendance and those where the patient was found to be dead on arrival at the ED.
+For providers within our samples, we looked at all unplanned attendances of persons with an English postcode. From this set, we excluded cases were a person left the ED before being treated, and persons streamed to other care services. In addition, we excluded cases where the patient died during an attendance and those where the patient was found to be dead on arrival at the ED.
 
 ### Question-specific approaches
 
@@ -138,26 +140,24 @@ e.g. Describe the pop attending EDs show the casemix in both years, age, condtio
 
 ## Q1. How has the number of tests per ED attendance changed over time?
 
-We start by looking at how the average number of tests per ED attendance changed over time. The analysis here covers a period of 12 years. Other summary details...?
-
 ::: {.callout-note collapse="true" appearance="minimal" icon="false"}
-# Q1: Methods and Limitations {style="size: 20"}
+### Q1: Methods and Limitations (click to expand)
 
-###### <br>Methods
+<br>**Methods**
 
-As this analysis covers a 12-year period, we had to employ both A&E and EC data sets.
+To be more precise, we estimated how the *average* number of tests per ED attendance has changed over time. As this analysis covers a period of 12 years - starting with the financial year 2012/13 and concluding with 2023/24 - we had to employ both A&E and EC data sets.
 
-We identified 28 providers with provider codes that survived across the 12 year study period and that passed our data quality criteria. See appendix...
+We identified 28 providers with provider codes that survived across the 12 year study period and that passed our data quality criteria. See @sec-appendix.
 
 The numerator for our "test rate" in a given year was the total number of tests performed across our provider sample. Where a patient received multiple tests of the same type, we counted these as multiple tests. The denominator for our "test rate" in a given year was the total number of ED attendances across our provider sample that matched the criteria given in @sec-approach-attd.
 
-###### Limitations
+**Limitations**
 
-Sample of 28. Providers who Multiple testing may not be consistent across providers or may multiple represent an error.
+Our aim is to make general statements about the effect of diagnostic testing on urgent and emergency care. Due to concerns over data quality, we employed sampling in this analysis. Our results come from 28 of 99 providers whose provider codes remained unchanged over the 12-year period. As the 28 providers were chosen on the basis of their data quality, this constitutes a non-random sample of providers. Study conclusions drawn from non-random samples are at higher risk of bias. As noted in @sec-approach-sampling, we attempted to mitigate the risk of bias by confirming that the sample was generally representative of the population of providers in various dimensions. It is, however, possible that we unknowingly omitted important dimensions for this particular question, and that our findings are less generalisable than we suggest.
 
-A&E and EC data sets (each of which has a slightly different structure).
+There are two additional points worth noting. Firstly, in order to complete this analysis, we were obliged to unite A&E and EC data sets, each of which has a slightly different structure. We used the A&E data set for financial years between 2012/13 and 2018/19 and the EC data set between 2019/20 and 2023/24. Whilst we attempted to ensure consistency across data sets, it may be that there are some differences
 
-Incompatibility of data sets -Did what we could to ensure consistency
+The second important point is that we included only those providers who appeared to record multiple instances of distinct investigations (and who appeared to have been consistent in this practice over the whole study period). It is, however, possible that these providers were internally inconsistent in recording practices over the period or that, in some cases, the recording of multiple tests of the same type represented an error. \[Could reference our data analysis here\]
 :::
 
 @fig-trend shows the change in test rates for the sample of 28 providers identified above. It appears that, overall (as shown in the left-hand panel), test rates doubled over the study period, from an average of 2 tests per attendance in 2012/13 to 4 tests per attendance in 2023/24.
@@ -216,17 +216,164 @@ df_preplot_trend |>
 If we want numerators/denoms, we'll need to reproduce the source object for the graph, which means going back to NCDR
 :::
 
-## Q2. Are patients more likely to receive tests today than they were in 2019/20?
+## Q2. Can the rise in test rates be explained by changes to casemix?
 
-How much more likely was a patient to receive a test in an ED in 2023/24 compared to 2019/20?
+Start off with some intro text from Diagnostics report 2023?
 
-Start off with some intro text from Diagnostics report 2023
+In order to answer this question, After adjusting for casemix, are patients more likely to receive tests in EDs today than they were in 2019/20?
 
-Are patients more likely to receive tests today than they were in 2019/20?
+we looked at whether patients are more likely to receive tests in EDs today than they were in 2019/20.
+
+Having adjusted for casemix, how much more likely it is that a patient will receive a test in an ED in 2023/24 compared to 2019/20?
+
+::: {.callout-note collapse="true" appearance="minimal" icon="false"}
+### Q2: Methods and Limitations (click to expand)
+
+<br>**Methods**
+
+To be precise, we estimated the casemix-adjusted odds of patient receiving a test in an ED in 2023/24, when compared to 2019/20.
+
+We used the SUS EC data set and identified 16 providers with provider codes that survived across the study period and that passed our data quality criteria for this question. For further details of our sampling approach see @sec-approach-sampling and @sec-appendix.
+
+We removed March from both 2019/20 and 2023/24, and deleted approximately 4% of the 3 million records that had missing values in a key field.
+
+We examined 32 test types in EC dataset which account for over 99% of all recorded tests in EDs.
+
+We built one model for each of these 32 tests. We ran each model on the same sample of 1 million attendances.
+
+Take text from presentations
+:::
+
+::: panel-tabset
+## Graphic<br>(Excl. serological testing)
+
+```{r}
+#| label: fig-odds-sans-sero
+#| echo: false
+##| fig-cap: "Having adjusted for casemix, how much more likely it is that a patient will receive a test in an ED in 2023/24 compared to 2019/20? Source: ECDS."
+#| message: false
+#| fig-align: center
+##| column: page
+#| fig-width: 8
+#| fig-asp: 0.618
+#| out-width: "90%"
+
+df_odds_results <- bind_rows(
+  readRDS(here("data", "from_ncdr_growth_attrb_v3_1to16.rds")),
+  readRDS(here("data", "from_ncdr_growth_attrb_v3_17to32.rds"))
+)
+
+df_odds_results |>
+  filter(InvestigationDescription != "Serologic test") |> 
+  ggplot() +
+  geom_hline(yintercept = 1, lty = "dashed", colour = "grey20") +
+  # geom_hline(yintercept = 2, lty = "dashed", colour = "grey20") +
+  geom_col(aes(reorder(InvestigationDescription, odds), odds), alpha = .8) +
+  theme_bw() +
+  theme_minimal() +
+  coord_flip() +
+  scale_y_continuous(
+    breaks = seq(0, 4, by = 1),
+    labels = c(
+      "",
+      # "0.5x\nas likely in\n2023/24",
+      "Equally\nas likely in\n2023/24",
+      # "1.5x\nas likely in\n2023/24",
+      "2x\nas likely in\n2023/24",
+      "3x\nas likely in\n2023/24",
+      "4x\nas likely in\n2023/24"
+      ),
+    position = "right"
+  ) +
+  theme(
+    axis.title.y = element_blank(),
+    plot.margin = margin(5, 20, 5, 5),
+    panel.grid.minor = element_blank()
+  ) +
+  labs(y = "Case-mix-adjusted odds ratio of test (2023/24 vs 2019/20)\n")
+
+```
+
+## Graphic<br>(Incl. serological testing)
+
+```{r}
+#| label: fig-odds
+#| echo: false
+##| fig-cap: "Having adjusted for casemix, how much more likely it is that a patient will receive a test in an ED in 2023/24 compared to 2019/20? Source: ECDS."
+#| message: false
+#| fig-align: center
+##| column: page
+#| fig-width: 8
+#| fig-asp: 0.618
+#| out-width: "90%"
+
+df_odds_results |>
+  # filter(InvestigationDescription != "Serologic test") |> 
+  ggplot() +
+  geom_hline(yintercept = 1, lty = "dashed", colour = "grey20") +
+  # geom_hline(yintercept = 2, lty = "dashed", colour = "grey20") +
+  geom_col(aes(reorder(InvestigationDescription, odds), odds), alpha = .8) +
+  theme_bw() +
+  theme_minimal() +
+  coord_flip() +
+  scale_y_continuous(
+    limits = c(0, 20),
+    breaks = seq(0, 20, by = 5),
+    labels = c(
+      "",
+      # "0.5x\nas likely in\n2023/24",
+      # "Equally\nas likely in\n2023/24",
+      # "1.5x\nas likely in\n2023/24",
+      "5x\nas likely in\n2023/24",
+      "10x\nas likely in\n2023/24",
+      "15x\nas likely in\n2023/24",
+      "20x\nas likely in\n2023/24"
+      ),
+    position = "right"
+  ) +
+  theme(
+    axis.title.y = element_blank(),
+    plot.margin = margin(5, 20, 5, 5),
+    panel.grid.minor = element_blank()
+  ) +
+  labs(y = "Case-mix-adjusted odds ratio of test (2023/24 vs 2019/20)\n")
+```
+
+## Table
+
+```{r}
+#| label: tab-odds
+#| echo: false
+##| fig-cap: "Having adjusted for casemix, how much more likely it is that a patient will receive a test in an ED in 2023/24 compared to 2019/20? Source: ECDS."
+#| message: false
+##| fig-align: center
+###| column: page
+##| fig-width: 8
+##| fig-asp: 0.618
+##| out-width: "90%"
+
+df_odds_results |>
+  select(InvestigationDescription, tests_2023_24, odds) |>
+  mutate(tests_2023_24 = as.integer(tests_2023_24)) |> 
+  gt() |>
+  cols_label(
+    InvestigationDescription = "Test name",
+    tests_2023_24 = "Tests in sample<br>2023/24",
+    odds = "Odds ratio of test (casemix adj.)<br>2023/24 vs. 2019/20", 
+        .fn = md
+  ) |> 
+  fmt_auto() |>
+  tab_options(
+    data_row.padding = px(1),
+    table.font.size = "small"
+  ) 
+
+```
+:::
 
 ## Q3. What is driving test growth in EDs?
 
-Q3. Is the growth in EDs being driven by changes to demand, case-mix, or practice?
+Q3. Is the growth in EDs being driven by changes to demand, casemix, or practice?
 
 ## Q4. How much time do tests add to a patient's stay in the ED?
 
@@ -238,7 +385,9 @@ More text here.
 
 # Discussion
 
-# Appendix 1
+# Appendix {#sec-appendix}
+
+Make all sections of the appendix collapsable?
 
 Sampling and SQL queries ? Collapsable?
 
@@ -262,7 +411,7 @@ We established that XX providers met these criteria. The providers we intend to 
 
 ## Sampling for Q2 (from ECDS DATA qual qmd)
 
-One solution to this problem may be to use other variables to understand case-mix (and may even be more valid measures). For example, the combination of *acuity* (composed of 5 levels) and Chief Complaint Group (15 groups) should allow us to account for differences in case-mix. Both variables have \<13% NULL values in both years when looking at the data set as a whole. The completion rates would likely improve further if we were to examine a subset of providers.
+One solution to this problem may be to use other variables to understand casemix (and may even be more valid measures). For example, the combination of *acuity* (composed of 5 levels) and Chief Complaint Group (15 groups) should allow us to account for differences in casemix. Both variables have \<13% NULL values in both years when looking at the data set as a whole. The completion rates would likely improve further if we were to examine a subset of providers.
 
 It is possible, then, that the quality of a provider’s submission of these two variables, along with *Der_EC_Investigation_All*, may determine whether we include the provider in our analyses. We will address this idea next.
 
