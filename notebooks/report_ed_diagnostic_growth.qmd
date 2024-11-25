@@ -42,21 +42,25 @@ editor_options:
 
 *I thought you'd be better placed to:*
 
-*- write/edit the analysis for each question as you see fit, and*
+*- write the analysis for questions I haven't completed / edit the existing text as you see fit, and*
 
-*- write/edit the more subjective parts (e.g. frame the Intro, Discussion, Exec Sum).*
+*- write/edit the more subjective parts (e.g. Discussion, Exec Sum, framing of the Intro).*
 
 *Note that the additional work you did on multiple tests, I've labelled as Q5. And what was formerly Q5 is now Q6.*
 
 # Executive Summary
 
-Andrew Jackson's preferred template:
+[**A - SW**]{.underline}
+
+Notes: Andrew Jackson's suggested/preferred template:
 
 Last time we said this, now we're saying this. (ie. where is the new work consistent with past work - where different.)
 
 \[He is intending to use this as further evidence to suggests that 4HR target is not appropriate\]
 
 # Introduction
+
+[**B - SW**]{.underline}
 
 Over the last decade, growth in diagnostic testing in emergency departments (EDs) has been rapid. Earlier analysis conducted by the Strategy Unit ([2019](https://www.strategyunitwm.nhs.uk/publications/waiting-times-and-attendance-durations-english-ae-departments), [2023](https://www.strategyunitwm.nhs.uk/sites/default/files/2023-05/MDSN%20Diagnostic_growth_report%20Apr2023.pdf)) suggests that this growth may have implications for the timeliness of patient care, for decisions on whether to admit a patient, and for crowding in EDs.
 
@@ -81,7 +85,7 @@ We seek answers to six questions:
 
     <!--(Is it changes to demand, casemix, or practice?)  -->
 
-4.  Does testing result in shorter attendances? / How much time do tests add to a patient’s ED attendance?
+4.  How much time do tests add to a patient’s attendance?
 
 5.  How does time in ED change according to the number of tests conducted?
 
@@ -93,6 +97,8 @@ It is hoped that answers to these questions .... \[how do we wish to frame this?
 <!--In the second phase of this project, for which findings are due in the spring of 2025, we will disregard the boundary between EDs and inpatient beds. And look at the impact of diagnostic growth on urgent and emergency care a inpatient beds. Rather than looking at the im... might ///Increased diagnostic testing means that patients spend less time in contact with hospital services, even ifpatients an increase in time in ED.///we measure the total time that patients spend in contact with hospital services, starting when they enter the UEC pathway.-->
 
 # Analytical Approach {#sec-approach}
+
+[**C- AJ**]{.underline}
 
 The analyses we present here investigate the consequences of increased diagnostic testing within major emergency (Type 1) departments. To address the questions above, we relied on SUS A&E and EC data sets.
 
@@ -155,6 +161,8 @@ library("lubridate")
 
 #### Perhaps some context - if time?
 
+**D - AJ/SW (depending on time available)**
+
 e.g. Describe the pop attending EDs show the casemix in both years, age, condtion... can't exclude all casemix effects
 
 ## Q1. How has the number of tests per ED attendance changed over time?
@@ -180,6 +188,8 @@ The second important point is that we included only those providers who appeared
 :::
 
 **Results**
+
+[**E - SW (to edit as necessary)**]{.underline}
 
 @fig-trend shows the change in test rates for the sample of 28 providers identified above. It appears that, overall (as shown in the left-hand panel), test rates doubled over the study period, from an average of 2 tests per attendance in 2012/13 to 4 tests per attendance in 2023/24.
 
@@ -239,6 +249,8 @@ If we want numerators/denoms, we'll need to reproduce the source object for the 
 
 ## Q2. Can the rise in test rates be explained by changes to casemix?
 
+[**F - SW (intro?)**]{.underline}
+
 <!--Start off with some intro text from Diagnostics report 2023?  -->
 
 <!--Previous work by the Strategy Unit suggests that people seeking medical attention in ED today are sicker than those arriving in the past. We addressed this question for 32.  To answer this question, we looked at whether patients are more likely to receive tests in EDs today than they were in 2019/20. After adjusting for casemix, are patients more likely to receive tests in EDs today than they were in 2019/20? . Having adjusted for casemix, how much more likely it is that a patient will receive a test in an ED in 2023/24 compared to 2019/20?  -->
@@ -283,7 +295,9 @@ ecided to delete records with missing values for any of the variables. This appr
 
 **Results**
 
-A description and analysis of the the graphic below.
+[**G - SW**]{.underline}
+
+A description and analysis of the the graphic(s) below.
 
 ::: panel-tabset
 ## Graphic<br>(Excl. serological testing)
@@ -458,6 +472,8 @@ df_odds_results |>
 
 ## Q3. What is driving test growth in EDs?
 
+[**H - SW (intro?)**]{.underline}
+
 Intro text: Is the growth in EDs being driven by changes to demand, casemix, or practice?
 
 ::: {.callout-note collapse="true" appearance="minimal" icon="false"}
@@ -474,21 +490,259 @@ Limitations here
 
 **Results**
 
+[**I - SW**]{.underline}
+
 A description and analysis of the the graphic below.
 
-/
+```{r}
+#| include: false
+
+df_preplot_growth_components <- df_odds_results |>
+  mutate(d0 = 1, .before = dT) |>
+  relocate(dC, .before = dP) |>
+  pivot_longer(cols = matches("^d|^abs"), names_to = "component", values_to = "value") |>
+  select(-tests_2023_24) |>
+  mutate(value_abs = tests_2019_20 * value) |>
+  mutate(value_order = if_else(component == "d0", value_abs, NA_real_)) |>
+  mutate(value = if_else(component == "d0", NA_real_, value)) |>
+  mutate(component = case_when(
+    component == "d0" ~ "Attds with test\n19/20",
+    component == "dT" ~ "Growth in attds with test\n19/20 to 23/24",
+    component == "dD" ~ "Growth driven by demand",
+    component == "dC" ~ "Growth driven by case-mix",
+    component == "dP" ~ "Growth driven by practice",
+    component == "dI" ~ "Growth due interactions",
+    T ~ NA_character_
+  )) |>
+  mutate(component = forcats::as_factor(component)) |>
+  mutate(value_abs = as.integer(value_abs)) |>
+  group_by(InvestigationDescription) |>
+  mutate(value_order = max(value_order, na.rm = T)) |>
+  ungroup() |>
+  mutate(value_abs = round(value_abs / 1000)) |>
+  mutate(value_label_abs = if_else(is.na(value), str_c(value_abs, "k"), NA_character_)) |>
+  mutate(value_label_p = if_else(value >= 0, str_c("+", round(value * 100), "%"), str_c(round(value * 100), "%")))
+
+
+```
+
+::: panel-tabset
+## Percentage differences
+
+```{r}
+#| label: fig-attrib-perc
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-align: center
+#| column: page
+#| fig-width: 8
+#| fig-height: 10
+#| out-width: "90%"
+
+# #| fig-asp: 0.618
+
+df_preplot_growth_components |>
+  ggplot(aes(reorder(InvestigationDescription, value_order), value_abs)) +
+  geom_col(
+    aes(
+      reorder(InvestigationDescription, value_order), value_abs,
+      fill = component
+    ),
+    position = "identity",
+    alpha = 0.4
+  ) +
+  geom_text(
+    aes(
+      label = value_label_abs,
+      vjust = ifelse(value_abs >= 0, -0.4, 1.4),
+      angle = 270
+    ),
+    size = 1.5,
+    colour = "grey20"
+  ) +
+  geom_text(
+    aes(
+      label = value_label_p,
+      vjust = ifelse(value_abs >= 0, -0.4, 1.4),
+      angle = 270
+    ),
+    size = 1.5,
+    colour = "grey20"
+  ) +
+  coord_flip() +
+  geom_hline(yintercept = 0, lty = "dashed") +
+  theme_minimal() +
+  theme(
+    axis.ticks = element_blank(),
+    axis.title.y = element_blank(),
+    legend.position = "none",
+    strip.text = element_text(size = 7),
+    axis.text = element_text(size = 5),
+    panel.grid.minor = element_blank(),
+    # panel.spacing = unit(1, "lines")
+  ) +
+  scale_y_continuous(
+    limits = c(-50, 250)
+  ) +
+  facet_wrap(vars(component), ncol = 6) +
+  labs(y = "\nED attendances (thousands)\nwith 1+ test of specified type")
+```
+
+## Absolute differences (for sample)
+
+```{r}
+#| label: fig-attrib-abs
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-align: center
+#| column: page
+#| fig-width: 8
+#| fig-height: 10
+#| out-width: "90%"
+
+# #| fig-asp: 0.618
+
+df_preplot_growth_components |>
+  mutate(value_label_abs = str_c(value_abs, "k")) |>
+  ggplot(aes(reorder(InvestigationDescription, value_order), value_abs)) +
+  geom_col(
+    aes(reorder(InvestigationDescription, value_order), value_abs, fill = component),
+    position = "identity",
+    alpha = 0.4
+  ) +
+  geom_text(
+    aes(
+      label = value_label_abs,
+      vjust = ifelse(value_abs >= 0, -0.4, 1.4),
+      angle = 270
+    ),
+    size = 1.8,
+    colour = "grey20"
+  ) +
+  coord_flip() +
+  geom_hline(yintercept = 0, lty = "dashed") +
+  theme_minimal() +
+  theme(
+    axis.ticks = element_blank(),
+    axis.title.y = element_blank(),
+    legend.position = "none",
+    strip.text = element_text(size = 7),
+    axis.text = element_text(size = 5),
+    panel.grid.minor = element_blank(),
+    # panel.spacing = unit(1, "lines")
+  ) +
+  scale_y_continuous(
+    limits = c(-50, 250)
+  ) +
+  facet_wrap(vars(component), ncol = 6) +
+  labs(y = "\nED attendances (thousands)\nwith 1+ test of specified type")
+
+
+```
+
+## Table
+
+To come.
+:::
 
 ## Q4. How much time do tests add to a patient's stay in the ED?
 
+[**J - AJ**]{.underline} **(work in progress)**
+
 How much (net) time does a test add to a patient’s stay in ED?
 
-## Q5. How do tests influence decisions to admit?
+## Q5. How does time in ED change according to the number of tests conducted?
 
-More text here.
+[**K - AJ (graphics) SW (text)**]{.underline}
+
+Text here.
+
+```{r}
+
+```
+
+## Q6. How do tests influence decisions to admit?
+
+[**L - SW (intro?)**]{.underline}
+
+[**M - SW (results)**]{.underline}
+
+```{r}
+#| label: fig-adm-decision
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-align: center
+#| column: page
+#| fig-width: 8
+#| fig-asp: 0.618
+#| out-width: "90%"
+
+tmp_admodds <-
+  readRDS(
+  here("data", "from_ncdr_241106_admission_odds.rds")
+  ) |> 
+  filter(str_detect(term, "^fyear2023/24:")) |>
+  # print(n=330)
+  mutate(term = str_remove_all(term,"/")) |>
+  mutate(term = str_remove(term,"fyear202324")) |> 
+  mutate(term = str_remove_all(term,":")) |>
+  mutate(term = str_sub(term, end = -2)) |> 
+  select(term, odds_adm = odds)
+  
+# list.files(here("data_raw"))
+  
+lkp_invst_ec_aea <- readRDS(here("data_raw", "lkp_test_ec_to_aea.rds"))
+
+df_odds_results |>
+      filter(InvestigationDescription != "Serologic test") |>
+  # NUMBER OF ATTENDANCES FROM ODDS MODEL DATA FRAME:
+  mutate(p = tests_2023_24 /0.566e6) |>
+  left_join(tmp_admodds, join_by(name == term)) |>
+  select(term = name, InvestigationDescription, odds, odds_adm, id, starts_with("tests"), p) |>
+  mutate(InvestigationKey = as.numeric(str_extract(term, "[:digit:]{2}"))) |>
+  left_join(
+    lkp_invst_ec_aea |> 
+      select(InvestigationKey, invst_group), 
+    join_by(InvestigationKey)
+  ) |> 
+  # count(invst_group) |> 
+  ggplot()+
+  geom_hline(yintercept = 1, lty = "dashed", alpha = 0.1)+ # col = "grey40")+
+  geom_vline(xintercept = 1, lty = "dashed", alpha = 0.1)+ # col = "grey40")+
+  geom_point(aes(odds, odds_adm, size = p), alpha = 0.3, stroke = NA)+
+  scale_size(labels = scales::percent_format())+
+  geom_text_repel(
+    aes(
+      odds, odds_adm,
+      label = str_wrap(InvestigationDescription, 20)
+      ),
+    size = 2,
+  ) +
+  facet_wrap(vars(invst_group))+
+  theme_bw()+
+  theme(
+    axis.ticks = element_blank(),
+    legend.title = element_text(size = 7),
+    legend.text = element_text(size = 7),
+    axis.title = element_text(size = 7)
+  )+
+  labs(
+    x = "\nCase-mix-adjusted odds of test (2023/24 vs 2019/20)",
+    y = "\nCase-mix-adjusted odds of admission having received test (2023/24 vs 2019/20)\n",
+    size = "Attendances\nwith test\n2023/24"
+  )
+```
 
 # Discussion
 
+[**N - SW**]{.underline}
+
 # Appendix {#sec-appendix}
+
+[**O - AJ**]{.underline}
 
 Make all sections of the appendix collapsable?
 
