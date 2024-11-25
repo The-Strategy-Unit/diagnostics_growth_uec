@@ -145,11 +145,12 @@ The computer code used to perform this analysis can be found a [GitHub repositor
 #| include: false
 
 library("gt")
-library("ggrepel")
 library("here")
 library("dplyr")
 library("tidyr")
+library("scales")
 library("forcats")
+library("ggrepel")
 # library("purrr")
 # library("readr")
 library("ggplot2")
@@ -655,13 +656,348 @@ How much (net) time does a test add to a patient’s stay in ED?
 
 ## Q5. How does time in ED change according to the number of tests conducted?
 
-[**K - AJ (graphics) SW (text)**]{.underline}
+[**K - SW (text)**]{.underline}
+
+**Results**
 
 Text here.
 
+::: panel-tabset
+## Tests per attendance
+
 ```{r}
+#| label: fig-tests-per-attd
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-align: center
+#| column: page
+#| fig-width: 8
+#| fig-asp: 0.618
+#| out-width: "90%"
+
+readRDS(here("data", "df_nested_preplots_multi_tests.rds"))$data[[1]] |>
+  ggplot() +
+  theme_bw() +
+  # theme_minimal() +
+  geom_vline(aes(xintercept = mean_tests, colour = fyear), linetype = "dashed") +
+  geom_line(aes(x = n_tests_all, y = p_patients, colour = fyear)) +
+  geom_point(aes(x = n_tests_all, y = p_patients, colour = fyear)) +
+  scale_y_continuous(
+    name = "Proportion of attendances",
+    label = label_percent(accuracy = 1)
+  ) +
+  scale_x_continuous(name = "Number of tests") +
+  labs(
+    # title = "Number of tests per attendance",
+    # subtitle = "Selected providers | Apr19-Feb20 & Apr23-Feb24",
+    caption = "Selected providers | Apr19-Feb20 & Apr23-Feb24\nDashed lines indicate mean number of tests"
+  )
+```
+
+## Tests per attendance<br>(Grouped)
+
+```{r}
+#| label: fig-grpd-tests-per-attd
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-align: center
+#| column: page
+#| fig-width: 8
+#| fig-asp: 0.618
+#| out-width: "90%"
+
+readRDS(here("data", "df_nested_preplots_multi_tests.rds"))$data[[2]] |>
+  ggplot() +
+  geom_col(
+    aes(fyear, p_patients_adj, fill = n_tests_all_grp),
+    position = position_stack()
+  ) +
+  geom_hline(aes(yintercept = 0), colour = "grey20", lty = "dashed") +
+  geom_text(aes(x = fyear, y = p_patients_adj, group = n_tests_all_grp, label = p_patients_label),
+    position = position_stack(vjust = 0.5)
+  ) +
+  scale_fill_manual(values = c("red", "orange", "yellow", "grey")) +
+  # scale_colour_manual(values = c("red", "orange", "yellow", "grey")) +
+  scale_y_continuous(
+    name = "Proportion of attendances",
+    label = label_percent(accuracy = 1)
+  ) +
+  scale_x_discrete(name = "Financial year") +
+  theme_minimal() +
+  theme(
+    legend.title = element_blank(),
+    panel.grid = element_blank(),
+    axis.text.y = element_blank()
+  ) +
+  labs(
+    # title = "Number of tests per attendance",
+    # subtitle = "Selected providers | Apr19-Feb20 & Apr23-Feb24", 
+    caption = "Selected providers | Apr19-Feb20 & Apr23-Feb24"
+  )
+```
+
+## Grouped by presentation and disposal
+
+```{r}
+#| label: fig-grpd-tests-per-attd-disp
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-align: center
+#| column: page
+#| fig-width: 8
+#| fig-asp: 0.618
+#| out-width: "90%"
+
+readRDS(here("data", "df_nested_preplots_multi_tests.rds"))$data[[3]] |>
+  ggplot() +
+  geom_col(aes(x = fyear, y = p_patients_adj, fill = n_tests_all_grp),
+    position = position_stack()
+  ) +
+  geom_hline(aes(yintercept = 0), colour = "grey20", lty = "dashed") +
+  geom_text(
+    aes(x = fyear, y = p_patients_adj, group = n_tests_all_grp, label = p_patients_label),
+    position = position_stack(vjust = 0.5),
+    size = 2
+  ) +
+  facet_grid(cols = vars(is_admitted), rows = vars(inj_illness)) +
+  scale_fill_manual(values = c("red", "orange", "yellow", "grey")) +
+  scale_y_continuous(
+    name = "Proportion of attendances",
+    label = label_percent(accuracy = 1)
+  ) +
+  scale_x_discrete(name = "Financial year") +
+  theme(legend.title = element_blank()) +
+  theme_minimal() +
+  theme(
+    legend.title = element_blank(),
+    panel.grid = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks = element_blank()
+  ) +
+  labs(
+    title = "Number of tests per patient by disposal and presentation type",
+    subtitle = "Selected providers | Apr19-Feb20 & Apr23-Feb24"
+  )
 
 ```
+
+## Grouped by test type
+
+```{r}
+#| label: fig-grpd-tests-per-attd-type
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-align: center
+#| column: page
+#| fig-width: 8
+#| fig-asp: 0.618
+#| out-width: "90%"
+
+readRDS(here("data", "df_nested_preplots_multi_tests.rds"))$data[[4]] |>
+  ggplot() +
+  geom_col(aes(x = fyear, y = p_patients_adj, fill = n_tests_grp),
+    position = position_stack()
+  ) +
+  geom_hline(aes(yintercept = 0), colour = "grey20", lty = "dashed") +
+  geom_text(aes(x = fyear, y = p_patients_adj, group = n_tests_grp, label = p_patients_label),
+    position = position_stack(vjust = 0.5)
+  ) +
+  facet_wrap(vars(test_type)) +
+  scale_fill_manual(values = c("orange", "yellow", "grey")) +
+  scale_y_continuous(
+    name = "Proportion of attendances",
+    # label = label_percent(accuracy = 1),
+    breaks = c(-0.5, -0.25, 0, 0.25, 0.5),
+    labels = c("50%", "25%", "0%", "25%", "50%")
+  ) +
+  scale_x_discrete(name = "Financial year") +
+  theme_bw() +
+  theme(
+    legend.title = element_blank(),
+    panel.grid = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks = element_blank()
+  ) +
+  labs(
+    title = "Number of tests per patient by test type",
+    subtitle = "Selected providers | Apr19-Feb20 & Apr23-Feb24"
+  )
+
+```
+
+## Median time vs. number of tests
+
+```{r}
+#| label: fig-time-vs-tests
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-align: center
+#| column: page
+#| fig-width: 8
+#| fig-asp: 0.618
+#| out-width: "90%"
+
+
+readRDS(here("data", "df_nested_preplots_multi_tests.rds"))$data[[5]] |>
+  ggplot() +
+  theme_minimal() +
+  theme(
+    axis.ticks = element_blank(),
+    panel.grid.minor.x = element_blank()
+  ) +
+  geom_line(aes(
+    x = n_tests_trunc,
+    y = median_dur_assess_depart,
+    colour = fyear
+  )) +
+  geom_point(aes(
+    x = n_tests_trunc,
+    y = median_dur_assess_depart,
+    colour = fyear,
+    size = n_patients
+  )) +
+  scale_y_continuous(
+    name = "Median time in ED (assessment to departure)",
+    limits = c(0, NA_real_)
+  ) +
+  scale_x_continuous(
+    name = "Number of tests",
+    limits = c(0, 12),
+    breaks = (0:12),
+    labels = c(
+      "0", "1", "2", "3", "4",
+      "5", "6", "7", "8", "9",
+      "10", "11", "12+"
+    )
+  ) +
+  scale_size_continuous(name = "Number of attendances") +
+  scale_colour_discrete(name = "Financial year") +
+  labs(
+    title = "Median time in ED by number of tests",
+    subtitle = "Selected providers | Apr19-Feb20 & Apr23-Feb24"
+  )
+
+```
+
+## Time by presentation and disposal
+
+```{r}
+#| label: fig-time-vs-tests-grp-disp
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-align: center
+#| column: page
+#| fig-width: 8
+#| fig-asp: 0.618
+#| out-width: "90%"
+
+readRDS(here("data", "df_nested_preplots_multi_tests.rds"))$data[[6]] |>
+  ggplot() +
+  # theme_minimal()+
+  theme_bw() +
+  theme(
+    axis.ticks = element_blank(),
+    panel.grid.minor.x = element_blank()
+  ) +
+  geom_line(aes(
+    x = n_tests_trunc,
+    y = median_dur_assess_depart,
+    colour = fyear
+  )) +
+  geom_point(aes(
+    x = n_tests_trunc,
+    y = median_dur_assess_depart,
+    colour = fyear,
+    size = n_patients
+  )) +
+  facet_grid(
+    cols = vars(is_admitted),
+    rows = vars(inj_illness)
+  ) +
+  scale_y_continuous(
+    name = "Median time in ED (assessment to departure)",
+    limits = c(0, NA_real_)
+  ) +
+  scale_x_continuous(
+    name = "Number of tests",
+    limits = c(0, 12),
+    breaks = (0:12),
+    labels = c(
+      "0", "1", "2", "3", "4",
+      "5", "6", "7", "8", "9",
+      "10", "11", "12+"
+    )
+  ) +
+  scale_size_continuous(name = "Number of attendances") +
+  scale_colour_discrete(name = "Financial year") +
+  labs(
+    title = "Median time in ED and number of tests by dispsosal and presentation type",
+    subtitle = "Selected providers | Apr19-Feb20 & Apr23-Feb24"
+  )
+
+```
+
+## Time by test type
+
+```{r}
+#| label: fig-time-vs-tests-grp-type
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-align: center
+#| column: page
+#| fig-width: 8
+#| fig-asp: 0.618
+#| out-width: "90%"
+
+readRDS(here("data", "df_nested_preplots_multi_tests.rds"))$data[[7]] |>
+  ggplot() +
+  theme_bw() +
+  theme(
+    axis.ticks = element_blank(),
+    panel.grid.minor.x = element_blank()
+  ) +
+  geom_line(aes(
+    x = n_tests_trunc,
+    y = median_dur_assess_depart,
+    colour = fyear
+  )) +
+  geom_point(aes(
+    x = n_tests_trunc,
+    y = median_dur_assess_depart,
+    colour = fyear,
+    size = n_patients
+  )) +
+  facet_wrap(vars(test_type)) +
+  scale_y_continuous(
+    name = "Median time in ED (assessment to departure)",
+    limits = c(0, NA_real_)
+  ) +
+  scale_x_continuous(
+    name = "Number of tests",
+    limits = c(0, 5),
+    breaks = (0:5),
+    labels = c(
+      "0", "1", "2", "3", "4",
+      "5+"
+    )
+  ) +
+  scale_size_continuous(name = "Number of attendances") +
+  scale_colour_discrete(name = "Financial year") +
+  labs(
+    title = "Median time and number of tests in ED by test type",
+    subtitle = "Selected providers | Apr19-Feb20 & Apr23-Feb24"
+  )
+
+
+```
+:::
 
 ## Q6. How do tests influence decisions to admit?
 
