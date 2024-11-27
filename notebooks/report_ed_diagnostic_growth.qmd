@@ -108,13 +108,9 @@ Whilst these are high-quality, patient-level sources, we observed considerable v
 
 To increase the chances that our findings would be reliable and valid for a given question, we conducted each analysis on data from a sample of providers. These provider samples were non-random: we included a provider in a sample if the quality of their data submissions met our requirements for the given question.
 
-Whilst we addressed six distinct questions, we were able to identify two different samples.
+Whilst we addressed six distinct questions, we were able to identify two different samples. We identified a sample of 28 providers with which we could address Question 1. A second sample, of 16 providers, could be used for the analysis of Questions 2 to 6.
 
-The same sample of 16 providers could be used for Questions 2 to 6.
-
-one sample of providers for Question 1 and another sample for Questions 2 to 6.
-
-Sampling should improve the reliability and validity of our results. However, we cannot make general statements about the effect of testing on EDs *unless* our sample of providers is *representative* of the population of providers. That is to say, the providers in our sample(s) and population should have similar characteristics.
+Whilst sampling should improve the reliability and validity of our results, we cannot make general statements about the effect of testing on EDs *unless* our sample of providers is *representative* of the population of providers. That is to say, the providers in our sample(s) and population should have similar characteristics.
 
 <!--With a representative sample, we can be more confident that our findings for the sample are also applicable to the population.-->
 
@@ -134,7 +130,7 @@ For providers within our samples, the analyses cover all unplanned attendances o
 
 Details of our approach to each distinct question can be found in the expandable "Methods and Limitations" boxes, in the corresponding subsections of the Analysis section, below.
 
-#### Reproducibility 
+#### Reproducibility
 
 The computer code used to perform this analysis can be found a [GitHub repository](https://github.com/The-Strategy-Unit/diagnostic_growth_uec).
 
@@ -166,10 +162,10 @@ library("lubridate")
 
 e.g. Describe the pop attending EDs show the casemix in both years, age, condtion... can't exclude all casemix effects
 
-## Q1. How has the number of tests per ED attendance changed over time?
+## A1. How has the number of tests per ED attendance changed over time?
 
-::: {.callout-note collapse="true" appearance="minimal" icon="false"}
-# Q1: Method and Limitations (click to unhide)
+::: {#nte-q1-meth .callout-note collapse="true" appearance="minimal" icon="false"}
+# A1: Method and Limitations (click to unhide)
 
 <br>**Method**
 
@@ -188,7 +184,7 @@ There are two additional points worth noting. Firstly, in order to complete this
 The second important point is that we included only those providers who appeared to record multiple instances of distinct investigations (and who appeared to have been consistent in this practice over the whole study period). It is, however, possible that these providers were internally inconsistent in recording practices over the period or that, in some cases, the recording of multiple tests of the same type represented an error. \[Could reference our data analysis here\]
 :::
 
-**Results**
+**Analysis 1: Results**
 
 [**E - SW (to edit as necessary)**]{.underline}
 
@@ -248,7 +244,7 @@ df_preplot_trend |>
 If we want numerators/denoms, we'll need to reproduce the source object for the graph, which means going back to NCDR
 :::
 
-## Q2. Can the rise in test rates be explained by changes to casemix?
+## A2. Can the rise in test rates be explained by changes to casemix?
 
 [**F - SW (intro?)**]{.underline}
 
@@ -256,8 +252,8 @@ If we want numerators/denoms, we'll need to reproduce the source object for the 
 
 <!--Previous work by the Strategy Unit suggests that people seeking medical attention in ED today are sicker than those arriving in the past. We addressed this question for 32.  To answer this question, we looked at whether patients are more likely to receive tests in EDs today than they were in 2019/20. After adjusting for casemix, are patients more likely to receive tests in EDs today than they were in 2019/20? . Having adjusted for casemix, how much more likely it is that a patient will receive a test in an ED in 2023/24 compared to 2019/20?  -->
 
-::: {.callout-note collapse="true" appearance="minimal" icon="false"}
-# Q2: Method and Limitations (click to unhide)
+::: {#nte-q2-meth .callout-note collapse="true" appearance="minimal" icon="false"}
+# A2: Method and Limitations (click to unhide)
 
 <br>**Method**
 
@@ -265,13 +261,15 @@ We estimated the casemix-adjusted odds of patient receiving a test in an ED in 2
 
 We used the SUS EC data set and identified 16 providers with provider codes that survived across the study period and that passed our data quality criteria for this question. For further details of our sampling approach and data quality criteria see @sec-approach-sampling and @sec-appendix.
 
-We built logistic regression models to predict casemix-adjusted odds ratios (as specified above) for 32 (of 49) test types that appear in the EC data set. These 32 tests account for over 99% of all recorded tests in EDs.
+We built 32 distinct models to predict casemix-adjusted odds ratios (as specified above) for 32 (of 49) test types that appear in the EC data set. These 32 tests account for over 99% of all recorded tests in EDs.
 
 In terms of data preparation, we removed March from both 2019/20 and 2023/24, to avoid any bias to our results that may have arisen due to the onset of the pandemic in March 2020.
 
 Approximately 4% of the 3 million records had missing values in a key field (our "key fields" are given in @sec-appendix). Our specified model type will not accept missing values, so we chose to delete the records with missing values in our key fields.
 
-All 32 models were specified in the same way, with the only difference being the binary dependent variable (whether the given test was carried out). We opted for generalised additive models (GAMs) with mixed-effects. Our fixed effects included the variable of interest, financial year. We included variables to adjust for casemix (as far as possible): *age* (as a spline-based smooth) interacting with *sex*; a re-engineered *chief complaint* variable; *acuity*; *arrival mode*; and *referral source*. We also included time-related variables to control for season, weekday, and time of arrival.
+We performed logistic regressions using generalised additive models (GAMs) with mixed-effects. All 32 models were specified in the same way, with the only difference being the binary dependent variable (whether the given test was carried out). Our fixed effects included the variable of interest, financial year, and several time-related variables to control for season, weekday, and time of arrival. We included variables to adjust for casemix (as far as possible): *age* (as a spline-based smooth) interacting with *sex*; a re-engineered *chief complaint* variable; *acuity*; *arrival mode*; and *referral source*.
+
+(It is important to note that the *chief complaint* and *acuity* variables are recorded as part of an initial assessement ([NHSE, 2022](https://www.england.nhs.uk/guidance-for-emergency-departments-initial-assessment/#:~:text=chief%20complaint%20or%20suspected%20diagnosis,initially%20assessed%20by%20a%20clinician)). They are akin to presentation codes. Whilst the diagnosis codes may give greater detail about a patient's condition, diagnosis is often a causal consequence of testing and it would therefore be inappropriate to use diagnosis-related information to predict whether a patient receives a given test.)
 
 We treated the provider variable as a random effect. This allowed us to control for factors that vary, at random, across providers. Moreover, the values produced by this random effect can be thought of as sample values from a larger population of values. As the providers in our data set were, in fact, a sample of all providers, this approach suits our case well.
 
@@ -279,22 +277,30 @@ We ran each model on the same sample of 1 million attendance records.
 
 **Limitations**
 
-Our findings are based on a sample of 16 providers (of 102 providers whose provider codes remained unchanged over the study period). Thus, our findings are subject to the same sampling-related limitations we identified in for Q1.
+The findings of this analysis are based on a sample of 16 providers (of 102 providers whose provider codes remained unchanged over the study period). These findings are therefore subject to the same sampling-related limitations we identified for Q1 (see @nte-q1-meth).
 
-We have termed our estimates as "casemix-adjusted". It is true to say that we controlled for several variables that might indicate a patient's need for a test. It is true to say this may only be a partial adjustment for casemix. Whilst we partially controlled for a patient’s condition (with, ,
+We have labelled our estimates as "casemix-adjusted" as we controlled for a range of variables that might indicate a patient's need for a test. However, the clinician who assesses a patient will have far more information on that patient's condition than we have access to.
 
-However,
+the fact th the fact that a clinician requested (or did not request) a test is likely to be indicative of a patient's condition and because we don't Because we don't have access to all the information used by the clinician, we can only partially control for casemix.
 
-we did not take into account the fact that a clinician requested (or did not request) a test.
+As we are missing, the fact that a clinician is likely to be indicative of a patient's condition. There may be many more variables that influence whether a test is given than we have access to. and the fact that a clinician requested (or did not request) a test, itself, is also likely to be indicative of a patient's condition. Because we are unable to control for unrecorded variables, we can only partially control for casemix, and it's possible that more (or less) of the change we've seen is due to casemix.
+
+when deciding whether or not to order a test for a patients, clinician
+
+We did not take into account the fact that a clinician requested (or did not request) a test. Because we are unable to control for these unrecorded variables, we cannot fully adjust our estimates for casemix, and our estimates may be biased. it's possible that more (or less) of the change we've seen is due to casemix.
+
+and whilst it is true to say that
+
+It is true to say this may only be a partial adjustment for casemix.
 
 Clinicians have information, when deciding whether to order a test for a patients. Because we are unable to control for these unrecorded variables, we cannot fully adjust our estimates for casemix, and our estimates may be biased. it's possible that more (or less) of the change we've seen is due to casemix.
 
 This information is also likely to be indicative of a patient’s condition. There is some that cannot be controlled for.
 
-ecided to delete records with missing values for any of the variables. This approach will reduce our sample size, increase the standard error of our model coefficients, and could feasibly bias these coefficients if the data are not missing completely at random. These risks may be mitigated (and our approach may be easier to justify) given that records have already been vetted for high levels of completeness. In any case, the table, below, shows the variables implicated.
+Finally, as noted in the Methods section, above, we decided to delete approximately 4% of records from our sample that had missing values for any of the variables used in the model. We expect this decision to have a limited impact on our results. However, as it reduced our sample size, the standard errors around our model coefficients have marginally increased as a consequence. There is also the potential for some bias in our results if these missing data were not missing completely at random.
 :::
 
-**Results**
+**Analysis 2: Results**
 
 [**G - SW**]{.underline}
 
@@ -471,25 +477,74 @@ df_odds_results |>
 ```
 :::
 
-## Q3. What is driving test growth in EDs?
+## A3. What is driving test growth in EDs?
 
 [**H - SW (intro?)**]{.underline}
 
 Intro text: Is the growth in EDs being driven by changes to demand, casemix, or practice?
 
 ::: {.callout-note collapse="true" appearance="minimal" icon="false"}
-# Q3: Method and Limitations (click to unhide)
+# A3: Method and Limitations (click to unhide)
 
 <br>**Method**
 
-Method here
+For each of the 32 tests covered in Q2, we set out to find the percentage growth in attendances with one or more test ($T$), as a function of the growth due to: changes in raw demand ($D$), changes in casemix ($C$), and changes driven by all other factors ($P$). (We expect $P$ to be dominated by the influence of clinical practice, but it may also contain other factors, such as the availability of resources.)
+
+Again, this analysis relies on the SUS EC data set and the 16 providers with provider codes that survived across the study period and that passed our data quality criteria for this question. For further details of our sampling approach and data quality criteria see @sec-approach-sampling and @sec-appendix.
+
+To address the question, we formulated a multiplicative model
+
+$1+T = (1+D)(1+C)(1+P)$ . \[1\]
+
+Expanding the right hand side and solving for $T$ we get:
+
+$T = D + C + [P+ DC + DP + CP + DCP]$ . \[2\]
+
+Thus, we are able to isolate the main effects for growth due changes in demand and casemix. The terms within the square brackets include the $P$ term and composite, or interaction, terms (which are in most cases likely to be negligible).
+
+We know that $T$ is,
+
+$T = t_{23/24}/t_{19/20} -1$ , \[3\]
+
+where $t$ is the number of attendances with one or more test in the specified financial year.
+
+We might also define $D$, independently, as,
+
+$D = a_{23/24}/a_{19/20} -1$ , \[4\]
+
+where $a$ is the number of attendances (both with and without a test) in the financial year.
+
+We then move to a calculation of $P$ which relies on predictions from our logistic regression models from Q2.
+
+We first create a counterfactual scenario in which the casemix in the target year is replaced by the casemix in the baseline year attended in the target year. If we compare this counterfactual scenario for In this case, both $D$ and $C$ will be equal to zero, and Equation 2 becomes:
+
+$T_{cf} = P$ . \[5\]
+
+where
+
+$T_{cf} = t_{23/34(cf)} / t_{19/20} -1$ . \[6\]
+
+We can find $T_{cf}$ using predictions from the logistic regression models produced in Analysis 2. If we edit our data so We use the applicable model to predict
+
+$t_{19/20}$ . (For our counterfactual scenario, $t_{23/34(cf)}$ , we make predictions having re-labelled the 2019/20 attendances as 2023/24 attendances.)
+
+First we used the regression model to
+
+We predicted the number of attendances with a test in the baseline year, divided by Then we predict the number of attendances with a test for a counterfactual scenario where the target year had the same casemix as the baseline year.
+
+Expanding this we get,
+:::
+
+::: {.callout-note collapse="true" appearance="minimal" icon="false"}
 
 **Limitations**
 
-Limitations here
+The findings of this analysis are based on a sample of 16 providers (of 102 providers whose provider codes remained unchanged over the study period). These findings are therefore subject to the same sampling-related limitations we identified for Q1 (see @nte-q1-meth).
+
+Moreover, the analysis relies on the logistic regression models we built for Q2, hence the limitations we acknowledged in that analysis (see @nte-q2-meth) also apply here.
 :::
 
-**Results**
+**Analysis 3: Results**
 
 [**I - SW**]{.underline}
 
@@ -662,174 +717,7 @@ How much (net) time does a test add to a patient’s stay in ED?
 
 Text here.
 
-::: panel-tabset
-## Tests per attendance
-
-```{r}
-#| label: fig-tests-per-attd
-#| echo: false
-#| message: false
-#| warning: false
-#| fig-align: center
-#| column: page
-#| fig-width: 8
-#| fig-asp: 0.618
-#| out-width: "90%"
-
-readRDS(here("data", "df_nested_preplots_multi_tests.rds"))$data[[1]] |>
-  ggplot() +
-  theme_bw() +
-  # theme_minimal() +
-  geom_vline(aes(xintercept = mean_tests, colour = fyear), linetype = "dashed") +
-  geom_line(aes(x = n_tests_all, y = p_patients, colour = fyear)) +
-  geom_point(aes(x = n_tests_all, y = p_patients, colour = fyear)) +
-  scale_y_continuous(
-    name = "Proportion of attendances",
-    label = label_percent(accuracy = 1)
-  ) +
-  scale_x_continuous(name = "Number of tests") +
-  labs(
-    # title = "Number of tests per attendance",
-    # subtitle = "Selected providers | Apr19-Feb20 & Apr23-Feb24",
-    caption = "Selected providers | Apr19-Feb20 & Apr23-Feb24\nDashed lines indicate mean number of tests"
-  )
-```
-
-## Tests per attendance<br>(Grouped)
-
-```{r}
-#| label: fig-grpd-tests-per-attd
-#| echo: false
-#| message: false
-#| warning: false
-#| fig-align: center
-#| column: page
-#| fig-width: 8
-#| fig-asp: 0.618
-#| out-width: "90%"
-
-readRDS(here("data", "df_nested_preplots_multi_tests.rds"))$data[[2]] |>
-  ggplot() +
-  geom_col(
-    aes(fyear, p_patients_adj, fill = n_tests_all_grp),
-    position = position_stack()
-  ) +
-  geom_hline(aes(yintercept = 0), colour = "grey20", lty = "dashed") +
-  geom_text(aes(x = fyear, y = p_patients_adj, group = n_tests_all_grp, label = p_patients_label),
-    position = position_stack(vjust = 0.5)
-  ) +
-  scale_fill_manual(values = c("red", "orange", "yellow", "grey")) +
-  # scale_colour_manual(values = c("red", "orange", "yellow", "grey")) +
-  scale_y_continuous(
-    name = "Proportion of attendances",
-    label = label_percent(accuracy = 1)
-  ) +
-  scale_x_discrete(name = "Financial year") +
-  theme_minimal() +
-  theme(
-    legend.title = element_blank(),
-    panel.grid = element_blank(),
-    axis.text.y = element_blank()
-  ) +
-  labs(
-    # title = "Number of tests per attendance",
-    # subtitle = "Selected providers | Apr19-Feb20 & Apr23-Feb24", 
-    caption = "Selected providers | Apr19-Feb20 & Apr23-Feb24"
-  )
-```
-
-## Grouped by presentation and disposal
-
-```{r}
-#| label: fig-grpd-tests-per-attd-disp
-#| echo: false
-#| message: false
-#| warning: false
-#| fig-align: center
-#| column: page
-#| fig-width: 8
-#| fig-asp: 0.618
-#| out-width: "90%"
-
-readRDS(here("data", "df_nested_preplots_multi_tests.rds"))$data[[3]] |>
-  ggplot() +
-  geom_col(aes(x = fyear, y = p_patients_adj, fill = n_tests_all_grp),
-    position = position_stack()
-  ) +
-  geom_hline(aes(yintercept = 0), colour = "grey20", lty = "dashed") +
-  geom_text(
-    aes(x = fyear, y = p_patients_adj, group = n_tests_all_grp, label = p_patients_label),
-    position = position_stack(vjust = 0.5),
-    size = 2
-  ) +
-  facet_grid(cols = vars(is_admitted), rows = vars(inj_illness)) +
-  scale_fill_manual(values = c("red", "orange", "yellow", "grey")) +
-  scale_y_continuous(
-    name = "Proportion of attendances",
-    label = label_percent(accuracy = 1)
-  ) +
-  scale_x_discrete(name = "Financial year") +
-  theme(legend.title = element_blank()) +
-  theme_minimal() +
-  theme(
-    legend.title = element_blank(),
-    panel.grid = element_blank(),
-    axis.text.y = element_blank(),
-    axis.ticks = element_blank()
-  ) +
-  labs(
-    title = "Number of tests per patient by disposal and presentation type",
-    subtitle = "Selected providers | Apr19-Feb20 & Apr23-Feb24"
-  )
-
-```
-
-## Grouped by test type
-
-```{r}
-#| label: fig-grpd-tests-per-attd-type
-#| echo: false
-#| message: false
-#| warning: false
-#| fig-align: center
-#| column: page
-#| fig-width: 8
-#| fig-asp: 0.618
-#| out-width: "90%"
-
-readRDS(here("data", "df_nested_preplots_multi_tests.rds"))$data[[4]] |>
-  ggplot() +
-  geom_col(aes(x = fyear, y = p_patients_adj, fill = n_tests_grp),
-    position = position_stack()
-  ) +
-  geom_hline(aes(yintercept = 0), colour = "grey20", lty = "dashed") +
-  geom_text(aes(x = fyear, y = p_patients_adj, group = n_tests_grp, label = p_patients_label),
-    position = position_stack(vjust = 0.5)
-  ) +
-  facet_wrap(vars(test_type)) +
-  scale_fill_manual(values = c("orange", "yellow", "grey")) +
-  scale_y_continuous(
-    name = "Proportion of attendances",
-    # label = label_percent(accuracy = 1),
-    breaks = c(-0.5, -0.25, 0, 0.25, 0.5),
-    labels = c("50%", "25%", "0%", "25%", "50%")
-  ) +
-  scale_x_discrete(name = "Financial year") +
-  theme_bw() +
-  theme(
-    legend.title = element_blank(),
-    panel.grid = element_blank(),
-    axis.text.y = element_blank(),
-    axis.ticks = element_blank()
-  ) +
-  labs(
-    title = "Number of tests per patient by test type",
-    subtitle = "Selected providers | Apr19-Feb20 & Apr23-Feb24"
-  )
-
-```
-
-## Median time vs. number of tests
+**Median time vs. number of tests**
 
 ```{r}
 #| label: fig-time-vs-tests
@@ -884,118 +772,48 @@ readRDS(here("data", "df_nested_preplots_multi_tests.rds"))$data[[5]] |>
 
 ```
 
-## Time by presentation and disposal
+::: panel-tabset
+## 
 
 ```{r}
-#| label: fig-time-vs-tests-grp-disp
-#| echo: false
-#| message: false
-#| warning: false
-#| fig-align: center
-#| column: page
-#| fig-width: 8
-#| fig-asp: 0.618
-#| out-width: "90%"
-
-readRDS(here("data", "df_nested_preplots_multi_tests.rds"))$data[[6]] |>
-  ggplot() +
-  # theme_minimal()+
-  theme_bw() +
-  theme(
-    axis.ticks = element_blank(),
-    panel.grid.minor.x = element_blank()
-  ) +
-  geom_line(aes(
-    x = n_tests_trunc,
-    y = median_dur_assess_depart,
-    colour = fyear
-  )) +
-  geom_point(aes(
-    x = n_tests_trunc,
-    y = median_dur_assess_depart,
-    colour = fyear,
-    size = n_patients
-  )) +
-  facet_grid(
-    cols = vars(is_admitted),
-    rows = vars(inj_illness)
-  ) +
-  scale_y_continuous(
-    name = "Median time in ED (assessment to departure)",
-    limits = c(0, NA_real_)
-  ) +
-  scale_x_continuous(
-    name = "Number of tests",
-    limits = c(0, 12),
-    breaks = (0:12),
-    labels = c(
-      "0", "1", "2", "3", "4",
-      "5", "6", "7", "8", "9",
-      "10", "11", "12+"
-    )
-  ) +
-  scale_size_continuous(name = "Number of attendances") +
-  scale_colour_discrete(name = "Financial year") +
-  labs(
-    title = "Median time in ED and number of tests by dispsosal and presentation type",
-    subtitle = "Selected providers | Apr19-Feb20 & Apr23-Feb24"
-  )
 
 ```
 
-## Time by test type
+## 
 
 ```{r}
-#| label: fig-time-vs-tests-grp-type
-#| echo: false
-#| message: false
-#| warning: false
-#| fig-align: center
-#| column: page
-#| fig-width: 8
-#| fig-asp: 0.618
-#| out-width: "90%"
 
-readRDS(here("data", "df_nested_preplots_multi_tests.rds"))$data[[7]] |>
-  ggplot() +
-  theme_bw() +
-  theme(
-    axis.ticks = element_blank(),
-    panel.grid.minor.x = element_blank()
-  ) +
-  geom_line(aes(
-    x = n_tests_trunc,
-    y = median_dur_assess_depart,
-    colour = fyear
-  )) +
-  geom_point(aes(
-    x = n_tests_trunc,
-    y = median_dur_assess_depart,
-    colour = fyear,
-    size = n_patients
-  )) +
-  facet_wrap(vars(test_type)) +
-  scale_y_continuous(
-    name = "Median time in ED (assessment to departure)",
-    limits = c(0, NA_real_)
-  ) +
-  scale_x_continuous(
-    name = "Number of tests",
-    limits = c(0, 5),
-    breaks = (0:5),
-    labels = c(
-      "0", "1", "2", "3", "4",
-      "5+"
-    )
-  ) +
-  scale_size_continuous(name = "Number of attendances") +
-  scale_colour_discrete(name = "Financial year") +
-  labs(
-    title = "Median time and number of tests in ED by test type",
-    subtitle = "Selected providers | Apr19-Feb20 & Apr23-Feb24"
-  )
+```
+
+## 
+
+```{r}
 
 
+```
+
+## 
+
+```{r}
+
+
+```
+
+## 
+
+```{r}
+
+```
+
+## 
+
+```{r}
+
+```
+
+## 
+
+```{}
 ```
 :::
 
@@ -1076,7 +894,9 @@ df_odds_results |>
 
 [**N - SW**]{.underline}
 
-# Appendix {#sec-appendix}
+# Possible Further Research
+
+# Appendix 1 {#sec-appendix}
 
 [**O - AJ**]{.underline}
 
@@ -1115,3 +935,236 @@ we deduce that 16 providers can claim to have **all 3 fields** **complete** for 
 We identified 102 providers with provider codes that were present in the two years of interest and that, in addition, passed basic data quality checks. These providers will represent the total population of providers that we might have used for our analyses. Given the data quality issues, we have selected a sample of providers to improve the reliability and validity of our results. However, since we wish to make general statements about about the effect of diagnostic testing on urgent and emergency care, we must ensure that our samples are representative of the population of providers.
 
 More deprived, and older population, with more arrivals by ambulance results in more admissions. We will control for all of these factors - what difference does this make…?
+
+# Appendix 2
+
+::: {.callout-note collapse="true" appearance="minimal" icon="false"}
+# Graphics (click to unhide)
+
+**Tests per attendance**
+
+```{r}
+#| label: fig-tests-per-attd
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-align: center
+#| column: page
+#| fig-width: 8
+#| fig-asp: 0.618
+#| out-width: "90%"
+
+readRDS(here("data", "df_nested_preplots_multi_tests.rds"))$data[[1]] |>
+  ggplot() +
+  theme_bw() +
+  # theme_minimal() +
+  geom_vline(aes(xintercept = mean_tests, colour = fyear), linetype = "dashed") +
+  geom_line(aes(x = n_tests_all, y = p_patients, colour = fyear)) +
+  geom_point(aes(x = n_tests_all, y = p_patients, colour = fyear)) +
+  scale_y_continuous(
+    name = "Proportion of attendances",
+    label = label_percent(accuracy = 1)
+  ) +
+  scale_x_continuous(name = "Number of tests") +
+  labs(
+    # title = "Number of tests per attendance",
+    # subtitle = "Selected providers | Apr19-Feb20 & Apr23-Feb24",
+    caption = "Selected providers | Apr19-Feb20 & Apr23-Feb24\nDashed lines indicate mean number of tests"
+  )
+```
+
+**Tests per attendance (grouped)**
+
+```{r}
+#| label: fig-grpd-tests-per-attd
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-align: center
+#| column: page
+#| fig-width: 8
+#| fig-asp: 0.618
+#| out-width: "90%"
+
+readRDS(here("data", "df_nested_preplots_multi_tests.rds"))$data[[2]] |>
+  ggplot() +
+  geom_col(
+    aes(fyear, p_patients_adj, fill = n_tests_all_grp),
+    position = position_stack()
+  ) +
+  geom_hline(aes(yintercept = 0), colour = "grey20", lty = "dashed") +
+  geom_text(aes(x = fyear, y = p_patients_adj, group = n_tests_all_grp, label = p_patients_label),
+    position = position_stack(vjust = 0.5)
+  ) +
+  # scale_fill_manual(values = c("red", "orange", "yellow", "grey")) +
+  # scale_colour_manual(values = c("red", "orange", "yellow", "grey")) +
+  scale_y_continuous(
+    name = "Proportion of attendances",
+    label = label_percent(accuracy = 1)
+  ) +
+  scale_x_discrete(name = "Financial year") +
+  theme_minimal() +
+  theme(
+    legend.title = element_blank(),
+    panel.grid = element_blank(),
+    axis.text.y = element_blank()
+  ) +
+  labs(
+    # title = "Number of tests per attendance",
+    # subtitle = "Selected providers | Apr19-Feb20 & Apr23-Feb24", 
+    caption = "Selected providers | Apr19-Feb20 & Apr23-Feb24"
+  )
+```
+
+### Grouped by presentation and disposal
+
+```{r}
+#| label: fig-grpd-tests-per-attd-disp
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-align: center
+#| column: page
+#| fig-width: 8
+#| fig-asp: 0.618
+#| out-width: "90%"
+
+readRDS(here("data", "df_nested_preplots_multi_tests.rds"))$data[[3]] |>
+  ggplot() +
+  geom_col(aes(x = fyear, y = p_patients_adj, fill = n_tests_all_grp),
+    position = position_stack()
+  ) +
+  geom_hline(aes(yintercept = 0), colour = "grey20", lty = "dashed") +
+  geom_text(
+    aes(x = fyear, y = p_patients_adj, group = n_tests_all_grp, label = p_patients_label),
+    position = position_stack(vjust = 0.5),
+    size = 2
+  ) +
+  facet_grid(cols = vars(is_admitted), rows = vars(inj_illness)) +
+  scale_fill_manual(values = c("red", "orange", "yellow", "grey")) +
+  scale_y_continuous(
+    name = "Proportion of attendances",
+    label = label_percent(accuracy = 1)
+  ) +
+  scale_x_discrete(name = "Financial year") +
+  theme(legend.title = element_blank()) +
+  theme_minimal() +
+  theme(
+    legend.title = element_blank(),
+    panel.grid = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks = element_blank()
+  ) +
+  labs(
+    title = "Number of tests per patient by disposal and presentation type",
+    subtitle = "Selected providers | Apr19-Feb20 & Apr23-Feb24"
+  )
+```
+
+**Grouped by test type**
+
+```{r}
+#| label: fig-grpd-tests-per-attd-type
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-align: center
+#| column: page
+#| fig-width: 8
+#| fig-asp: 0.618
+#| out-width: "90%"
+
+readRDS(here("data", "df_nested_preplots_multi_tests.rds"))$data[[4]] |>
+  ggplot() +
+  geom_col(aes(x = fyear, y = p_patients_adj, fill = n_tests_grp),
+    position = position_stack()
+  ) +
+  geom_hline(aes(yintercept = 0), colour = "grey20", lty = "dashed") +
+  geom_text(aes(x = fyear, y = p_patients_adj, group = n_tests_grp, label = p_patients_label),
+    position = position_stack(vjust = 0.5)
+  ) +
+  facet_wrap(vars(test_type)) +
+  scale_fill_manual(values = c("orange", "yellow", "grey")) +
+  scale_y_continuous(
+    name = "Proportion of attendances",
+    # label = label_percent(accuracy = 1),
+    breaks = c(-0.5, -0.25, 0, 0.25, 0.5),
+    labels = c("50%", "25%", "0%", "25%", "50%")
+  ) +
+  scale_x_discrete(name = "Financial year") +
+  theme_bw() +
+  theme(
+    legend.title = element_blank(),
+    panel.grid = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks = element_blank()
+  ) +
+  labs(
+    title = "Number of tests per patient by test type",
+    subtitle = "Selected providers | Apr19-Feb20 & Apr23-Feb24"
+  )
+
+```
+
+### Time by presentation and disposal
+
+```{r}
+
+
+```
+
+### Time by test type
+
+```{r}
+#| label: fig-time-vs-tests-grp-type
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-align: center
+#| column: page
+#| fig-width: 8
+#| fig-asp: 0.618
+#| out-width: "90%"
+
+readRDS(here("data", "df_nested_preplots_multi_tests.rds"))$data[[7]] |>
+  ggplot() +
+  theme_bw() +
+  theme(
+    axis.ticks = element_blank(),
+    panel.grid.minor.x = element_blank()
+  ) +
+  geom_line(aes(
+    x = n_tests_trunc,
+    y = median_dur_assess_depart,
+    colour = fyear
+  )) +
+  geom_point(aes(
+    x = n_tests_trunc,
+    y = median_dur_assess_depart,
+    colour = fyear,
+    size = n_patients
+  )) +
+  facet_wrap(vars(test_type)) +
+  scale_y_continuous(
+    name = "Median time in ED (assessment to departure)",
+    limits = c(0, NA_real_)
+  ) +
+  scale_x_continuous(
+    name = "Number of tests",
+    limits = c(0, 5),
+    breaks = (0:5),
+    labels = c(
+      "0", "1", "2", "3", "4",
+      "5+"
+    )
+  ) +
+  scale_size_continuous(name = "Number of attendances") +
+  scale_colour_discrete(name = "Financial year") +
+  labs(
+    title = "Median time and number of tests in ED by test type",
+    subtitle = "Selected providers | Apr19-Feb20 & Apr23-Feb24"
+  )
+
+
+```
+:::
