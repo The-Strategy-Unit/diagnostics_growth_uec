@@ -36,31 +36,11 @@ editor_options:
   chunk_output_type: console
 ---
 
-*Steven:*
-
-*I've been focussing on the parts that are likely more easily done by me. This includes insertion of the graphics/tables but also the necessary, but less-likely-to-be-read parts, e.g. Methods, Limitations).*
-
-*I thought you'd be better placed to:*
-
-*- write the analysis for questions I haven't completed / edit the existing text as you see fit, and*
-
-*- write/edit the more subjective parts (e.g. Discussion, Exec Sum, framing of the Intro).*
-
-*Note that the additional work you did on multiple tests, I've labelled as Q5. And what was formerly Q5 is now Q6.*
-
 # Executive Summary
-
-[**A - SW**]{.underline}
-
-Notes: Andrew Jackson's suggested/preferred template:
-
-Last time we said this, now we're saying this. (ie. where is the new work consistent with past work - where different.)
-
-\[He is intending to use this as further evidence to suggests that 4HR target is not appropriate\]
 
 # Introduction
 
-[**B - SW**]{.underline}
+[**ADD POLICY COMMENT - NOTE TRADE OFF. RECOMENDED INTENTIONAL GROWTH, NOT JUST RISING TO MEET DIAGNOSTIC CAPACITY?**]{.underline}
 
 Over the last decade, growth in diagnostic testing in emergency departments (EDs) has been rapid. Earlier analysis conducted by the Strategy Unit ([2019](https://www.strategyunitwm.nhs.uk/publications/waiting-times-and-attendance-durations-english-ae-departments), [2023](https://www.strategyunitwm.nhs.uk/sites/default/files/2023-05/MDSN%20Diagnostic_growth_report%20Apr2023.pdf)) suggests that this growth may have implications for the timeliness of patient care, for decisions on whether to admit a patient, and for crowding in EDs.
 
@@ -68,9 +48,7 @@ Over the last decade, growth in diagnostic testing in emergency departments (EDs
 For the sake of readability, we use the term, “test”, to refer to a unit of diagnostic activity. We acknowledge that some of these “tests” might also be therapeutic procedures.
 :::
 
-In this report, we update selected analyses from these past reports , in order to... *\[how do we wish to frame this? - Alternatively explain after box below\]*
-
-We seek answers to six questions:
+In this report, we update and expand our analysis to assess the extent to which the trends identified in earlier reports have continued. We explore growth in diagnostic testing in EDs in England, and consider the implications of this growth for the timeliness and disposition of attendances. We sought to answer six questions:
 
 ::: {.callout-note appearance="minimal" icon="false"}
 #### Questions on diagnostic testing in EDs that we address in this report:
@@ -83,8 +61,6 @@ We seek answers to six questions:
 
 3.  What is driving the growth in testing?
 
-    <!--(Is it changes to demand, casemix, or practice?)  -->
-
 4.  How much time do tests add to a patient’s attendance?
 
 5.  How does time in ED change according to the number of tests conducted?
@@ -92,7 +68,7 @@ We seek answers to six questions:
 6.  How do tests influence decisions to admit?
 :::
 
-It is hoped that answers to these questions .... \[how do we wish to frame this?\]
+We start by describing our analytical approach, before addressing each question in turn. Detailed information about the methods and limitations are provided for each analysis.
 
 <!--In the second phase of this project, for which findings are due in the spring of 2025, we will disregard the boundary between EDs and inpatient beds. And look at the impact of diagnostic growth on urgent and emergency care a inpatient beds. Rather than looking at the im... might ///Increased diagnostic testing means that patients spend less time in contact with hospital services, even ifpatients an increase in time in ED.///we measure the total time that patients spend in contact with hospital services, starting when they enter the UEC pathway.-->
 
@@ -100,9 +76,7 @@ It is hoped that answers to these questions .... \[how do we wish to frame this?
 
 [**C- AJ**]{.underline}
 
-The analyses we present here investigate the consequences of increased diagnostic testing within major emergency (Type 1) departments. To address the questions above, we relied on SUS A&E and EC data sets.
-
-Whilst these are high-quality, patient-level sources, we observed considerable variation in recording practices, both across the population of provider trusts and over time. If overlooked, this variation would adversely affect both the [reliability](https://en.wikipedia.org/wiki/Reliability_(statistics)) and [validity](https://en.wikipedia.org/wiki/Validity_(statistics)#Reliability) of our results.
+The analyses we present here investigate the consequences of increased diagnostic testing within major emergency (Type 1) departments. To address the questions above, we relied on SUS A&E and EC data sets. Whilst these are high-quality, patient-level sources, we observed considerable variation in recording practices, both across the population of provider trusts and over time. If overlooked, this variation would adversely affect both the [reliability](https://en.wikipedia.org/wiki/Reliability_(statistics)) and [validity](https://en.wikipedia.org/wiki/Validity_(statistics)#Reliability) of our results.
 
 #### The use of provider sampling {#sec-approach-sampling}
 
@@ -158,7 +132,7 @@ library("lubridate")
 
 #### Perhaps some context - if time?
 
-**D - AJ/SW (depending on time available)**
+**D - AJ**
 
 e.g. Describe the pop attending EDs show the casemix in both years, age, condtion... can't exclude all casemix effects
 
@@ -184,15 +158,13 @@ There are two additional points worth noting. Firstly, in order to complete this
 The second important point is that we included only those providers who appeared to record multiple instances of distinct investigations (and who appeared to have been consistent in this practice over the whole study period). It is, however, possible that these providers were internally inconsistent in recording practices over the period or that, in some cases, the recording of multiple tests of the same type represented an error. \[Could reference our data analysis here\]
 :::
 
-**Analysis 1: Results**
+**A1: Results**
 
-[**E - SW (to edit as necessary)**]{.underline}
+@fig-trend shows the change in test rates for the sample of 28 providers identified above. It appears that, overall (as shown in the left-hand panel), test rates doubled over the study period, from an average of 2.1 tests per attendance in 2012/13 to 4.2 tests per attendance in 2023/24. This equates to a growth rate of 6.5% per annum. However, the growth in tests per attendance has reduced in recent years, from 9.5% per annum between 2012/13 to 2018/19, to 3.1% per annum between 2018/19 and 2023/24.
 
-@fig-trend shows the change in test rates for the sample of 28 providers identified above. It appears that, overall (as shown in the left-hand panel), test rates doubled over the study period, from an average of 2 tests per attendance in 2012/13 to 4 tests per attendance in 2023/24.
+During the pandemic period, ED attendances fell. Evidence suggests that persons who did attend EDs were sicker, leading to more tests per patient. We suggest that the trend is now normalising after the short-term spike in test rates above the trend.
 
-For the 3 in 10 patients who are are admitted after an ED attendance, the recorded rate of increase was uneven but appears to have slowed over the period. During the pandemic period, ED attendances generally fell, while evidence suggests that persons who did attend ED were sicker. We suggest that the trend is now normalising after the short-term spike in test rates above the trend.
-
-For the 7 in 10 patients who are are not admitted after an ED attendance, the increase was fairly consistent to 2020. Again, the rate of increase seems to have slowed following the spike in test rates (seen across the majority of test types) in 2020/21.
+Although, over the study period, testing rates for non-admitted patients were lower than for patients who were admitted, the *increase* in testing rates was greater for non-admitted patients (8.1% vs 4.6% per annum, respectively).
 
 <br>
 
@@ -203,12 +175,18 @@ For the 7 in 10 patients who are are not admitted after an ED attendance, the in
 #| label: fig-trend
 #| echo: false
 #| fig-cap: "Estimated average number of tests per ED attendance, in England, between 2012/13 and 2023/24. Source: SUS A&E and EC data sets."
-#| message: false
-#| fig-align: center
 #| column: page
-#| fig-width: 8
+#| fig-width: 10
 #| fig-asp: 0.618
-#| out-width: "90%"
+#| fig-align: center
+#| out-width: "85%"
+
+
+# #| fig-align: center
+# #| column: page
+# #| fig-width: 8
+# #| fig-asp: 0.618
+# #| out-width: "90%"
 
 df_preplot_trend <- readRDS(
   here("data_raw", "from_ncdr_trends_241003_df_preplot.rds")
@@ -246,22 +224,16 @@ If we want numerators/denoms, we'll need to reproduce the source object for the 
 
 ## A2. Can the rise in test rates be explained by changes to casemix?
 
-[**F - SW (intro?)**]{.underline}
-
-<!--Start off with some intro text from Diagnostics report 2023?  -->
-
-<!--Previous work by the Strategy Unit suggests that people seeking medical attention in ED today are sicker than those arriving in the past. We addressed this question for 32.  To answer this question, we looked at whether patients are more likely to receive tests in EDs today than they were in 2019/20. After adjusting for casemix, are patients more likely to receive tests in EDs today than they were in 2019/20? . Having adjusted for casemix, how much more likely it is that a patient will receive a test in an ED in 2023/24 compared to 2019/20?  -->
+The number and types of test that a patient receives in ED will be influenced by the patient’s characteristics and presenting conditions. The term "casemix" can be used to describe the combination of these factors. In this section of analysis, we explore whether patients are more or less likely to receive a test in 2023/24 than in 2019/20, having taken account of the patient casemix. The results are expressed as casemix-adjusted odds ratios, which is the odds of a patient receiving a test in 2023/24 divided by the odds in 2019/20, having adjusted for changes in casemix between the two years. We perform these calculations for 32 tests. These 32 tests account for over 99% of all tests recorded in EDs.
 
 ::: {#nte-q2-meth .callout-note collapse="true" appearance="minimal" icon="false"}
 # A2: Method and Limitations (click to unhide)
 
 <br>**Method**
 
-We estimated the casemix-adjusted odds of patient receiving a test in an ED in 2023/24, when compared to 2019/20.
-
 We used the SUS EC data set and identified 16 providers with provider codes that survived across the study period and that passed our data quality criteria for this question. For further details of our sampling approach and data quality criteria see @sec-approach-sampling and @sec-appendix.
 
-We built 32 distinct models to predict casemix-adjusted odds ratios (as specified above) for 32 (of 49) test types that appear in the EC data set. These 32 tests account for over 99% of all recorded tests in EDs.
+We built 32 distinct models to predict casemix-adjusted odds ratios (as specified above) for 32 (of 49) test types that appear in the EC data set. These 32 tests account for over 99% of all tests recorded in EDs.
 
 In terms of data preparation, we removed March from both 2019/20 and 2023/24, to avoid any bias to our results that may have arisen due to the onset of the pandemic in March 2020.
 
@@ -300,11 +272,15 @@ This information is also likely to be indicative of a patient’s condition. The
 Finally, as noted in the Methods section, above, we decided to delete approximately 4% of records from our sample that had missing values for any of the variables used in the model. We expect this decision to have a limited impact on our results. However, as it reduced our sample size, the standard errors around our model coefficients have marginally increased as a consequence. There is also the potential for some bias in our results if these missing data were not missing completely at random.
 :::
 
-**Analysis 2: Results**
+**A2: Results**
 
-[**G - SW**]{.underline}
+@fig-odds-sans-sero suggests that for most tests provided in EDs, patients were more likely to receive the test in 2023/24 than they were in 2019/20. In many cases, the increased odds of receiving a test were substantial. The adjusted odds of receiving the following tests increased by between 50% and 100%: hepatic function panel; CT scan; bone profile; analysis of arterial blood gases and pH; D-dimer assay; creatine kinase measurement; and MRI scan. Moreover, the adjusted odds of receiving c-reactive protein; urine sent for culture situation; serum lactate measurement; wound microscopy culture and sensitivities; lipid panel; and serologic tests more than doubled. 
 
-A description and analysis of the the graphic(s) below.
+For 6 of the 32 tests, the odds of receiving the test *fell* between 2019/20 and 2023/24. These tests were: erythrocyte sedimentation rate measurement, group and save, electrocardiography, serum lipase measurement, urinalysis, and human chorionic gonadotropin measurement.
+
+We can compare the increased odds of testing estimated here, with similar analysis covering the period 2012/13 to 2019/20. This comparison suggests that the increase in the casemix-adjusted odds of a patient receiving a CT scan has fallen, from +19% per annum between 2012/13 and 2019/20, to +16% per annum between 2019/20 and 2023/24. There has been a similar slowdown in the rate of increase for MRI scans (from 25% per annum between 2012/13 and 2019/20, to 17% per annum between 2019/20 and 2023/24).
+
+[**CHECK NUMBER OF ATTENDANCES WITH TEST - AND NOT JUST TESTS**]{.underline}
 
 ::: panel-tabset
 ## Graphic<br>(Excl. serological testing)
@@ -316,9 +292,13 @@ A description and analysis of the the graphic(s) below.
 #| warning: false
 #| fig-align: center
 #| column: page
-#| fig-width: 8
+#| fig-width: 10
 #| fig-asp: 0.618
-#| out-width: "90%"
+#| out-width: "85%"
+ 
+# #| fig-width: 8
+# #| fig-asp: 0.618
+# #| out-width: "90%"
 
 df_odds_results <- bind_rows(
   readRDS(here("data", "from_ncdr_growth_attrb_v3_1to16.rds")),
@@ -409,8 +389,7 @@ df_odds_results |>
 #| column: page
 #| fig-width: 8
 #| fig-asp: 0.618
-#| out-width: "80%"
-#| out-height: "80%"
+#| out-width: "90%"
 
 df_odds_results |>
   # filter(InvestigationDescription != "Serologic test") |> 
@@ -479,76 +458,103 @@ df_odds_results |>
 
 ## A3. What is driving test growth in EDs?
 
-[**H - SW (intro?)**]{.underline}
+In this section, we seek to decompose the growth in ED tests between 2019/20 to 2023/24 into to three main effects:
 
-Intro text: Is the growth in EDs being driven by changes to demand, casemix, or practice?
+::: column-margin
+Strictly speaking, we examined growth in ED attendances with at least one test, rather than growth in ED tests. The potential effect of this is discussed in the A3 Limitations section.
+:::
+
+-    Changes in demand: the number of patients presenting at ED
+
+-    Changes in casemix: the acuity and complexity of patient presentations
+
+-   Changes in practice: the ways in which ED respond to patients who present
+
+Because these changes occur simultaneously, they interact in complex ways to influence the number of tests delivered. We separate out this interaction or compounding effect as a separate quantity. This, often modest, residual effect can be thought of as the difference between the total observed change, and the sum of the three individual effects. 
+
+We present results for 32 tests. As noted, these 32 tests account for over 99% of all tests recorded in EDs.
 
 ::: {.callout-note collapse="true" appearance="minimal" icon="false"}
 # A3: Method and Limitations (click to unhide)
 
 <br>**Method**
 
-For each of the 32 tests covered in Q2, we set out to find the percentage growth in attendances with one or more test ($T$), as a function of the growth due to: changes in raw demand ($D$), changes in casemix ($C$), and changes driven by all other factors ($P$). (We expect $P$ to be dominated by the influence of clinical practice, but it may also contain other factors, such as the availability of resources.)
+Once again, this analysis relies on the ECDS and the 16 providers with provider codes that both survived across the study period and passed our data quality criteria for this question. For further details of our sampling approach and data quality criteria see @sec-approach-sampling and @sec-appendix.
 
-Again, this analysis relies on the SUS EC data set and the 16 providers with provider codes that survived across the study period and that passed our data quality criteria for this question. For further details of our sampling approach and data quality criteria see @sec-approach-sampling and @sec-appendix.
+For each of the 32 tests covered in A2, we set out to find the percentage growth in attendances with one or more of the specified test ($T$), as a function of the growth due to: changes in raw demand ($D$), changes in casemix ($C$), and changes driven by all other factors ($P$). (We expect $P$ to be dominated by the influence of clinical practice, but it may also contain other factors, such as the availability of resources.)
 
-To address the question, we formulated a multiplicative model
+We formulated a multiplicative model
 
 $1+T = (1+D)(1+C)(1+P)$ . \[1\]
 
 Expanding the right hand side and solving for $T$ we get:
 
-$T = D + C + [P+ DC + DP + CP + DCP]$ . \[2\]
+$T = D + C + P + [DC + DP + CP + DCP]$ . \[2\]
 
-Thus, we are able to isolate the main effects for growth due changes in demand and casemix. The terms within the square brackets include the $P$ term and composite, or interaction, terms (which are in most cases likely to be negligible).
+Thus, we are able to isolate the main effects for growth due to changes in demand, casemix, and practice. The terms within the square brackets are interaction effects (providing, for example, the effect of casemix for different levels of demand). In most cases, the influence of these interaction effects is likely to be negligible.
 
-We know that $T$ is,
+We have defined $T$ as,
 
 $T = t_{23/24}/t_{19/20} -1$ , \[3\]
 
-where $t$ is the number of attendances with one or more test in the specified financial year.
+where $t$ is the number of attendances with one or more of the specified test in the financial year.
 
 We might also define $D$, independently, as,
 
 $D = a_{23/24}/a_{19/20} -1$ , \[4\]
 
-where $a$ is the number of attendances (both with and without a test) in the financial year.
+where $a$ is the total number of attendances (both with and without a test) in the financial year.
 
-We then move to a calculation of $P$ which relies on predictions from our logistic regression models from Q2.
+We can then move to a calculation of $P$ which will rely on predictions from our logistic regression models from A2.
 
-We first create a counterfactual scenario in which the casemix in the target year is replaced by the casemix in the baseline year attended in the target year. If we compare this counterfactual scenario for In this case, both $D$ and $C$ will be equal to zero, and Equation 2 becomes:
+We will imagine a counterfactual scenario in which there was no change in casemix between 2019/20 and 2023/24 (i.e. we saw identical sets of patients attend in both years). In this case, both $D$ and $C$ will be equal to zero, and Equation 2 becomes:
 
 $T_{cf} = P$ . \[5\]
 
-where
+where,
 
-$T_{cf} = t_{23/34(cf)} / t_{19/20} -1$ . \[6\]
+$T_{cf} = t'_{23/34(cf)} / t'_{19/20} -1$ . \[6\]
 
-We can find $T_{cf}$ using predictions from the logistic regression models produced in Analysis 2. If we edit our data so We use the applicable model to predict
+We can find $t'_{23/34(cf)}$ and $t'_{19/20}$ , and therefore $T_{cf}$ and thus $P$, using predictions from the logistic regression models from A2. (For our counterfactual scenario, we make predictions having re-labelled the 2019/20 attendances as 2023/24 attendances.)
 
-$t_{19/20}$ . (For our counterfactual scenario, $t_{23/34(cf)}$ , we make predictions having re-labelled the 2019/20 attendances as 2023/24 attendances.)
+We can then use Equation 2 and solve for C:
 
-First we used the regression model to
+$C = (T - D - P - DP)/(1 + D + P + DP)$. \[7\]
 
-We predicted the number of attendances with a test in the baseline year, divided by Then we predict the number of attendances with a test for a counterfactual scenario where the target year had the same casemix as the baseline year.
+Finally, we can find the interaction effects in Equation 2. We will collect them under the term, $X$, giving us:
 
-Expanding this we get,
-:::
+$T = D + C + P + X$ , \[8\]
 
-::: {.callout-note collapse="true" appearance="minimal" icon="false"}
+and
+
+$X = T-D-C-P$ . \[9\]
+
+The main graphical output of this analysis reflects Equation 8, but for the fact we chose to collect $P$ and $X$ terms in one panel. We have labelled this panel "growth due to changes in practice", as the influence of the $X$ term is often negligible.
 
 **Limitations**
 
 The findings of this analysis are based on a sample of 16 providers (of 102 providers whose provider codes remained unchanged over the study period). These findings are therefore subject to the same sampling-related limitations we identified for Q1 (see @nte-q1-meth).
 
 Moreover, the analysis relies on the logistic regression models we built for Q2, hence the limitations we acknowledged in that analysis (see @nte-q2-meth) also apply here.
+
+Demand growth is based on sample.
+
+Unobserved casemix -as per A2.
+
+It is growth in ED attendances with at least one test, and not growth in ED tests. For tests that are, in all but rare circumstances, only provided once per attendance, this approach will ... for others there will be some discrepancy.
 :::
 
-**Analysis 3: Results**
+**A3: Results**
 
-[**I - SW**]{.underline}
+Of the total growth in the number of tests between 2019/20 and 2023/24, XX% can be attributed to changes in demand, YY% to changes in casemix, and ZZ% to changes in practice, with the remainder attributable to interactions between these terms.
 
-A description and analysis of the the graphic below.
+Whilst the provider sample used in this analysis is representative of all providers in England in many ways, the providers in this subset experienced higher levels of demand growth than most between 2019/20 and 2023/24. Therefore, growth in tests due to demand increases is likely to be higher in these trusts than in England as a whole. However, the balance of growth attributable to casemix and practice changes *is* likely to be generalisable. On this basis, the analysis would suggest that the vast majority of the growth in tests per attendance is attributable to changes in practice rather than changes in casemix. 
+
+In light of earlier analysis, which covered the period from 2010/11 to 2015/16, our findings here suggest that the driver of test growth in ED has changed in recent years. In the earlier analysis, we found that approximately one third of the growth in tests per attendance was attributable to changes in casemix. ED casemix became more complex and acute between 2010/11 and 2015/16, but it does not appear to have changed substantially between 2019/20 and 2023/24. This might explain, in part, the slowdown in the growth in tests per attendance seen since 2019/20.
+
+Of course, some tests are more common than others. When we consider both test frequency and the change in the casemix-adjusted odds of a test, we can identify those tests where changes in practice have had a material impact on the total number of tests carried out. These are C-reactive protein tests, hepatic function panel tests, and CT scans. 
+
+As medical practice and technology develops, and tests become more readily available, clinicians are able to replace older tests with more modern and (likely) more accurate tests. This might explain, for example, why the casemix-adjusted odds of CT and MRI scans has increased whilst there has been minimal change for plain radiography. And this same substitution effect may explain the different trends in electrocardiography and troponin measurement. Changes in coding practices may also play a part.
 
 ```{r}
 #| include: false
@@ -642,7 +648,8 @@ df_preplot_growth_components |>
     limits = c(-50, 250)
   ) +
   facet_wrap(vars(component), ncol = 6) +
-  labs(y = "\nED attendances (thousands)\nwith 1+ test of specified type")
+  labs(y = "\nED attendances (thousands) with 1+ test of specified type",
+       caption = "*Demand growth reflects the demand growth in our sample")
 ```
 
 ## Absolute differences (for sample)
@@ -693,7 +700,7 @@ df_preplot_growth_components |>
     limits = c(-50, 250)
   ) +
   facet_wrap(vars(component), ncol = 6) +
-  labs(y = "\nED attendances (thousands)\nwith 1+ test of specified type")
+  labs(y = "\nED attendances (thousands) with 1+ test of specified type")
 
 
 ```
@@ -703,19 +710,92 @@ df_preplot_growth_components |>
 To come.
 :::
 
-## Q4. How much time do tests add to a patient's stay in the ED?
+## A4. How much time do tests add to a patient's stay in the ED?
 
-[**J - AJ**]{.underline} **(work in progress)**
+[**J - SW (intro text and description of graphic )**]{.underline}
 
 How much (net) time does a test add to a patient’s stay in ED?
 
-## Q5. How does time in ED change according to the number of tests conducted?
+::: {.callout-note collapse="true" appearance="minimal" icon="false"}
+## A4: Method and Limitations
 
-[**K - SW (text)**]{.underline}
+<br>**Method**
 
-**Results**
+This analysis again uses data from the 16 providers that passed our consistency and data quality criteria for A2-A6. (For further details of our sampling approach and data quality criteria see @sec-approach-sampling and @sec-appendix.) We use only records from the 2023/24 financial year here.
 
-Text here.
+We removed records with times that appeared to be poorly recorded. These included attendances in which the arrival time was noted as occuring after the assessment time, and those in which the total time in the ED was recorded to be less than zero minutes. We also limited this analysis to attendances where the patient is recorded to have stayed in the ED for less than 30 hours.
+
+Approximately 6.7% of the 1.8 million records had missing values in a key field (our "key fields" are given in @sec-appendix). Our specified model type will not accept missing values, so we chose to delete the records with missing values in our key fields.
+
+Overall, with these exclusions, we removed 6.7% of the 1.8 million records in the sample.
+
+Our dependent variable was the duration from a patient's assessment by a clinician to their departure from the ED. The distribution of this variable is heavily right-skewed. Thus, if we choose to perform a linear regression, we cannot expect residuals to be normally distributed or display constant variance (heteroscedasticity). Without action, this would affect the calculation standard errors and confidence intervals, though point estimates from such a model remain unbiased.
+
+We used a heteroscedasticity-consistent (HC) estimator recommended by Long and Ervin ([2020](https://www.tandfonline.com/doi/abs/10.1080/00031305.2000.10474549)), HC3, to estimate the covariance of the model parameters, and obtain robust estimates of standard errors and confidence intervals.
+
+GAM with Number of tests:
+
+```{r}
+#| eval: false
+
+mgcv::gam(
+  formula = dur_assess_depart ~
+    # CASE-MIX-RELATED:
+    s(age, by = sex) + sex + 
+    arr_mode + acuity + chief_comp_desc + refer_sorc + # DIAGNOSIS 01 desc # N_dIAG
+    # TIME-RELATED:
+    month + wkday + hour + 
+    # PROVIDER (RANDOM INTERCEPT):
+    s(procode, bs = "re") +
+    # VARS OF INTEREST:
+    invst_50 + invst_51 + invst_52 + invst_53 + ...,
+  family = "gaussian",
+  method = "REML",
+  data = df_prep_duration_integer
+)
+
+```
+:::
+
+```{r}
+#| label: fig-test-time
+#| echo: false
+#| message: false
+#| warning: false
+#| column: page
+#| fig-width: 10
+#| fig-asp: 0.618
+#| out-width: "85%"
+#| fig-align: center
+
+readRDS(here("data", "df_preplot_duration.rds")) |> 
+  # REDUCE TO TOP 32 INVESTIGATIONS:
+  semi_join(df_odds_results, join_by(InvestigationDescription)) |> 
+    ggplot(aes(reorder(InvestigationDescription, dura), dura)) +
+  geom_col(aes(reorder(InvestigationDescription, dura), dura), fill = "dodgerblue", alpha = .5)+ # , position = "dodge"
+  geom_errorbar(aes(ymin = lci, ymax = uci), col = "grey40", alpha = .5, width = .3)+
+  # geom_errorbar(aes(ymin = lciold, ymax = uciold), colour = "grey")+
+  theme_minimal()+
+  theme(
+    axis.title.y = element_blank(),
+    axis.title.x = element_text(size = 9),
+    legend.position = "none"
+  )+
+  labs(y = "\nEstimated (net) time added to a patient's attendance in 2023/24 (mins)")+
+  coord_flip()
+```
+
+## A5. How does time in ED change according to the number of tests conducted?
+
+As the number of tests per attendance has increased, so has the number of patients who receive several tests. In this section we examine the relationship between the number of tests that a patient receives and their duration in the ED. We describe this relationship in 2019/20 and in 2023/24. Unlike previous sections, this analysis is not casemix-adjusted, since the methods that are usually employed to adjust for casemix are unlikely to be adequate in this context (**perhaps add further note in an appendix?**). 
+
+**A5: Results**
+
+@fig-time-vs-tests shows that, in general, a patient’s (unadjusted) duration in ED tends to increase with the number of tests performed. This relationship can be explained in part with reference to patient casemix (more complex patients have more tests and stay longer), but also because, as we have seen above, most tests add time to a patient’s stay. 
+
+However, the nature of this relationship has changed between 2019/20 and 2023/24. In 2019/20, 28 minutes was added to a patients stay on average, for each of the first 5 tests performed.fig-time-vs-tests But the impact of each additional test beyond the fifth was limited, adding on average only 7 minutes per test. By 2023/24, ED durations had increased considerably. Each of the first five tests now added 44 minutes on average. Moreover, for each additional test beyond the fifth, the time in ED continued to rise considerably - by 38 minutes per test. This change can be seen whether the patient was admitted or discharged, and whether the patient was treated for an injury or an illness (although subtle differences in the relationship are present (see appendix)).
+
+Whilst this finding is clear in the data, it is not easy to explain. One potential line of enquiry would focus on the extent of asynchronous testing. The result might also be an emergent property of a system operating with reduced flow, which manifests as re-testing of patients whose care is delayed.
 
 **Median time vs. number of tests**
 
@@ -724,11 +804,11 @@ Text here.
 #| echo: false
 #| message: false
 #| warning: false
-#| fig-align: center
 #| column: page
-#| fig-width: 8
+#| fig-width: 10
 #| fig-asp: 0.618
-#| out-width: "90%"
+#| fig-align: center
+#| out-width: "85%"
 
 
 readRDS(here("data", "df_nested_preplots_multi_tests.rds"))$data[[5]] |>
@@ -772,67 +852,38 @@ readRDS(here("data", "df_nested_preplots_multi_tests.rds"))$data[[5]] |>
 
 ```
 
-::: panel-tabset
-## 
+## A6. How do tests influence decisions to admit?
 
-```{r}
+In this section, we explore how increased testing in ED has influenced the rate of admissions to hospital beds. We do this by comparing the change in the casemix-adjusted odds of a *test* with the casemix-adjusted odds of *admission* *having received a test*. We examine these changes over the period from 2019/20 to 2023/24, for 32 test types.
 
-```
+::: callout-note
+## A6: Methods and Limitations
 
-## 
-
-```{r}
-
-```
-
-## 
-
-```{r}
-
-
-```
-
-## 
-
-```{r}
-
-
-```
-
-## 
-
-```{r}
-
-```
-
-## 
-
-```{r}
-
-```
-
-## 
-
-```{}
-```
+Methods and limitations here.
 :::
 
-## Q6. How do tests influence decisions to admit?
+@fig-adm-decision assigns each of the 32 tests to a quadrant, based on 2 values:
 
-[**L - SW (intro?)**]{.underline}
+-   the change in the casemix-adjusted odds of a test, and
 
-[**M - SW (results)**]{.underline}
+-   the change in the casemix-adjusted odds of admission having received a test.
+
+Many of the tests - including most of the high-volume tests - fall into the bottom-left quadrant. This indicates that, after adjusting for casemix, patients were more likely to receive the test in 2023/24, but less likely to be admitted having received it. This is true for complete blood count, blood coagulation, c-reactive protein measurement, CT scan, hepatic function, and urea and electrolytes. 
+
+Given that this analysis is casemix-adjusted, we can safely exclude casemix as an explanation for this finding. Thus, another theory is that clinicians are extending the use of tests as a means of ruling out conditions that would warrant admission. Unfortunately, this analysis cannot shed light on the motivation for such a change in practice. It might be that ED clinicians are proactively lowering test thresholds in response to changes in medical guidelines and emerging research. It might also be that test thresholds have fallen as tests have become more available, more timely, and less expensive. A further explanation might be that this change is driven by changes in bed availability. That is to say that, whilst, in the past, some tests may have been carried out after admission to a hospital bed, it may *now* be that these tests are performed in the ED. Further work would be required to determine the underlying cause of changes in testing practice. **(link to further work section?)**
+
+Finally, there are two low-volume tests that appear to be outliers in this analysis: wound microscopy culture and sensitivities; and lipid panel. These appear in the top-right quadrant, but some way from the origin. Their position indicates that patients were much more likely to receive these tests in 2023/24, and much more likely to be admitted having received the test. This result is **subject to high levels of statistical uncertainty (?)** because the number of these tests that were performed in the baseline year (2019/20) was low. However, at face value, it suggests that these two tests are now used to identify patients who require admission. In 2019/20, these same patients would have been not have been admitted to a hospital bed.
 
 ```{r}
 #| label: fig-adm-decision
 #| echo: false
 #| message: false
 #| warning: false
-#| fig-align: center
 #| column: page
-#| fig-width: 8
+#| fig-width: 10
 #| fig-asp: 0.618
-#| out-width: "90%"
+#| fig-align: center
+#| out-width: "85%"
 
 tmp_admodds <-
   readRDS(
@@ -939,9 +990,9 @@ More deprived, and older population, with more arrivals by ambulance results in 
 # Appendix 2
 
 ::: {.callout-note collapse="true" appearance="minimal" icon="false"}
-# Graphics (click to unhide)
+## title
 
-**Tests per attendance**
+Additional graphics relating to A5.
 
 ```{r}
 #| label: fig-tests-per-attd
@@ -972,8 +1023,6 @@ readRDS(here("data", "df_nested_preplots_multi_tests.rds"))$data[[1]] |>
     caption = "Selected providers | Apr19-Feb20 & Apr23-Feb24\nDashed lines indicate mean number of tests"
   )
 ```
-
-**Tests per attendance (grouped)**
 
 ```{r}
 #| label: fig-grpd-tests-per-attd
@@ -1014,6 +1063,22 @@ readRDS(here("data", "df_nested_preplots_multi_tests.rds"))$data[[2]] |>
     # subtitle = "Selected providers | Apr19-Feb20 & Apr23-Feb24", 
     caption = "Selected providers | Apr19-Feb20 & Apr23-Feb24"
   )
+```
+:::
+
+::: {.callout-note collapse="true" appearance="minimal" icon="false"}
+# Graphics (click to unhide)
+
+**Tests per attendance**
+
+```{r}
+
+```
+
+**Tests per attendance (grouped)**
+
+```{r}
+
 ```
 
 ### Grouped by presentation and disposal
@@ -1109,7 +1174,59 @@ readRDS(here("data", "df_nested_preplots_multi_tests.rds"))$data[[4]] |>
 ### Time by presentation and disposal
 
 ```{r}
+#| label: fig-time-vs-tests-grp-disp
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-align: center
+#| column: page
+#| fig-width: 8
+#| fig-asp: 0.618
+#| out-width: "90%"
 
+readRDS(here("data", "df_nested_preplots_multi_tests.rds"))$data[[6]] |>
+  ggplot() +
+  # theme_minimal()+
+  theme_bw() +
+  theme(
+    axis.ticks = element_blank(),
+    panel.grid.minor.x = element_blank()
+  ) +
+  geom_line(aes(
+    x = n_tests_trunc,
+    y = median_dur_assess_depart,
+    colour = fyear
+  )) +
+  geom_point(aes(
+    x = n_tests_trunc,
+    y = median_dur_assess_depart,
+    colour = fyear,
+    size = n_patients
+  )) +
+  facet_grid(
+    cols = vars(is_admitted),
+    rows = vars(inj_illness)
+  ) +
+  scale_y_continuous(
+    name = "Median time in ED (assessment to departure)",
+    limits = c(0, NA_real_)
+  ) +
+  scale_x_continuous(
+    name = "Number of tests",
+    limits = c(0, 12),
+    breaks = (0:12),
+    labels = c(
+      "0", "1", "2", "3", "4",
+      "5", "6", "7", "8", "9",
+      "10", "11", "12+"
+    )
+  ) +
+  scale_size_continuous(name = "Number of attendances") +
+  scale_colour_discrete(name = "Financial year") +
+  labs(
+    title = "Median time in ED and number of tests by dispsosal and presentation type",
+    subtitle = "Selected providers | Apr19-Feb20 & Apr23-Feb24"
+  )
 
 ```
 
