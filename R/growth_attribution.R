@@ -153,19 +153,24 @@ df6 <- df5 |>
 # 7. SAVE DF OF RESULTS FOR ODDS AND ATTRIBUTION --------------------------
 
 df6 |>
-  mutate(odds = map_dbl(model, function(df) {
+  mutate(map_dfr(model, function(df) {
     df |>
       broom::tidy(parametric = TRUE) |>
-      mutate(odds = exp(estimate), .before = estimate) |>
       filter(term == "fyear2023/24") |>
-      pull(odds)
-  })) |> 
+      mutate(odds = exp(estimate)) |>
+      mutate(lci = exp(estimate - 1.96*std.error)) |> 
+      mutate(uci = exp(estimate + 1.96*std.error)) |> 
+      select(odds, lci, uci)
+      # pull(odds)
+  }), .after = pdA) |> 
   unnest(df_growth) |> 
-  relocate(odds, .after = pdA) |> 
+  # relocate(odds, .after = pdA) |> 
+  # relocate(std_error, .after = odds) |> 
   select(-c(data, model, value, starts_with("pred_"))) |> 
   # IMPORTANT !!! ADJUSTMENTS GIVEN SMALLER SAMPLE SIZE FOR MODELS 13:28 (FACTOR OR 0.35/0.17):
   mutate(across(matches("^t"), ~ if_else(id %in% 13:28, . * (0.35 / 0.17), .))) %>%
-  saveRDS(str_c("from_ncdr_growth_attrb_v3_", min(.$id), "to", max(.$id), ".rds"))
+  saveRDS(str_c("from_ncdr_growth_attrb_v4_", min(.$id), "to", max(.$id), ".rds"))
+
 
 
 # APPENDIX ----------------------------------------------------------------
