@@ -106,8 +106,12 @@ df_preplot_trends <- df_data_plus_invst |>
     T ~ disdest
   ))
 
-# df_preplot_trends  |> saveRDS("from_ncdr_trends_240917_df_prep_plot.rds")
-df_preplot_trends |> saveRDS("from_ncdr_trends_241003_df_preplot.rds")
+df_preplot_trends <- df_preplot_trends |> 
+  arrange(disdest) |> 
+  mutate(gopy_att = n_att/lag(n_att), .after = n_att) |> 
+  mutate(gopy_invst = n_invst/lag(n_invst), .after = n_invst) 
+  
+df_preplot_trends |> saveRDS("from_ncdr_trends_241204_df_preplot.rds")
 
 
 # 2. PLOT -----------------------------------------------------------------
