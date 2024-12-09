@@ -40,15 +40,15 @@ editor_options:
 
 # Executive Summary
 
-In this report, we examine rates of diagnostic testing in Emergency Departments (EDs) in England. We investigate how rates of testing have changed, and we explore how these changes affect the flow of patients through hospitals and the timeliness of care that patients receive. We find that:
+In this report, we examine rates of diagnostic testing in Emergency Departments (EDs) in England. We investigate how rates of testing have changed in recent years, and we explore how these changes have influenced patients' journeys through the ED and their chances of admission to a hospital bed. We find that:
 
 #### Testing rates in EDs continue to grow, but have slowed in recent years
 
-The average number of tests per attendance doubled between 2012/13 and 2023/24. Growth was more rapid in the earlier part of this period, and has slowed since 2018/19.
+Between 2012/13 and 2023/24, the average number of tests per attendance doubled. Growth was more rapid in the earlier part of this period, and has slowed since 2018/19.
 
 Testing rates for patients who were later admitted were higher than for patients who were not admitted. However, g*rowth* in testing rates was higher for patients who were not admitted.
 
-In the 4 years between 2019/20 and 2023/24, test numbers for four high-volume tests grew by more than 40%. These tests were: hepatic function panel, c-reactive protein measurement, CT scan, and bone profile. For six low-volume tests, including D-dimer assay, creatine kinase measurement, and lipid panel, the number of tests more than doubled.
+In the four years between 2019/20 and 2023/24, test numbers for four high-volume tests grew by more than 40%. These tests were: hepatic function panel, c-reactive protein measurement, CT scan, and bone profile. For six low-volume tests, including D-dimer assay, creatine kinase measurement, and lipid panel, the number of tests more than doubled.
 
 #### Growth in testing in EDs cannot be explained by changes in casemix
 
@@ -60,9 +60,9 @@ In another report, we found that the increasing testing rates in ED between 2010
 
 We found that most tests added time to a patient’s stay in the ED. Four tests, including CT scans and ultrasounds, increased the length of a patient’s attendance by between 60 and 90 minutes, on average. Moreover, we found that an MRI scan added three hours to a patient’s stay.
 
-Five tests appeared to *reduce* the amount of time that a patient spent in ED. A patient who received a lipid panel stayed in the ED one hour less, on average, than a patient with similar characteristics who did not have the test. The effect for each of the other four tests was less marked. 
+Five tests appeared to *reduce* the amount of time that a patient spent in ED. A patient who received a lipid panel test stayed in the ED one hour less, on average, than a patient with similar characteristics who did not have the test.
 
-Of the tests that appear to add time to ED attendances, five occur with sufficiently high frequency to have a material impact on an ED’s waiting times: CT scans, plain radiography, urea and electrolytes, complete blood count, and C-reactive protein measurement. Two of these tests, CT scan and C-reactive protein measurement, have increased in volume rapidly since 2019/20.
+Of the tests that appeared to add time to ED attendances, five occured with sufficiently high frequency to have a material impact on an ED’s waiting times: CT scans, plain radiography, urea and electrolytes, complete blood count, and C-reactive protein measurement. Two of these tests, CT scan and C-reactive protein measurement, have increased in volume rapidly since 2019/20.
 
 #### The relationship between the number of tests carried out and the time a patient spends in the ED has changed
 
@@ -189,11 +189,11 @@ The second important point is that we included only those providers who appeared
 
 **A1: Results**
 
-@fig-trend shows the change in test rates for the sample of 28 providers identified above. It appears that, overall (as shown in the left-hand panel), test rates doubled over the study period, from an average of 2.1 tests per attendance in 2012/13 to 4.2 tests per attendance in 2023/24. This equates to a growth rate of 6.5% per annum. However, the growth in tests per attendance has reduced in recent years, from 9.5% per annum between 2012/13 to 2018/19, to 3.1% per annum between 2018/19 and 2023/24.
+@fig-trend shows the change in test rates for the sample of 28 providers identified above. It appears that, overall (as shown in the left-hand panel), test rates doubled over the study period, from an average of 2.2 tests per attendance in 2012/13 to 4.3 tests per attendance in 2023/24. This equates to a growth rate of 6.3% per annum. However, the growth in tests per attendance has reduced in recent years, from 9.2% per annum between 2012/13 to 2018/19, to 3.3% per annum between 2018/19 and 2023/24.
 
 During the pandemic period, ED attendances fell. Evidence suggests that persons who did attend EDs were sicker, leading to more tests per patient. We suggest that the trend is now normalising after the short-term spike in test rates above the trend.
 
-Although, over the study period, testing rates for non-admitted patients were lower than for patients who were admitted, the *increase* in testing rates was greater for non-admitted patients (8.1% vs 4.6% per annum, respectively).
+Although, over the study period, testing rates for non-admitted patients were lower than for patients who were admitted, the *increase* in testing rates was greater for non-admitted patients (8.6% vs 4.4% per annum, respectively).
 
 <br>
 
@@ -485,9 +485,9 @@ In this section, we seek to decompose the growth in ED tests between 2019/20 to 
 Strictly speaking, we examined growth in ED attendances with at least one test, rather than growth in ED tests. The effect of this difference on interpretation of the results is discussed in the A3 Limitations section.
 :::
 
--    Changes in demand: the number of patients presenting at ED
+-   Changes in demand: the number of patients presenting at ED
 
--    Changes in casemix: the acuity and complexity of patient presentations
+-   Changes in casemix: the acuity and complexity of patient presentations
 
 -   Changes in practice: the ways in which ED respond to patients who present
 
@@ -839,10 +839,17 @@ The materiality of these findings for ED patient flow in general (as opposed to 
 #| out-width: "85%"
 #| fig-align: center
 
+
 readRDS(here("data", "241204_df_preplot_duration.rds")) |> 
   # REDUCE TO TOP 32 INVESTIGATIONS:
-  semi_join(df_odds_results, join_by(InvestigationDescription)) |> 
-    ggplot(aes(reorder(InvestigationDescription, dura), dura)) +
+  semi_join(df_odds_results, join_by(InvestigationDescription)) |>
+  mutate(InvestigationKey = as.numeric(str_extract(term, "[:digit:]{2}"))) |> 
+left_join(
+    lkp_invst_ec_aea |> 
+      select(InvestigationKey, invst_group), 
+    join_by(InvestigationKey)
+  ) |>   
+  ggplot(aes(reorder(InvestigationDescription, dura), dura)) +
   geom_col(aes(reorder(InvestigationDescription, dura), dura), fill = "dodgerblue", alpha = .5)+ # , position = "dodge"
   geom_errorbar(aes(ymin = lci, ymax = uci), col = "grey40", alpha = .5, width = .3)+
   # geom_errorbar(aes(ymin = lciold, ymax = uciold), colour = "grey")+
@@ -857,12 +864,13 @@ readRDS(here("data", "241204_df_preplot_duration.rds")) |>
     breaks = c(-60, 0, 60, 120, 180),
     limits = c(-70, 200)
   )+
-  coord_flip()
+  coord_flip()+
+  facet_grid(invst_group ~ ., space = "free", scales = "free_y")
 ```
 
 ## A5. How does time in ED change according to the number of tests conducted?
 
-As the number of tests per attendance has increased, so has the number of patients who receive several tests. In this section we examine the relationship between the number of tests that a patient receives and their duration in the ED. We describe this relationship in 2019/20 and in 2023/24. Unlike previous sections, this analysis is not casemix-adjusted, since the methods that are usually employed to adjust for casemix are unlikely to be adequate in this context (**perhaps add further note in an appendix?**). 
+As the number of tests per attendance has increased, so has the number of patients who receive several tests. In this section we examine the relationship between the number of tests that a patient receives and their duration in the ED. We describe this relationship in 2019/20 and in 2023/24. Unlike previous sections, this analysis is not casemix-adjusted, since the methods that are usually employed to adjust for casemix are unlikely to be adequate in this context.
 
 ::: {.callout-note collapse="true"}
 ## A5: Method and Limitations (click to unhide)
@@ -996,7 +1004,7 @@ Finally, as noted in the A6 Methods section, above, we decided to delete approxi
 
 -   the change in the casemix-adjusted odds of admission having received a test.
 
-Many of the tests - including most of the high-volume tests - fall into the bottom-left quadrant. This indicates that, after adjusting for casemix, patients were more likely to receive the test in 2023/24, but less likely to be admitted having received it. This is true for complete blood count, blood coagulation, C-reactive protein measurement, CT scan, hepatic function, and urea and electrolytes. 
+Many of the tests - including most of the high-volume tests - fall into the bottom-right quadrant. This indicates that, after adjusting for casemix, patients were more likely to receive the test in 2023/24, but less likely to be admitted having received it. This is true for complete blood count, blood coagulation, C-reactive protein measurement, CT scan, hepatic function, and urea and electrolytes. 
 
 Given that this analysis is casemix-adjusted, we can safely exclude casemix as an explanation for this finding. Thus, another theory is that clinicians are extending the use of tests as a means of ruling out conditions that would warrant admission. Unfortunately, this analysis cannot shed light on the motivation for such a change in practice. It might be that ED clinicians are proactively lowering test thresholds in response to changes in medical guidelines and emerging research. It might also be that test thresholds have fallen as tests have become more available, more timely, and less expensive. A further explanation might be that this change is driven by changes in bed availability. That is to say that, whilst, in the past, some tests may have been carried out after admission to a hospital bed, it may *now* be that these tests are performed in the ED. Further work would be required to determine the underlying cause of changes in testing practice (see @sec-further-work).
 
@@ -1016,8 +1024,6 @@ Finally, there are two low-volume tests that appear to be outliers in this analy
 #| fig-align: center
 #| out-width: "85%"
 
-
-lkp_invst_ec_aea <- readRDS(here("data_raw", "lkp_test_ec_to_aea.rds"))
 
 df_odds_results |>
       filter(InvestigationDescription != "Serologic test") |>
