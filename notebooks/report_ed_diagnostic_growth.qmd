@@ -44,11 +44,11 @@ In this report, we examine rates of diagnostic testing in Emergency Departments 
 
 #### Testing rates in EDs continue to grow, but have slowed in recent years
 
-Between 2012/13 and 2023/24, the average number of tests per attendance doubled. Growth was more rapid in the earlier part of this period, and has slowed since 2018/19.
+Between 2012/13 and 2023/24, the average number of tests per attendance - the testing rate - doubled. Growth was more rapid in the earlier part of this period, and has slowed since 2018/19.
 
 Testing rates for patients who were later admitted were higher than for patients who were not admitted. However, g*rowth* in testing rates was higher for patients who were not admitted.
 
-Growth was not evenly distributed across test types. In the four years between 2019/20 and 2023/24, the growth rate for three high-volume tests was more than 40%. These tests were: C-reactive protein measurement, CT scan, and bone profile. Several low-volume tests, including lipid panels, MRI scans, and serologic tests, grew at more than twice the rate of attendances.
+Growth was not evenly distributed across test types. In the four years between 2019/20 and 2023/24, the testing rate for three high-volume tests grew by more than 40%. These tests were: C-reactive protein measurement, CT scan, and bone profile. Several low-volume tests, including lipid panels, MRI scans, and serologic tests, grew at more than twice the rate of attendances.
 
 #### Growth in testing in EDs cannot be explained by changes in casemix
 
@@ -91,7 +91,7 @@ This report is the first of two reports which will examine the impact of the gro
 
 1.  How has the number of tests per attendance changed over time?
 
-2.  Can the rise in test rates be explained by changes to casemix?
+2.  Can the rise in testing rates be explained by changes to casemix?
 
 3.  What is driving the growth in testing?
 
@@ -209,7 +209,7 @@ To be precise, we estimated how the *average* number of tests per ED attendance 
 
 We identified 28 providers with provider codes that survived across the 12 year study period and that passed our data quality criteria. See @sec-appendix.
 
-The numerator for our test rate in a given year was the total number of tests performed across our provider sample. Where a patient received multiple tests of the same type, we counted these as multiple tests. The denominator for our "test rate" in a given year was the total number of ED attendances across our provider sample that matched the criteria given in @sec-approach-attd.
+The numerator for our testing rate in a given year was the total number of tests performed across our provider sample. Where a patient received multiple tests of the same type, we counted these as multiple tests. The denominator for our testing rate in a given year was the total number of ED attendances across our provider sample that matched the criteria given in @sec-approach-attd.
 
 **A1: Limitations**
 
@@ -222,9 +222,9 @@ A second important point is that we included only those providers who appeared t
 
 **A1: Results**
 
-@fig-trend shows the change in test rates for the sample of 28 providers identified above. It appears that, overall (as shown in the left-hand panel), test rates doubled over the study period, from an average of 2.2 tests per attendance in 2012/13 to 4.3 tests per attendance in 2023/24. This equates to a growth rate of 6.3% per annum. However, the growth in tests per attendance has reduced in recent years, from 9.2% per annum between 2012/13 to 2018/19, to 3.3% per annum between 2018/19 and 2023/24.
+@fig-trend shows the change in testing rates for the sample of 28 providers identified above. It appears that, overall (as shown in the left-hand panel), testing rates doubled over the study period, from an average of 2.2 tests per attendance in 2012/13 to 4.3 tests per attendance in 2023/24. This equates to a growth rate of 6.3% per annum. However, the growth in tests per attendance has reduced in recent years, from 9.2% per annum between 2012/13 to 2018/19, to 3.3% per annum between 2018/19 and 2023/24.
 
-During the pandemic period, ED attendances fell. Evidence suggests that persons who did attend EDs were sicker, leading to more tests per patient. We suggest that the trend is now normalising after the short-term spike in test rates above the trend.
+During the pandemic period, ED attendances fell. Evidence suggests that persons who did attend EDs were sicker, leading to more tests per patient. We suggest that the trend is now normalising after the short-term spike in testing rates above the trend.
 
 Although, over the study period, testing rates for non-admitted patients were lower than for patients who were admitted, the *increase* in testing rates was greater for non-admitted patients (8.6% vs 4.4% per annum, respectively).
 
@@ -313,7 +313,7 @@ df_preplot_trend |>
 ```
 :::
 
-## A2. Can the rise in test rates be explained by changes to casemix?
+## A2. Can the rise in testing rates be explained by changes to casemix?
 
 The number and types of test that a patient receives in ED will be influenced by the patient’s characteristics and presenting conditions. The term "casemix" can be used to describe the combination of these factors. In this section of analysis, we explore whether patients are more or less likely to receive a test in 2023/24 than in 2019/20, having taken account of the patient casemix. The results are expressed as casemix-adjusted odds ratios, which is the odds of a patient receiving a test in 2023/24 divided by the odds in 2019/20, having adjusted for changes in casemix between the two years. We perform these calculations for 32 tests. These 32 tests account for over 99% of all tests recorded in EDs.
 
