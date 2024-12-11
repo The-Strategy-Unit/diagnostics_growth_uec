@@ -48,7 +48,7 @@ Between 2012/13 and 2023/24, the average number of tests per attendance doubled.
 
 Testing rates for patients who were later admitted were higher than for patients who were not admitted. However, g*rowth* in testing rates was higher for patients who were not admitted.
 
-In the four years between 2019/20 and 2023/24, test numbers for four high-volume tests grew by more than 40%. These tests were: hepatic function panel, c-reactive protein measurement, CT scan, and bone profile. For six low-volume tests, including D-dimer assay, creatine kinase measurement, and lipid panel, the number of tests more than doubled.
+Growth was not evenly distributed across test types. In the four years between 2019/20 and 2023/24, the growth rate for three high-volume tests was more than 40%. These tests were: C-reactive protein measurement, CT scan, and bone profile. Several low-volume tests, including lipid panels, MRI scans, and serologic tests, grew at more than twice the rate of attendances.
 
 #### Growth in testing in EDs cannot be explained by changes in casemix
 
