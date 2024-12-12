@@ -1,25 +1,12 @@
 # README
-# This file sets out a method to attribute the total growth in tests (dT) into growth due to:
-# [dD] changes in Demand
+# This file sets out a method to attribute the total growth in attendances
+# with a test (dT) into growth due to:
+# [dA] overall attendances (previously dD)
 # [dC] changes in Casemix
 # [dP] changes in Practice
 
-# Note that (3) is the residual growth, i.e. total growth minus growth 
-# attributable to (1) and (2).
-
 # MULTIPLICATIVE MODEL:
 # 1+T = (1+D)(1+C)(1+P)
-
-# The process is:
-# 0 set-up
-# 1 load data and create/load odds model 
-# 2 establish total growth in attendances with test t [dT]
-# 3 establish change in attendances [dA]
-# 4 use this to derive demand growth [dD]
-# 5 predict tests in yr2, as if in yr1 (i.e. under practice conditions from yr1)
-#   use this and [dD] to derive practice growth [dP]
-# 6 Solve equation for case-mix growth [dC]
-# 7 Calculate contribution of interaction terms [dI]
 
 # 0. SET UP ---------------------------------------------------------------
 
@@ -39,7 +26,8 @@ library("lubridate")
 
 # 1. LOAD DATA AND CREATE ODDS MODEL --------------------------------------------
 
-# PROBABLY BEST TO RUN SCRIPT IN TWO BATCHES. 
+# PROBABLY BEST TO RUN SCRIPT IN TWO BATCHES.
+
 # SO BATCH 1:
 tictoc::tic()
 df3 <- bind_rows(
@@ -51,6 +39,7 @@ df3 <- bind_rows(
 tictoc::toc()
 # ~90 SECONDS PER GB
 gc()
+# AND NOW RUN THE REST OF THE SCRIPT BEFORE RETURNING TO BATCH 2. 
 
 # SECOND BATCH:
 # df3 <- bind_rows(
@@ -63,7 +52,7 @@ gc()
 # gc()
 
 
-# 2. [dT] ESTABLISH ABSOLUTE GROWTH IN ATTENDANCES WITH (1 OR MORE) TEST t ------
+# 2. [dT] ESTABLISH ABSOLUTE GROWTH IN ATTENDANCES WITH (1 OR MORE) TEST ------
 
 df3 <- df3 |>
   mutate(df_growth = map(data, function(df) {
@@ -97,14 +86,13 @@ df3 <- df3 |>
   }), .after = model)
 
 
-# 4. [dD] USE ABOVE TO DERIVE DEMAND GROWTH  -------------------------
-# IF TESTS HAD GROWN IN LINE WITH GROWTH IN ATTENDANCES
+# 4. [dA] USE ABOVE TO DERIVE ACTIVITY GROWTH  -------------------------
 
 df4 <- df3 |> 
   mutate(df_growth = map2(df_growth, pdA, function(df, x){
     df |> 
       # mutate(dD = (x-1)*tests_2019_20)
-      mutate(dD = (x-1))
+      mutate(dA = (x-1))
   }))
 
 # df4$df_growth[[2]]
@@ -129,7 +117,7 @@ gc()
 
 # df5$df_growth[[3]]
 
-## b.USE THIS DIFFERENCE AND [dD] TO DERIVE PRACTICE GROWTH [dP] ---------
+## b.USE THIS DIFFERENCE AND [dA] TO DERIVE PRACTICE GROWTH [dP] ---------
 
 df6 <- df5 |>
   mutate(df_growth = pmap(
@@ -139,9 +127,11 @@ df6 <- df5 |>
         # mutate(dP = x - y - dD) |> 
         mutate(dP = x/y - 1) |> 
         # 6. [dC] RETURNING TO THE ORIGINAL EQUATION SOLVE FOR C --------------
-      mutate(dC = (dT - dD - dP - dD*dP)/(1 + dD + dP + dD*dP)) |> 
+      mutate(dC = (dT - dA - dP - dA*dP)/(1 + dA + dP + dA*dP)) |> 
         # ANYTHING LEFT IS INTERACTIONS TERMS ------------------------------
-      mutate(dI =  dT - dD - dC - dP)
+      mutate(dI =  dT - dA - dC - dP) |>
+      # TO ENSURE FORWARDS COMPATIBILITY 
+      mutate(dD = dA)
       # OR, SPECIFICALLY:
       # mutate(dI =  dC*dD + dD*dP +  dC*dP + dC*dP*dD)
     }
@@ -167,8 +157,8 @@ df6 |>
   # relocate(odds, .after = pdA) |> 
   # relocate(std_error, .after = odds) |> 
   select(-c(data, model, value, starts_with("pred_"))) |> 
-  # IMPORTANT !!! ADJUSTMENTS GIVEN SMALLER SAMPLE SIZE FOR MODELS 13:28 (FACTOR OR 0.35/0.17):
-  mutate(across(matches("^t"), ~ if_else(id %in% 13:28, . * (0.35 / 0.17), .))) %>%
+  # ADJUSTMENTS IF SMALLER SAMPLE SIZE FOR MODELS 13:28 (FACTOR OR 0.35/0.17):
+  # mutate(across(matches("^t"), ~ if_else(id %in% 13:28, . * (0.35 / 0.17), .))) %>%
   saveRDS(str_c("from_ncdr_growth_attrb_v4_", min(.$id), "to", max(.$id), ".rds"))
 
 
