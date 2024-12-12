@@ -257,44 +257,9 @@ mod_admission <- mgcv::bam(
   data = df_prep_admission
 )
 
+mod_admission |>
+  # broom::tidy(parametric = F) |>
+  broom::tidy(parametric = TRUE) |>
+  mutate(odds = exp(estimate), .before = estimate) |> 
+  saveRDS("from_ncdr_241106_admission_odds.rds")
 
-# ROUGH -------------------------------------------------------------------
-# 
-# summary(mod_admission)
-# 
-# mod_admission |>
-#   # broom::tidy(parametric = F) |>
-#   broom::tidy(parametric = TRUE) |>
-#   mutate(odds = exp(estimate), .before = estimate) |>
-#   # print(n=310)
-#   filter(str_detect(term, "^invst")) |> 
-#   mutate(InvestigationKey = as.numeric(str_extract(term, "[:digit:]{2}"))) |>
-#   left_join(lkp_invst, join_by(InvestigationKey)) |>
-#   # REMOVE SUPERFLUOUS TEXT:
-#   mutate(InvestigationDescription = str_remove_all(InvestigationDescription, "[:punct:]")) |>
-#   mutate(InvestigationDescription = str_remove_all(InvestigationDescription, " procedure")) |> 
-#   relocate(InvestigationDescription, .before = term) |> 
-#   # select(InvestigationDescription, odds) |> 
-#   filter(!term %in% c("invst_941", "invst_791", "invst_851", "invst_631")) |> 
-#   # arrange(-odds) 
-#   # select(1, 2, 3) |>
-#   ggplot() +
-#   geom_col(aes(reorder(InvestigationDescription, odds), odds)) +
-#   theme_bw() +
-#   theme_minimal() +
-#   coord_flip() +
-#   theme(
-#     axis.title.y = element_blank(),
-#     axis.text = element_text(size = 12)
-#   )
-# 
-# # lkp_invst |> print(n=50)
-# 
-# # mod_admission |> saveRDS("241105_mod_admission.rds")
-# mod_admission <- readRDS("241105_mod_admission.rds")
-# 
-# mod_admission |>
-#   # broom::tidy(parametric = F) |>
-#   broom::tidy(parametric = TRUE) |>
-#   mutate(odds = exp(estimate), .before = estimate) |> 
-#   saveRDS("from_ncdr_241106_admission_odds.rds")
