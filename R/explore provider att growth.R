@@ -1,4 +1,5 @@
-# 
+# README
+# Examine provider growth in Sample 2. 
 
 library("here")
 library("arrow")
@@ -16,13 +17,13 @@ library("lubridate")
 
 # 1. LOAD ECDS DATA -------------------------------------------------------
 
-pared_provider_sample <-
-  open_dataset(here("data", "pared_provider_sample.parquet")) |>
+provider_sample <-
+  open_dataset(here("data_raw", "provider_sample.parquet")) |>
   collect()
 
 
 
-pared_provider_sample |> 
+provider_sample |> 
   group_by(fyear) |> 
   summarise(atts = n()) |> 
   pivot_wider(names_from = "fyear",
@@ -31,7 +32,7 @@ pared_provider_sample |>
   mutate(growth = (`atts2023/24` / `atts2019/20`) - 1)
 
 
-pared_provider_sample |> 
+provider_sample |> 
   group_by(fyear, procode) |> 
   summarise(atts = n()) |> 
   pivot_wider(names_from = "fyear",
@@ -58,7 +59,7 @@ pared_provider_sample |>
 # RNN (NORTH CUMBRIA INTEGRATED CARE NHS FOUNDATION TRUST) 
 #   subsumed RNL (NORTH CUMBRIA UNIVERSITY HOSPITALS NHS TRUST) in 2019
 
-pared_provider_sample |> 
+provider_sample |> 
   filter(procode != "RRK") |> 
   filter(procode != "RNN") |>
   filter(procode != "RWJ") |> 
