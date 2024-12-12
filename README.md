@@ -4,11 +4,11 @@ Over the last decade, the growth in diagnostic testing in EDs has been rapid. Th
 
 This repository contains the code for a project carried out by the Strategy Unit on behalf of NHS England.
 
-## Reproducing the results from code
+## Reproducing the results with code found here
 This project relies on the AEA and EC datasets, which we accessed through NCDR.
 To reproduce the results, run:
 1. SQL files in /sql
-2. R scripts in /r
+2. R scripts in /r (in order addressed in report)
 3. Quarto report in /notebooks
 
 
