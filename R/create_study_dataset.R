@@ -1,7 +1,7 @@
 # README
-# Pulls the provider sample from ecds_only table, removes march, 
-# and fixes data types. The resulting study data frame should serve
-# as the basis for all modelling work in the project. (NCDR)
+# Pulls the provider sample from ecds_only table and fixes data types. 
+# The resulting study data frame should serve as the basis for all 
+# modelling work in the project. (NCDR)
 
 library("DBI")
 library("here")
@@ -25,7 +25,7 @@ library("lubridate")
 con_sandbox_su <- dbConnect(
   odbc::odbc(),
   Driver = "SQL Server",
-  Server = "PRODNHSESQL101",
+  Server = "XXX",
   Database = "NHSE_Sandbox_StrategyUnit",
   Trusted_Connection = "True"
 )
@@ -63,21 +63,27 @@ gc()
 # 1. MASTER DF ------------------------------------------------------------
 # FOR ALL MODELLING EXERCISES
 
-pared_provider_sample <- raw_provider_sample |>
-  filter(is_march == 0) 
-
 ## a. data types ---------------------------------------------------------
 
-pared_provider_sample <- pared_provider_sample |> 
+provider_sample <- raw_provider_sample |> 
   mutate(inj_flag = as.factor(as.numeric(as.logical(inj_flag)))) |> 
   mutate(age = as.integer(age)) |> 
   mutate(across(
     matches("fyear|att_|arr_mode|^disd|^acu|^chief|^inj|^sex|_grp|^imd|procode|lacd|region|lsoa"),
     ~ as.factor(.)
   )) |>
-  mutate(acuity = as.ordered(acuity)) 
+  mutate(acuity = as.ordered(acuity)) |>
+  # (REMOVED DUE DQ) ADD ASSESSMENT TO CONCLUSION DURATION (AND FLAG FOR ANOMALIES):
+  # mutate(dur_assess_concl = dur_arr_concl - as.numeric(difftime(dttm_arr, dttm_assess, units = "mins"))) |> 
+  # REPLACE ABOVE WITH ASSESSMENT TO DEPARTURE DURATION:
+  mutate(dur_assess_depart = duration_ed - as.numeric(difftime(dttm_arr, dttm_assess, units = "mins"))) |> 
+  mutate(flag_odd_time = if_else(dttm_arr > dttm_assess, 1, 0)) |> 
+  mutate(flag_odd_time = if_else(dur_assess_depart < 0, 1, flag_odd_time)) |>
+  # NOTE: WE MAY WANT TO BE EVEN MORE CONSERVATIVE HERE:
+  mutate(flag_odd_time = if_else(dur_assess_depart >= 96*60, 1, flag_odd_time))
+
 
 # TO SUMMARISE IN SKIM QUARTO:
-# pared_provider_sample |>
+# provider_sample |>
 #   skimr::skim() |> 
 #   saveRDS("from_ncdr_ecds_only_240924_skim.rds")
