@@ -917,7 +917,7 @@ readRDS(here("data", "241204_df_preplot_duration.rds")) |>
   arrange(-estimate) |>
   left_join(
     # FROM R/count_total_sample_tests
-    readRDS(here("df_growth_counts.rds")), 
+    readRDS(here("data", "df_growth_counts.rds")), 
     join_by(term == test)
   ) |> 
   select(
