@@ -4,13 +4,12 @@ Over the last decade, the growth in diagnostic testing in EDs has been rapid. Th
 
 This repository contains the code for a project carried out by the Strategy Unit on behalf of NHS England.
 
-## Running the code
+## Reproducing the results from code
+This project relies on the AEA and EC datasets, which we accessed through NCDR.
+To reproduce the results, run:
+1. SQL files in /sql
+2. R scripts in /r
+3. Quarto report in /notebooks
 
-### First time setup (for SU team)
 
-We have setup a powershell script to create a set of empty directories that are used by the code within this project. Open a terminal window. You can do this by clicking the terminal tab within RStudio, cmd prompt, or opening powershell directly. Navigate to the project root directory and run: powershell .\create_directory_structure.ps1 If you get an error about running scripts being disabled you can temporarily enable local scripts by running:
-`powershell .\create_directory_structure.ps1` 
-If you get an error about running scripts being disabled you can temporarily enable local scripts by running:  
- - `powershell` to run powershell
- - `Set-ExecutionPolicy RemoteSigned -Scope Process` to temporarily enable local scripts  
- - `.\create_directory_structure.ps1` to run the script
+
