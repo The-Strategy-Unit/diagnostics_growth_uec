@@ -72,5 +72,4 @@ df_counts |>
     join_by(InvestigationKey)
   ) |>
   relocate(InvestigationDescription, 1) |>
-  select(-test) |>
   saveRDS(here("data", "df_growth_counts.rds"))
