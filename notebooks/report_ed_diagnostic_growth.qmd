@@ -155,8 +155,7 @@ library("stringr")
 library("gtExtras")
 library("lubridate")
 
-  
-lkp_invst_ec_aea <- readRDS(here("data_raw", "lkp_test_ec_to_aea.rds"))
+lkp_invst_ec_aea <- readRDS(here("reference", "lkp_test_ec_to_aea.rds"))
 ```
 
 ## Characteristics of patients in the study
@@ -172,8 +171,8 @@ As detailed above, the analyses in this report rely on two data samples. All but
 #| column: page
 #| width: 8
 
-
-read_rds(here("prep_table_1.rds")) |> 
+# CREATED BY R/prep_table_1.R
+readRDS(here("data", "prep_table_1.rds")) |> 
  gt(groupname_col = "grouping") |> 
   tab_options(row_group.as_column = TRUE) |> 
   fmt_number(columns = c(`attendances 2019/20`, `attendances 2023/24`),
@@ -282,10 +281,6 @@ df_preplot_trend |>
 #| fig-width: 8
 #| out-width: "100%"
 
-# #| fig-cap: "Having adjusted for casemix, how much more likely it is that a patient will receive a test in an ED in 2023/24 compared to 2019/20? Source: ECDS."
-# #| fig-align: center
-# #| fig-asp: 0.618
-
 df_preplot_trend |>
   mutate(disdest = as.character(disdest)) |> 
   mutate(across(c(gopy_att, gopy_invst), ~ . - 1)) |>
@@ -369,6 +364,7 @@ tmp_admodds <- readRDS(
   mutate(term = str_sub(term, end = -2)) |> 
   select(term, odds_adm = odds)
 
+# ODDS MODEL RESULTS ARE BUNDLED WITH THE ATTRIBUTION DATA.
 df_odds_results <- bind_rows(
   readRDS(here("data", "from_ncdr_growth_attrb_v4_1to16.rds")),
   readRDS(here("data", "from_ncdr_growth_attrb_v4_17to32.rds"))
@@ -491,8 +487,6 @@ df_odds_results |>
 #| fig-align: center
 ##| fig-asp: 0.618
 ##| out-width: "90%"
-
-# #| fig-cap: "Having adjusted for casemix, how much more likely it is that a patient will receive a test in an ED in 2023/24 compared to 2019/20? Source: ECDS."
 
 df_odds_results |>
   select(InvestigationDescription, att_2023_24, tests_2023_24, odds, lci, uci) |>
@@ -671,9 +665,6 @@ df_preplot_growth_components <- df_odds_results |>
 #| fig-width: 12
 #| fig-height: 12
 
-# # | out-width: "100%"
-# #| fig-align: center
-# #| fig-asp: 0.618
 
 df_preplot_growth_components |>
   ggplot(aes(reorder(InvestigationDescription, value_order), value_abs)) +
@@ -736,18 +727,6 @@ df_preplot_growth_components |>
 #| fig-width: 12
 #| fig-height: 12
 
-# #| label: fig-attrib-abs
-# #| echo: false
-# #| message: false
-# #| warning: false
-# #| fig-align: center
-# #| column: page
-# #| fig-width: 10
-# #| fig-height: 10
-# #| out-width: "85%"
-
-# #| fig-asp: 0.618
-
 df_preplot_growth_components |>
   mutate(value_label_abs = str_c(value_abs, "k")) |>
   ggplot(aes(reorder(InvestigationDescription, value_order), value_abs)) +
@@ -796,8 +775,6 @@ df_preplot_growth_components |>
 #| warning: false
 #| column: page
 
-# #| fig-width: 10
-# #| out-width: "85%"
 
 df_odds_results |> 
   select(InvestigationDescription, invst_group, tests_2019_20, tests_2023_24, dT, dD, dC, dP, dI) |> 
@@ -825,8 +802,6 @@ df_odds_results |>
     data_row.padding = px(1),
     table.font.size = "small"
   ) 
-
-
 
 ```
 :::
@@ -941,6 +916,7 @@ readRDS(here("data", "241204_df_preplot_duration.rds")) |>
     semi_join(df_odds_results, join_by(InvestigationDescription)) |>
   arrange(-estimate) |>
   left_join(
+    # FROM R/count_total_sample_tests
     readRDS(here("df_growth_counts.rds")), 
     join_by(term == test)
   ) |> 
@@ -1021,10 +997,7 @@ readRDS(here("data", "df_nested_preplots_multi_tests.rds"))$data[[5]] |>
   ggplot() +
   theme_minimal() +
   theme(
-    # axis.ticks = element_blank(),
     panel.grid.minor.x = element_blank(),
-    # axis.text = element_text(size = ),
-    # axis.title = element_text(size = 9),
     legend.position = "bottom"
   ) +
   geom_line(aes(
@@ -1061,11 +1034,6 @@ readRDS(here("data", "df_nested_preplots_multi_tests.rds"))$data[[5]] |>
   scale_size_continuous(name = "Number of attendances") +
   scale_colour_manual(name = "Financial year", values = c("dodgerblue", "#D81159")) +
   guides(colour = "none")
-  # labs(
-  #   title = "Median time in ED by number of tests",
-  #   subtitle = "Selected providers | Apr19-Feb20 & Apr23-Feb24"
-  # )
-  
 
 ```
 
@@ -1130,61 +1098,53 @@ Finally, there are two low-volume tests that appear to be outliers in this analy
 #| fig-align: center
 #| out-width: "85%"
 
-
 df_odds_results |>
-      filter(InvestigationDescription != "Serologic test") |>
-  ggplot()+
+  filter(InvestigationDescription != "Serologic test") |>
+  ggplot() +
+  geom_rect(
+    aes(xmin = .5, xmax = 1, ymin = 0.5, ymax = 1),
+    fill = "grey80",
+    alpha = .01
+  ) +
   geom_rect(
     aes(
-      xmin = .5,
-      xmax = 1,
-      ymin = 0.5,
-      ymax = 1 
+      xmin = 1, xmax = 4, ymin = 1, ymax = 2
     ),
     fill = "grey80",
     alpha = .01
-  )+
-  geom_rect(
-    aes(
-      xmin = 1,
-      xmax = 4,
-      ymin = 1,
-      ymax = 2 
-    ),
-    fill = "grey80",
-    alpha = .01
-  )+
-  geom_hline(yintercept = 1, lty = "dashed", alpha = 0.5)+ # col = "grey40")+
-  geom_vline(xintercept = 1, lty = "dashed", alpha = 0.5)+ # col = "grey40")+
-  geom_point(aes(odds, odds_adm, size = p, colour = invst_group), alpha = 0.5, stroke = NA)+
-  scale_size(labels = scales::percent_format())+
+  ) +
+  geom_hline(yintercept = 1, lty = "dashed", alpha = 0.5) +
+  geom_vline(xintercept = 1, lty = "dashed", alpha = 0.5) +
+  geom_point(aes(odds, odds_adm, size = p, colour = invst_group), alpha = 0.5, stroke = NA) +
+  scale_size(labels = scales::percent_format()) +
   geom_text_repel(
     aes(
       odds, odds_adm,
       label = str_wrap(InvestigationDescription, 20)
-      ),
+    ),
     size = 2,
   ) +
   scale_y_log10(
-     breaks = c(0.5, 1, 2),
-     labels = c(
-    "Half\nas likely in\n2023/24",
-    "Equally\nas likely in\n2023/24",
-    "2x\nas likely in\n2023/24")
-  )+
-   scale_x_log10(
-      breaks = c(0.5, 1, 2, 4, 10, 20),
-  labels = c(
-    "Half\nas likely in\n2023/24",
-    "Equally\nas likely in\n2023/24",
-    "2x\nas likely in\n2023/24",
-    "4x\nas likely in\n2023/24",
-    "10x\nas likely in\n2023/24",
-    "20x\nas likely in\n2023/24"
+    breaks = c(0.5, 1, 2),
+    labels = c(
+      "Half\nas likely in\n2023/24",
+      "Equally\nas likely in\n2023/24",
+      "2x\nas likely in\n2023/24"
     )
-  )+
+  ) +
+  scale_x_log10(
+    breaks = c(0.5, 1, 2, 4, 10, 20),
+    labels = c(
+      "Half\nas likely in\n2023/24",
+      "Equally\nas likely in\n2023/24",
+      "2x\nas likely in\n2023/24",
+      "4x\nas likely in\n2023/24",
+      "10x\nas likely in\n2023/24",
+      "20x\nas likely in\n2023/24"
+    )
+  ) +
   # facet_wrap(vars(invst_group))+
-  theme_minimal()+
+  theme_minimal() +
   theme(
     axis.ticks = element_blank(),
     legend.title = element_text(size = 8),
@@ -1192,8 +1152,7 @@ df_odds_results |>
     axis.title = element_text(size = 9),
     legend.position = "bottom",
     plot.margin = margin(20, 5, 5, 5),
-
-  )+
+  ) +
   labs(
     x = "\nCase-mix-adjusted odds of test (2023/24 vs 2019/20)",
     y = "\nCase-mix-adjusted odds of admission having received test (2023/24 vs 2019/20)\n",
@@ -1216,40 +1175,40 @@ df_odds_results |>
 #| fig-align: center
 #| out-width: "85%"
 
-
 df_odds_results |>
-  ggplot()+
-  geom_hline(yintercept = 1, lty = "dashed", alpha = 0.5)+ # col = "grey40")+
-  geom_vline(xintercept = 1, lty = "dashed", alpha = 0.5)+ # col = "grey40")+
-  geom_point(aes(odds, odds_adm, size = p, colour = invst_group), alpha = 0.5, stroke = NA)+
-  scale_size(labels = scales::percent_format())+
+  ggplot() +
+  geom_hline(yintercept = 1, lty = "dashed", alpha = 0.5) +
+  geom_vline(xintercept = 1, lty = "dashed", alpha = 0.5) +
+  geom_point(aes(odds, odds_adm, size = p, colour = invst_group), alpha = 0.5, stroke = NA) +
+  scale_size(labels = scales::percent_format()) +
   geom_text_repel(
     aes(
       odds, odds_adm,
       label = str_wrap(InvestigationDescription, 20)
-      ),
+    ),
     size = 2,
   ) +
   scale_y_log10(
-     breaks = c(0.5, 1, 2),
-     labels = c(
-    "Half\nas likely in\n2023/24",
-    "Equally\nas likely in\n2023/24",
-    "2x\nas likely in\n2023/24")
-  )+
-   scale_x_log10(
-      breaks = c(0.5, 1, 2, 4, 10, 20),
-  labels = c(
-    "Half\nas likely in\n2023/24",
-    "Equally\nas likely in\n2023/24",
-    "2x\nas likely in\n2023/24",
-    "4x\nas likely in\n2023/24",
-    "10x\nas likely in\n2023/24",
-    "20x\nas likely in\n2023/24"
+    breaks = c(0.5, 1, 2),
+    labels = c(
+      "Half\nas likely in\n2023/24",
+      "Equally\nas likely in\n2023/24",
+      "2x\nas likely in\n2023/24"
     )
-  )+
+  ) +
+  scale_x_log10(
+    breaks = c(0.5, 1, 2, 4, 10, 20),
+    labels = c(
+      "Half\nas likely in\n2023/24",
+      "Equally\nas likely in\n2023/24",
+      "2x\nas likely in\n2023/24",
+      "4x\nas likely in\n2023/24",
+      "10x\nas likely in\n2023/24",
+      "20x\nas likely in\n2023/24"
+    )
+  ) +
   # facet_wrap(vars(invst_group))+
-  theme_minimal()+
+  theme_minimal() +
   theme(
     axis.ticks = element_blank(),
     legend.title = element_text(size = 8),
@@ -1257,8 +1216,7 @@ df_odds_results |>
     axis.title = element_text(size = 9),
     legend.position = "bottom",
     plot.margin = margin(20, 5, 5, 5),
-
-  )+
+  ) +
   labs(
     x = "\nCase-mix-adjusted odds of test (2023/24 vs 2019/20)",
     y = "\nCase-mix-adjusted odds of admission having received test (2023/24 vs 2019/20)\n",
@@ -1276,21 +1234,20 @@ df_odds_results |>
 #| warning: false
 #| column: page
 #| width: 8
-
-df_odds_results |> 
-  select(InvestigationDescription, odds, odds_adm) |> 
-  gt() |> 
+df_odds_results |>
+  select(InvestigationDescription, odds, odds_adm) |>
+  gt() |>
   cols_label(
     InvestigationDescription = "Test name",
     odds = "Odds ratio of test<br>(casemix adj.)<br>2023/24 vs. 2019/20",
     odds_adm = "Odds ratio of admission<br>given test (casemix adj.)<br>2023/24 vs. 2019/20",
-        .fn = md
-  ) |> 
+    .fn = md
+  ) |>
   fmt_auto() |>
   tab_options(
     data_row.padding = px(1),
     table.font.size = "small"
-  ) 
+  )
 ```
 :::
 
@@ -1299,8 +1256,6 @@ df_odds_results |>
 In these analyses, we investigated how rates of diagnostic testing in EDs have changed in recent years. We also explored how these changes have influenced both patient journeys through the ED and the likelihood of admission to hospital. This work concludes the first phase of a two-phase project, in which we are examing the impact of the growth in diagnostic testing on urgent and emergency care services. In the second phase of the project, we plan to disregard the boundary between EDs and inpatient beds, and investigate whether increased diagnostic testing means that patients spend less time in contact with hospital services overall.
 
 # Further Research {#sec-further-work}
-
-<!--In the second phase of this project, which we expect to finish the spring of 2025, we will disregard the boundary between EDs and inpatient beds. And look at the impact of diagnostic growth on urgent and emergency care a inpatient beds. Rather than looking at the im... might ///Increased diagnostic testing means that patients spend less time in contact with hospital services, even ifpatients an increase in time in ED.///we measure the total time that patients spend in contact with hospital services, starting when they enter the UEC pathway.-->
 
 We describe, below, four potential projects that might develop or confirm the story emerging from this analysis.
 
@@ -1334,7 +1289,6 @@ eric_2223 <- read_csv("https://files.digital.nhs.uk/FB/BE3AC8/ERIC%20-%20202223%
   mutate(region = str_remove_all(commissioning_region, " COMMISSIONING REGION")) |> 
   select(trust_code, trust_name, region, trust_type)
 
-list.files(here::here("data_raw"))
 dq_multicoding <- readRDS(
   here("data_raw", "from_ncdr_trends_240917_dq_multicoding.rds")
   )
@@ -1659,26 +1613,26 @@ We established that 28 providers met these criteria. The providers we selected f
 #| tbl-cap: "Provider sample used in Analysis 1"
 #| echo: false
 #| message: false
-
-dq_providers_relaxed |> 
-  left_join(eric_2223, join_by(procode == trust_code)) |> select(1,2) |> 
+dq_providers_relaxed |>
+  left_join(eric_2223, join_by(procode == trust_code)) |>
+  select(1, 2) |>
   rename(Provider_Code = procode, Provider_Name = trust_name) |>
-    arrange(Provider_Code) |> 
-  mutate(id = row_number(), .before = Provider_Code) |> 
-  mutate(Provider_Name = str_to_title(Provider_Name)) |> 
-  mutate(Provider_Name = str_replace_all(Provider_Name, "Nhs", "NHS")) |> 
-  gt() |> 
-    fmt_auto() |> 
-   tab_style(
+  arrange(Provider_Code) |>
+  mutate(id = row_number(), .before = Provider_Code) |>
+  mutate(Provider_Name = str_to_title(Provider_Name)) |>
+  mutate(Provider_Name = str_replace_all(Provider_Name, "Nhs", "NHS")) |>
+  gt() |>
+  fmt_auto() |>
+  tab_style(
     style = list(
       cell_text(weight = "bold")
     ),
     locations = cells_column_labels(c(Provider_Name, Provider_Code))
-  ) |> 
+  ) |>
   tab_options(
     data_row.padding = px(1),
-      table.font.size = "small"
-    )
+    table.font.size = "small"
+  )
 ```
 
 ## Sample representation (A1)
@@ -2010,20 +1964,6 @@ table_representation_ecds_only <- tibble(
     rename_with(~ paste0("region_", .x, recycle0 = TRUE)) |>
     identity())) |>
   unnest(f_year) |>
-  # mutate(type = map(data, \(df)
-  #                   df |>
-  #                     count(fyear, trust_type, wt = n, sort = T) |>
-  #                     group_by(fyear) |>
-  #                     mutate(p = n/sum(n)) |>
-  #                     group_by(trust_type) |>
-  #                     summarise(av = round(mean(p), 3)) |>
-  #                     ungroup() |>
-  #                     pivot_wider(names_from = trust_type, values_from = av) |>
-  #                     clean_names() |>
-  #                     rename_with(~ paste0("type_", .x, recycle0 = TRUE)) |>
-  #                     identity()
-  # )) |>
-  # unnest(type) |>
   unnest(region) |>
   unnest(size) |>
   # unnest(type) |>
@@ -2060,10 +2000,6 @@ table_representation_ecds_only |>
     label = "Provider Size (attendances 23/24):",
     rows =  str_detect(variable, "att")
   ) |> 
-  # tab_row_group(
-  #   group = "Provider-related",
-  #   rows =  str_detect(variable, "type_|min_|max_|av_")
-  # ) |> 
   tab_row_group(
     label = "",
     rows =  str_detect(variable, "n_prov|2023")
