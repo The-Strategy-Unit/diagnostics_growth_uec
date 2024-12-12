@@ -4,7 +4,10 @@ Over the last decade, the growth in diagnostic testing in EDs has been rapid. Th
 
 This repository contains the code for a project carried out by the Strategy Unit on behalf of NHS England.
 
-## Reproducing the results with code found here
+## HTML REPORT FOR PHASE 1 OF THE PROJECT
+Can be found in /notebooks/report_ed_diagnostic_growth.html. This can be viewed in an internet browser by clicking the "Download raw file" button (mid-right on the screen).
+
+## Reproducing the results / report with code found here
 This project relies on the AEA and EC datasets, which we accessed through NCDR.
 To reproduce the results, run:
 1. SQL files in /sql
