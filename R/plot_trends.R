@@ -17,7 +17,7 @@ library("lubridate")
 con_sandbox_su <- dbConnect(
   odbc::odbc(),
   Driver = "SQL Server",
-  Server = "PRODNHSESQL101",
+  Server = "XXX",
   Database = "NHSE_Sandbox_StrategyUnit",
   Trusted_Connection = "True"
 )
