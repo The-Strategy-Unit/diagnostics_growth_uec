@@ -118,7 +118,7 @@ Whilst sampling should improve the reliability and validity of our results, we c
 
 <!--With a representative sample, we can be more confident that our findings for the sample are also applicable to the population.-->
 
-There is a trade-off to be made here. The larger our sample of providers, the more likely it is to be representative of the population of providers. But the larger we make our sample, the more we compromise on data quality, which will likely to decrease the the reliability of our results.
+There is a trade-off to be made here. The larger our sample of providers, the more likely it is to be representative of the population of providers. But the larger we make our sample, the more we compromise on data quality, which will likely to decrease the reliability of our results.
 
 Details of the sampling methods, our approach to the trade-off, and the measures of representation can be found in @sec-appendix.
 
