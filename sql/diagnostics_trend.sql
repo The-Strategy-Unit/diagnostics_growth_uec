@@ -12,8 +12,8 @@
 -- for a 12 year period (2012/13 - 2023/24). From record-level  
 -- data in AEA and EC datasets within NHSE_SUSPlus_Live db in NCDR. 
 -- Note: 24 is max for recorded investigations.
- 
- 
+
+
 SELECT * INTO [NHSE_Sandbox_StrategyUnit].[dbo].[2232_diagnostics_trend]
 FROM (
 --  __ _  ___  __ _ 
@@ -69,7 +69,6 @@ FROM (
           (
               NOT (
                   aea.AEA_Attendance_Disposal IN ('10', '12', '13', '99')
-                  OR aea.AEA_Attendance_Disposal IS NULL
               )
           )
           AND SEX IN ('1', '2') 
@@ -160,9 +159,13 @@ FROM (
           AND -- ATTENDANCE CATEGORY IS AN UNPLANNED FIRST (NOT FOLLOW UP / UNKNOWN):
           EC_AttendanceCategory = '1'
           AND -- NOT BROUGHT IN DEAD OR DIED DURING ATTENDANCE:
-            (NOT 
-               (Der_AEA_Patient_Group = '70' OR Discharge_Destination_SNOMED_CT = '305398007') -- died
-             )
+            (
+			NOT (Der_AEA_Patient_Group = '70' OR Discharge_Destination_SNOMED_CT = '305398007') -- died
+             OR (Der_AEA_Patient_Group IS NULL AND Discharge_Destination_SNOMED_CT != '305398007')
+			 OR (Der_AEA_Patient_Group != '70' AND Discharge_Destination_SNOMED_CT IS NULL) 
+			 OR (Der_AEA_Patient_Group IS NULL AND Discharge_Destination_SNOMED_CT IS NULL)
+
+			 )
           AND -- DURING ATTENDANCE DID NOT LEAVE / UNKNOWN DISPOSAL / NOT STREAMED PATIENTS (GENERALLY)
           (
               DischargeStatusDescription = 'Treatment completed (situation)'
