@@ -173,7 +173,7 @@ SELECT 'ecds' as data_source,
     Der_Postcode_Dist_Unitary_Auth AS lacd,
     Government_Office_Region AS region,
     Der_Postcode_LSOA_2011_Code AS lsoa11cd
-
+	
 INTO [NHSE_Sandbox_StrategyUnit].[dbo].[2232_diagnostics_ecds_only]
 FROM NHSE_SUSPlus_Live.dbo.tbl_Data_SUS_EC ec 
     LEFT OUTER JOIN [NHSE_Reference].[dbo].[tbl_Ref_DataDic_ECDS_Arrival_Mode] ref_arr_mode ON ec.EC_Arrival_Mode_SNOMED_CT = ref_arr_mode.ArrivalModeCode
@@ -200,9 +200,12 @@ WHERE ec.Der_Financial_Year IN (
     AND -- ATTENDANCE CATEGORY IS AN UNPLANNED FIRST (NOT FOLLOW UP / UNKNOWN):
     EC_AttendanceCategory = '1'
     AND -- NOT BROUGHT IN DEAD OR DIED DURING ATTENDANCE:
-      (
-      NOT (Der_AEA_Patient_Group = '70' OR Discharge_Destination_SNOMED_CT = '305398007') -- died
-      )
+        (
+		NOT (Der_AEA_Patient_Group = '70' OR Discharge_Destination_SNOMED_CT = '305398007') -- died
+         OR (Der_AEA_Patient_Group IS NULL AND Discharge_Destination_SNOMED_CT != '305398007')
+		 OR (Der_AEA_Patient_Group != '70' AND Discharge_Destination_SNOMED_CT IS NULL) 
+		 OR (Der_AEA_Patient_Group IS NULL AND Discharge_Destination_SNOMED_CT IS NULL)
+		 )
     AND -- DURING ATTENDANCE DID NOT LEAVE / UNKNOWN DISPOSAL / NOT STREAMED PATIENTS (GENERALLY)
       (
       DischargeStatusDescription = 'Treatment completed (situation)'
