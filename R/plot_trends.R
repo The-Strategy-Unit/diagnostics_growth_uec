@@ -98,7 +98,11 @@ df_preplot_trends <- df_data_plus_invst |>
       mutate(disdest = "overall (all destinations)", .after = procode)
   ) |>
   group_by(fyear, disdest) |>
-  summarise(rate = sum(total_invst, na.rm = T) / sum(n_att, na.rm = T)) |>
+  summarise(
+    n_att = sum(n_att, na.rm = T),
+    n_invst = sum(total_invst, na.rm = T),
+    rate = sum(total_invst, na.rm = T) / sum(n_att, na.rm = T)
+  ) |>
   ungroup() |>
   mutate(disdest = case_when(
     disdest == "admitted" ~ "admitted patients",
@@ -106,13 +110,13 @@ df_preplot_trends <- df_data_plus_invst |>
     T ~ disdest
   ))
 
-# STATS FOR TEXT:
-# df_preplot_trends |> 
-#   arrange(disdest) |> 
-#   group_by(disdest) |> 
-#   mutate(gopy_att = n_att/lag(n_att), .after = n_att) |> 
-#   mutate(gopy_invst = n_invst/lag(n_invst), .after = n_invst) |> 
-#   ungroup()
+
+df_preplot_trends <- df_preplot_trends |>
+  arrange(disdest) |>
+  group_by(disdest) |>
+  mutate(gopy_att = n_att/lag(n_att), .after = n_att) |>
+  mutate(gopy_invst = n_invst/lag(n_invst), .after = n_invst) |>
+  ungroup()
   
 df_preplot_trends |> saveRDS("from_ncdr_trends_250115_df_preplot.rds")
 
