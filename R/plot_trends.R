@@ -106,14 +106,15 @@ df_preplot_trends <- df_data_plus_invst |>
     T ~ disdest
   ))
 
-df_preplot_trends <- df_preplot_trends |> 
-  arrange(disdest) |> 
-  group_by(disdest) |> 
-  mutate(gopy_att = n_att/lag(n_att), .after = n_att) |> 
-  mutate(gopy_invst = n_invst/lag(n_invst), .after = n_invst) |> 
-  ungroup()
+# STATS FOR TEXT:
+# df_preplot_trends |> 
+#   arrange(disdest) |> 
+#   group_by(disdest) |> 
+#   mutate(gopy_att = n_att/lag(n_att), .after = n_att) |> 
+#   mutate(gopy_invst = n_invst/lag(n_invst), .after = n_invst) |> 
+#   ungroup()
   
-df_preplot_trends |> saveRDS("from_ncdr_trends_241204_df_preplot.rds")
+df_preplot_trends |> saveRDS("from_ncdr_trends_250115_df_preplot.rds")
 
 
 # 2. PLOT -----------------------------------------------------------------
@@ -162,9 +163,8 @@ preplot_trend_by_invest <- data_provider_sample |>
   reframe(n_att = sum(n_att, na.rm = T), n_invst = sum(n_invst, na.rm = T)) |>
   mutate(rate = n_invst / n_att)
 
-preplot_trend_by_invest |> saveRDS("from_ncdr_trends_241003_preplot_by_invst.rds")
+preplot_trend_by_invest |> saveRDS("from_ncdr_trends_250115_preplot_by_invst.rds")
 
-options(scipen = 999)
 preplot_trend_by_invest |>
   ggplot(aes(fyear, rate)) +
   geom_line(aes(col = disdest, group = disdest)) +
