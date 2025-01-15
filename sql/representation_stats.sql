@@ -79,10 +79,13 @@ WHERE ec.Der_Financial_Year IN (
     -- (NOT ArrivalModeDescription IS NULL)
     AND -- ATTENDANCE CATEGORY IS AN UNPLANNED FIRST (NOT FOLLOW UP / UNKNOWN):
     EC_AttendanceCategory = '1'
-    AND -- NOT BROUGHT IN DEAD OR DIED DURING ATTENDANCE:
-      (
-      NOT (Der_AEA_Patient_Group = '70' OR Discharge_Destination_SNOMED_CT = '305398007') -- died
-      )
+   AND -- NOT BROUGHT IN DEAD OR DIED DURING ATTENDANCE:
+        (
+		NOT (Der_AEA_Patient_Group = '70' OR Discharge_Destination_SNOMED_CT = '305398007') -- died
+         OR (Der_AEA_Patient_Group IS NULL AND Discharge_Destination_SNOMED_CT != '305398007')
+		 OR (Der_AEA_Patient_Group != '70' AND Discharge_Destination_SNOMED_CT IS NULL) 
+		 OR (Der_AEA_Patient_Group IS NULL AND Discharge_Destination_SNOMED_CT IS NULL)
+		 )
     AND -- DURING ATTENDANCE DID NOT LEAVE / UNKNOWN DISPOSAL / NOT STREAMED PATIENTS (GENERALLY)
       (
       DischargeStatusDescription = 'Treatment completed (situation)'
