@@ -1298,12 +1298,16 @@ ts_provider_attds <- readRDS(
 dq_provider_na_24_99 <- readRDS(
   here("data_raw", "from_ncdr_trends_240917_dq_prov_na_24_99.rds")
   )
+###
+
 dq_provider_represent <- readRDS(
   here("data_raw", "from_ncdr_240917_prov_represent.rds")
   ) 
-# DEPENDS ON RESULTS OF THIS DOCUMENT:
+
+###
+
 df_preplot_trend <- readRDS(
-  here("data_raw", "from_ncdr_trends_241003_df_preplot.rds")
+  here("data", "from_ncdr_trends_241204_df_preplot.rds")
   )
 
 # 2. JOIN --------------------------------------------
