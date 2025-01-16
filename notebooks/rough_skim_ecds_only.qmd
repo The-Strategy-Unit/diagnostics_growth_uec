@@ -1,0 +1,51 @@
+---
+title: "The 'ECDS_ONLY' Provider Sample"
+subtitle: "Project: Diagnostic Growth UEC"
+date: 2024-09-24
+format:
+  html:
+    html-table-processing: none
+    # code-fold: true
+    code-tools: true
+    embed-resources: true
+    grid:
+      margin-width: 350px
+  pdf: default
+reference-location: margin
+citation-location: margin
+toc: true
+toc-title: Contents
+toc-location: left
+theme: journal
+fig-cap-location: top
+# number-sections: true
+title-block-banner: '#f8be06'
+title-block-banner-color: '#242322'
+# mainfont: Gill Sans MT
+editor_options: 
+  chunk_output_type: console
+---
+
+# A summary of the data set
+
+Having examined the "ecds_only" table, we identified 16 providers who who met our data quality criteria. Here, we summarise the "ecds_only" data of these 16 providers. This data sample will serve as the basis for our modelling work.
+
+Note that some of the variables shown below are unlikely to be used, but we have included these for illustrative purposes. The data types of such variables have not been addressed. This summary was created with `skimr::skim`.
+
+```{r}
+#| label: setup
+#| warning: false
+#| echo: false
+
+library("here")
+library("dplyr")
+library("tidyr")
+library("skimr")
+library("stringr")
+
+# list.files(here("data_raw"))
+readRDS(here("data_raw", "from_ncdr_ecds_only_240924_skim.rds")) |> 
+    filter(!str_detect(skim_variable, "^time|diag01|^dur_arr")) |> 
+  select(-c(character.min, character.max, character.whitespace, factor.top_counts)) 
+# , character.empty))
+```
