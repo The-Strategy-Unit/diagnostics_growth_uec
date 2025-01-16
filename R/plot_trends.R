@@ -95,14 +95,18 @@ df_preplot_trends <- df_data_plus_invst |>
       group_by(fyear, procode) |>
       summarise(n_att = sum(n_att), total_invst = sum(total_invst)) |>
       ungroup() |>
-      mutate(disdest = "overall (all destinations)", .after = procode)
+      mutate(disdest = "Overall (all destinations)", .after = procode)
   ) |>
   group_by(fyear, disdest) |>
-  summarise(rate = sum(total_invst, na.rm = T) / sum(n_att, na.rm = T)) |>
+  summarise(
+    n_att = sum(n_att, na.rm = T),
+    n_invst = sum(total_invst, na.rm = T),
+    rate = sum(total_invst, na.rm = T) / sum(n_att, na.rm = T)
+  ) |>
   ungroup() |>
   mutate(disdest = case_when(
-    disdest == "admitted" ~ "admitted patients",
-    disdest == "non-admitted" ~ "non-admitted patients",
+    disdest == "admitted" ~ "Admitted patients",
+    disdest == "non-admitted" ~ "Non-admitted patients",
     T ~ disdest
   ))
 
