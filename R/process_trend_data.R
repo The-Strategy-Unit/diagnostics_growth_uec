@@ -25,7 +25,7 @@ con_sandbox_su <- dbConnect(
 tb_trend <- tbl(con_sandbox_su, in_schema("dbo", "2232_diagnostics_trend"))
 
 
-# 1. DATA MANIPULATION ------------------------------------------------------------
+# 1. FOUNDATION ------------------------------------------------------------
 
 data_provider_sample <- tb_trend |>
   filter(procode %in% c(
@@ -87,7 +87,7 @@ df_data_plus_invst <- data_provider_sample |>
   mutate(total_invst = n_att * n_invst) |>
   select(-c(starts_with("invst_"), n_invst, Der_Investigation_All, disdest_grp))
 
-###
+# 2. TREND BY DESTINATION ----------------------------------------------
 
 df_preplot_trends <- df_data_plus_invst |>
   bind_rows(
@@ -117,4 +117,26 @@ df_preplot_trends <- df_preplot_trends |>
   mutate(gopy_invst = n_invst/lag(n_invst), .after = n_invst) |>
   ungroup()
 
-df_preplot_trends |> saveRDS("from_ncdr_trends_250115_df_preplot.rds")
+df_preplot_trends |> saveRDS("from_ncdr_trends_241204_df_preplot.rds")
+
+# 3. TREND BY TEST TYPE ------------------------------------------------
+
+preplot_trend_by_invest <- data_provider_sample |>
+  bind_cols(df_invst_rows) |>
+  rename(n_att = n) |>
+  mutate(disdest = case_when(
+    disdest_grp == "admitted" ~ "admitted",
+    T ~ "non-admitted"
+  ), .after = procode) |>
+  mutate(across(starts_with("invst_"), ~ n_att * .)) |>
+  group_by(fyear, procode, disdest) |>
+  summarise(n_att = sum(n_att, na.rm = T), across(starts_with("invst_"), ~ sum(., na.rm = T))) |>
+  ungroup() |>
+  pivot_longer(cols = starts_with("invst_"), names_to = "invst_type", values_to = "n_invst") |>
+  group_by(fyear, disdest, invst_type) |>
+  reframe(n_att = sum(n_att, na.rm = T), n_invst = sum(n_invst, na.rm = T)) |>
+  mutate(rate = n_invst / n_att)
+
+
+preplot_trend_by_invest |> saveRDS("from_ncdr_trends_241003_preplot_by_invst.rds")
+
