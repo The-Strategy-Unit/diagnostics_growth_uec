@@ -59,6 +59,10 @@ SELECT 'ecds' as data_source,
 	    WHEN Rural_Urban_Indicator IN ('1', '5') THEN 1
 		  ELSE 0
 	END AS is_urban,
+    CASE 
+        WHEN EC_Department_Type IN ('03') THEN 1 
+          ELSE 0
+    END AS is_type3, 
     CASE
 		WHEN Der_EC_Duration >= 0 AND Der_EC_Duration < 240 THEN 1
 		ELSE 0
@@ -128,7 +132,7 @@ WHERE ec.Der_Financial_Year IN (
         '2023/24'
     )
     -- THESE ARE NOW INCLUDED AS CASE WHEN STATEMENTS:
-    
+
     -- AND -- EXCLUSIONS MIRRORING SW'S PREVIOUS WORK (ECDS EQUIVALENTS TO AEA): 
     -- EC_Department_Type IN ('01')
     -- -- SEE FLAG na_arrival COLUMN:
@@ -201,6 +205,10 @@ GROUP BY
 	    WHEN Rural_Urban_Indicator IN ('1', '5') THEN 1
 		ELSE 0
 	END,
+    CASE 
+        WHEN EC_Department_Type IN ('03') THEN 1 
+          ELSE 0
+    END,
     CASE
 		WHEN Der_EC_Duration >= 0 AND Der_EC_Duration < 240 THEN 1
 		ELSE 0
