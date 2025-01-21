@@ -2,24 +2,7 @@
 # Load and tidy data used to illustrate data quality and
 # provider representation in sample (for report appendix).
 
-
-# TODO
-# WILL SOURCE THIS SCRIPT IN NOTEBOOK RATHER THAN HAVING 
-# ALL THE CODE IN THE NOTEBOOK
-
-# DISCREPANCIES BECAUSE OF CHANGE OF DISDEST NULL CLAUSE 
-# -REVERT TO ORIG
-# AND NOTE IN METHODS SECTION
-
-# WORK OUT HOW TO DO THIS:
-# dq_provider_represent |>
-#   filter(is_type3 == 1)
-
-# AND ADD PERFORMANCE STATISTICS 
-
-# LOOK AT WHERE CLAUSE IMPACT.
-
-
+# Also includes code to examine SQL "WHERE clause" impact.
 
 library("gt") 
 library("here") 
@@ -66,7 +49,6 @@ df_preplot_trend <- readRDS(
 
 ## b. representation options -------------------------------------------
 
-# 95304
 dq_provider_represent_trend_t3 <- dq_provider_represent |>
   # WHERE CLAUSE FLAGS:
   filter(if_all(starts_with("where"), ~ . == 1)| is_type3 == 1) |> 
@@ -76,18 +58,8 @@ dq_provider_represent_trend_t3 <- dq_provider_represent |>
 dq_provider_represent_trend <- dq_provider_represent_trend_t3 |> 
   filter(if_all(starts_with("where"), ~ . == 1))
 
+##
 
-# 29574
-# dq_provider_represent_ecds_only <- dq_provider_represent |>
-#   filter(fyear %in% c("2019/20", "2023/24")) |> 
-#   filter(na_arrival == 0) |> 
-#   filter(covid_exclusion == 0) |> 
-#   # WHERE CLAUSE FLAGS:
-#   filter(if_all(starts_with("where"), ~ . == 1)) |> 
-#   select(-c(na_arrival, covid_exclusion, starts_with("where")))|> 
-#   left_join(eric_2223, join_by(procode == trust_code))
-
-## 
 dq_provider_represent_ecds_only_t3 <- dq_provider_represent |>
   filter(fyear %in% c("2019/20", "2023/24")) |> 
   filter(na_arrival == 0) |> 
@@ -101,7 +73,7 @@ dq_provider_represent_ecds_only <- dq_provider_represent_ecds_only_t3 |>
   filter(if_all(starts_with("where"), ~ . == 1))
   
 
-## c. provider survival ------------------------------------------------
+## a. provider survival ------------------------------------------------
 
 ts_provider_survival <-  ts_provider_attds |>
   count(fyear) 
@@ -319,7 +291,23 @@ dqual_ecds_only_provider_key <- readRDS(
     "RRV"
   ))
 
-## b. samples --------------------------------------------------------------
+## b. representation options -------------------------------------------
+
+dq_provider_represent_ecds_only_t3 <- dq_provider_represent |>
+  filter(fyear %in% c("2019/20", "2023/24")) |> 
+  filter(na_arrival == 0) |> 
+  filter(covid_exclusion == 0) |> 
+  # WHERE CLAUSE FLAGS:
+  filter(if_all(starts_with("where"), ~ . == 1)| is_type3 == 1) |> 
+  select(-c(na_arrival, covid_exclusion))|> # , starts_with("where")
+  left_join(eric_2223, join_by(procode == trust_code))
+
+dq_provider_represent_ecds_only <- dq_provider_represent_ecds_only_t3 |> 
+  filter(if_all(starts_with("where"), ~ . == 1))
+
+
+
+## c. provider survival ---------------------------------------------------
 
 providers_surviving_ecds_only <- ts_provider_attds |>
   # NOT PROVIDERS WITH ARRIVAL MODE = NULL > 5% (SEE EDA ON NCDR DS SERVER):
@@ -372,13 +360,6 @@ providers_s2 <- bind_rows(
 ) |> 
   select(procode)
 
-# dq_provider_represent_ecds_only <- dq_provider_represent |>
-#   filter(fyear %in% c("2019/20", "2023/24")) |> 
-#   filter(na_arrival == 0) |> 
-#   filter(covid_exclusion == 0) |> 
-#   select(-c(na_arrival, covid_exclusion))
-
-
 # 3. A1 ----------------------------------------------------------------------
 
 ## a. providers --------------------------------------------------------------
@@ -391,20 +372,6 @@ table_providers_s1 <- providers_s1 |>
   mutate(id = row_number(), .before = Provider_Code) |>
   mutate(Provider_Name = str_to_title(Provider_Name)) |>
   mutate(Provider_Name = str_replace_all(Provider_Name, "Nhs", "NHS")) 
-
-# table_providers_s1 |> 
-#   gt() |>
-#   fmt_auto() |>
-#   tab_style(
-#     style = list(
-#       cell_text(weight = "bold")
-#     ),
-#     locations = cells_column_labels(c(Provider_Name, Provider_Code))
-#   ) |>
-#   tab_options(
-#     data_row.padding = px(1),
-#     table.font.size = "small"
-#   )
 
 ## b. representation stats -----------------------------------------------
 
@@ -526,7 +493,7 @@ table_representation_trends <- tibble(
                         clean_names() |>
                         rename_with(~ paste0("region_", .x, recycle0 = TRUE)) |>
                         identity())) |>
-  mutate(also_offer_type_3 = map_dbl(data_t3, \(df)
+  mutate(also_offers_type_3 = map_dbl(data_t3, \(df)
                                      df |>
                                        count(fyear, procode, is_type3, wt = n) |>
                                        filter(fyear == "2023/24") |> 
@@ -534,8 +501,67 @@ table_representation_trends <- tibble(
                                        summarise(p = round(n[[2]]/n[[1]], 3)) |> 
                                        pull(p)
   )) |>
+  
+  mutate(four_hour = map(data, \(df)
+                         df |> 
+                           filter(fyear == "2023/24") |> 
+                           count(procode, under_4hrs, wt = n) |> 
+                           group_by(procode) |> 
+                           mutate(p = n/sum(n)) |> 
+                           ungroup() |> 
+                           filter(under_4hrs ==1) |> 
+                           arrange(p) |> 
+                           mutate(grp = case_when(
+                             p < 0.46 ~ "4h target < 46%",
+                             p >= 0.46 & p < .58 ~ "4h target 46%-57%",
+                             p >= 0.58 ~ "4h target >= 58%",
+                             TRUE ~ NA_character_
+                           )) |>
+                           mutate(grp = factor(
+                             grp,
+                             levels = c(
+                               "4h target < 46%",
+                               "4h target 46%-57%",
+                               "4h target >= 58%"
+                             )
+                           )) |>
+                           count(grp) |> 
+                           mutate(p = n / sum(n)) |>
+                           select(-n) |>
+                           pivot_wider(names_from = grp, values_from = p)
+  )) |>
+  mutate(twelve_hour = map(data, \(df)
+                           df |> 
+                             filter(fyear == "2023/24") |> 
+                             count(procode, under_12hrs, wt = n) |> 
+                             group_by(procode) |> 
+                             mutate(p = n/sum(n)) |> 
+                             ungroup() |> 
+                             filter(under_12hrs == 1) |> 
+                             arrange(p) |> 
+                             mutate(grp = case_when(
+                               p < 0.86 ~ "0-12h waits < 86%",
+                               p >= 0.86 & p < 0.93 ~ "0-12h waits 86-92%",
+                               p >= 0.93  ~ "0-12h waits >= 93%",
+                               TRUE ~ NA_character_
+                             )) |>
+                             mutate(grp = factor(
+                               grp,
+                               levels = c(
+                                 "0-12h waits < 86%",
+                                 "0-12h waits 86-92%",
+                                 "0-12h waits >= 93%"
+                               )
+                             )) |>
+                             count(grp) |> 
+                             mutate(p = n / sum(n)) |> 
+                             select(-n) |>
+                             pivot_wider(names_from = grp, values_from = p)
+  )) |>
   unnest(region) |>
   unnest(size) |>
+  unnest(four_hour) |>
+  unnest(twelve_hour) |>
   select(-c(data, data_t3)) |>
   mutate(zz = if_else(n_providers > 50, "population", "sample"), .before = n_providers) |>
   pivot_longer(cols = !starts_with("zz"), names_to = "variable") |>
@@ -546,45 +572,6 @@ table_representation_trends <- tibble(
   rowwise() |> 
   mutate(diff = sample - population) 
 
-
-table_representation_trends |>
-  gt() |>
-  opt_row_striping(row_striping = F) |>
-  fmt_auto() |>
-  tab_style(
-    style = list(
-      cell_text(transform = "capitalize", weight = "bold")
-    ),
-    # different location
-    locations = cells_column_labels(everything())
-  ) |>
-  fmt_percent(rows = c(2:19), decimals = 1) |>
-  tab_row_group(
-    label = "Patient demographics:",
-    rows =  str_detect(variable, "age|urban|depriv|region_")
-  ) |>
-  tab_row_group(
-    label = "Case-mix-related:",
-    rows =  str_detect(variable, "arrive_|admitted")
-  ) |>
-  tab_row_group(
-    label = "Provider-related (23/24):",
-    rows =  str_detect(variable, "att|also")
-  ) |>
-  tab_row_group(
-    label = "",
-    rows =  str_detect(variable, "n_prov")
-  ) |>
-  tab_style(
-    style = cell_text(weight = "bold"),
-    locations = cells_row_groups(groups = c(1, 2, 3, 4))
-  ) |>
-  sub_values(values = -71, replacement = "") |>
-  gt_highlight_cols(sample, fill = "grey", alpha = 0.1) |>
-  tab_options(
-    data_row.padding = px(1),
-    table.font.size = "small"
-  )
 
 # 4. A2+ ------------------------------------------------------------------
 
@@ -597,20 +584,6 @@ table_providers_s2 <- providers_s2 |>
   mutate(id = row_number(), .before = Provider_Code) |> 
   mutate(Provider_Name = str_to_title(Provider_Name)) |> 
   mutate(Provider_Name = str_replace_all(Provider_Name, "Nhs", "NHS")) 
-
-table_providers_s2 |> 
-  gt() |> 
-  fmt_auto() |> 
-  tab_style(
-    style = list(
-      cell_text(weight = "bold")
-    ),
-    locations = cells_column_labels(c(Provider_Name, Provider_Code))
-  ) |> 
-  tab_options(
-    data_row.padding = px(1),
-    table.font.size = "small"
-  )
 
 
 ## b. representation stats -----------------------------------------------
@@ -640,6 +613,7 @@ table_representation_ecds_only <- tibble(
                         count(fyear, wt = n) |>
                         mutate(p = n / sum(n)) |>
                         filter(fyear == "2023/24") |>
+                        mutate(fyear = "23/24 attendances (vs. 19/20)") |>
                         select(-n) |>
                         pivot_wider(names_from = fyear, values_from = p)
   )) |>
@@ -737,7 +711,7 @@ table_representation_ecds_only <- tibble(
                         clean_names() |>
                         rename_with(~ paste0("region_", .x, recycle0 = TRUE)) |>
                         identity())) |>
-  mutate(also_offer_type_3 = map_dbl(data_t3, \(df)
+  mutate(also_offers_type_3 = map_dbl(data_t3, \(df)
                                      df |>
                                        count(fyear, procode, is_type3, wt = n) |>
                                        filter(fyear == "2023/24") |> 
@@ -745,19 +719,82 @@ table_representation_ecds_only <- tibble(
                                        summarise(p = round(n[[2]]/n[[1]], 3)) |> 
                                        pull(p)
   )) |>
-  # mutate(p_type3 = map_dbl(data_t3, \(df)
-  #                       df |>
-  #                         count(fyear, is_type3, wt = n) |>
-  #                         group_by(fyear) |>
-  #                         mutate(p = n / sum(n)) |>
-  #                         ungroup() |>
-  #                         filter(is_type3 == 0) |>
-  #                         summarise(av = round(mean(p), 3)) |>
-  #                         pull(av)
-  # )) |> 
+  
+  mutate(four_hour = map(data, \(df)
+                         df |> 
+                           filter(fyear == "2023/24") |> 
+                           count(procode, under_4hrs, wt = n) |> 
+                           group_by(procode) |> 
+                           mutate(p = n/sum(n)) |> 
+                           ungroup() |> 
+                           filter(under_4hrs ==1) |> 
+                           arrange(p) |> 
+                           # mutate(grp = case_when(
+                           #   p < 0.48 ~ "4h wait standard < 48%",
+                           #   p >= 0.48 & p < 0.58 ~ "4h wait standard 48%-58%",
+                           #   p > 0.58  ~ "4h wait standard >= 58%",
+                           #   TRUE ~ NA_character_
+                           # )) |> 
+                           # mutate(grp = factor(
+                           #   grp,
+                           #   levels = c(
+                           #     "4h wait standard < 40%",
+                           #     "4h wait standard 40%-59%",
+                           #     "4h wait standard >= 60%"
+                           #   )
+                           # )) |>
+                           mutate(grp = case_when(
+                             p < 0.46 ~ "4h target < 46%",
+                             p >= 0.46 & p < .58 ~ "4h target 46%-57%",
+                             p >= 0.58 ~ "4h target >= 58%",
+                             TRUE ~ NA_character_
+                           )) |>
+                           mutate(grp = factor(
+                             grp,
+                             levels = c(
+                               "4h target < 46%",
+                               "4h target 46%-57%",
+                               "4h target >= 58%"
+                             )
+                           )) |>
+                           count(grp) |> 
+                           mutate(p = n / sum(n)) |>
+                           select(-n) |>
+                           pivot_wider(names_from = grp, values_from = p)
+  )) |>
+  mutate(twelve_hour = map(data, \(df)
+                         df |> 
+                           filter(fyear == "2023/24") |> 
+                           count(procode, under_12hrs, wt = n) |> 
+                           group_by(procode) |> 
+                           mutate(p = n/sum(n)) |> 
+                           ungroup() |> 
+                           filter(under_12hrs == 1) |> 
+                           arrange(p) |> 
+                           mutate(grp = case_when(
+                             p < 0.86 ~ "0-12h waits < 86%",
+                             p >= 0.86 & p < 0.93 ~ "0-12h waits 86-92%",
+                             p >= 0.93  ~ "0-12h waits >= 93%",
+                             TRUE ~ NA_character_
+                           )) |>
+                           mutate(grp = factor(
+                             grp,
+                             levels = c(
+                               "0-12h waits < 86%",
+                               "0-12h waits 86-92%",
+                               "0-12h waits >= 93%"
+                             )
+                           )) |>
+                           count(grp) |> 
+                           mutate(p = n / sum(n)) |> 
+                           select(-n) |>
+                           pivot_wider(names_from = grp, values_from = p)
+  )) |>
   unnest(f_year) |>
-  unnest(region) |>
   unnest(size) |>
+  unnest(region) |>
+  unnest(four_hour) |>
+  unnest(twelve_hour) |>
   # unnest(type) |>
   select(-c(data, data_t3)) |>
   mutate(zz = if_else(n_providers > 50, "population", "sample"), .before = n_providers) |>
@@ -779,7 +816,7 @@ table_representation_ecds_only |>
     # different location
     locations = cells_column_labels(everything())
   ) |> 
-  fmt_percent(rows = c(2:20), decimals = 1) |>
+  fmt_percent(rows = c(2:26), decimals = 1) |>
   tab_row_group(
     label = "Patient demographics:",
     rows =  str_detect(variable, "age|urban|depriv|region_")
@@ -790,11 +827,11 @@ table_representation_ecds_only |>
   ) |> 
   tab_row_group(
     label = "Provider-related (23/24):",
-    rows =  str_detect(variable, "att|also")
+    rows =  str_detect(variable, "att|also|4h|12h")
   ) |> 
   tab_row_group(
     label = "",
-    rows =  str_detect(variable, "n_prov|2023")
+    rows =  str_detect(variable, "n_prov|23")
   ) |>
   tab_style(
     style = cell_text(weight = "bold"),
@@ -807,131 +844,129 @@ table_representation_ecds_only |>
     table.font.size = "small"
   )
 
-# TYPE 3 STATS ------------------------------------------------------------
+# EXPLORE WHERE CLAUSE IMPACT ------------------------------------------------------
 
-dq_provider_represent_ecds_only |> 
-  count(is_type3, wt = n)
-
-
-
-
-dq_provider_represent_ecds_only_t3 |> 
-  count(is_type3, wt = n)
-
-
-table_ecds_only_t3 <- tibble(
-  data = list(
-    dq_provider_represent_ecds_only_t3 |>
-      semi_join(providers_surviving_ecds_only, join_by(procode)),
-    ###
-    dq_provider_represent_ecds_only_t3 |>
-      semi_join(providers_s2, join_by(procode))
-  )
-) 
-
-
-table_ecds_only_t3 |> 
-  mutate(p_t3 = map_dbl(data_t3, \(df)
-                        df |>
-                          count(fyear, procode, is_type3, wt = n) |>
-                          group_by(fyear) |>
-                          mutate(p = n / sum(n)) |>
-                          ungroup() |>
-                          filter(is_type3 == 0) |>
-                          summarise(av = round(mean(p), 3)) |>
-                          pull(av)
-  )) 
-
-# p providers offering type 3
-# p activity offered as t3
-
-# % t1 activity (of type 1 + 3)
-
-table_ecds_only_t3$data[[2]] |> 
-  count(fyear, procode, is_type3, wt = n) |>
-  filter(fyear == "2023/24") |> 
-  count(is_type3) |> 
-  summarise(p = round(n[[2]]/n[[1]], 3)) |> 
-  pull(p)
-# group_by(fyear) |>
-# mutate(p = n / sum(n)) |>
-# ungroup() |>
-# filter(is_type3 == 0) |>
-# summarise(av = round(mean(p), 3)) |>
-
-
-
-# EXPLR WHERE IMPACT ------------------------------------------------------
-
-# FOR REFERNCE - SAMPLE 1
-# dq_provider_represent_trend <- dq_provider_represent |>
-#   # WHERE CLAUSE FLAGS:
-#   filter(if_all(starts_with("where"), ~ . == 1)) |> 
-#   select(-starts_with("where")) |> 
-#   left_join(eric_2223, join_by(procode == trust_code))
-
-# FOR REFERNCE - FOR SAMPLE 2
-# dq_provider_represent_ecds_only <- dq_provider_represent |>
-#   filter(fyear %in% c("2019/20", "2023/24")) |> 
-#   filter(na_arrival == 0) |> 
-#   filter(covid_exclusion == 0) |> 
-#   # WHERE CLAUSE FLAGS:
-#   filter(if_all(starts_with("where"), ~ . == 1)) |> 
-#   select(-c(na_arrival, covid_exclusion, starts_with("where")))|> 
-#   left_join(eric_2223, join_by(procode == trust_code))
-
-
-
-# each part of the where clause has on the p in 23/24
-# have a data frame for each part of the where clause
-# interactions ??? where this and this
-# or go from most general to specific
-
-
-
-
-table_where_ecds_only <- tibble(
-  
-  data_where = list(
-    dq_provider_represent |>
-      filter(fyear %in% c("2019/20", "2023/24")) |> 
-      # filter(na_arrival == 0) |> 
-      filter(covid_exclusion == 0)  |>
-      semi_join(providers_surviving_ecds_only, join_by(procode)),
-    dq_provider_represent |>
-      filter(fyear %in% c("2019/20", "2023/24")) |> 
-      # filter(na_arrival == 0) |> 
-      filter(covid_exclusion == 0) |> 
-      semi_join(providers_s2, join_by(procode))
-  )
-) 
-
-table_where_ecds_only |> 
-  mutate(n_providers = map_dbl(data_where, \(df)
-                               df |>
-                                 count(a = where_is_rprov == 1, wt = n)|>
-                                 mutate(p = n/sum(n)) |> 
-                                 filter(a = ) |> 
-                                 nrow()
-  ))
-
-# TODO SEQUENTIALLY , EFFECT ON POPULATION AND SAMPLE.
-# MOVE FROM SOLID NON-CONTROVERSIAL TO MORE CONTROVERSIAL
-
-
-
-table_where_ecds_only$data_where[[1]] |> 
-  # THEY WILL BE R PROV
-  # count(a = where_is_rprov == 1, wt = n)|>
-  count(a = where_is_attcat1 == 1, wt = n)|>
-  mutate(p = n/sum(n)) |> 
-  filter(a = ) |> 
-  nrow()
-
-
-COMBOS?
-  
-  
-  
-  
+# table_where_ecds_only <- tibble(
+#   
+#   data_where = list(
+#     dq_provider_represent |>
+#       filter(fyear %in% c("2019/20", "2023/24")) |> 
+#       filter(na_arrival == 0) |>
+#       filter(covid_exclusion == 0)  |>
+#       semi_join(providers_surviving_ecds_only, join_by(procode)),
+#     dq_provider_represent |>
+#       filter(fyear %in% c("2019/20", "2023/24")) |> 
+#       filter(na_arrival == 0) |>
+#       filter(covid_exclusion == 0) |> 
+#       semi_join(providers_s2, join_by(procode))
+#   )
+# ) 
+# 
+# dq_provider_represent |> 
+#   select(starts_with("where")) |> 
+#   colnames()
+# 
+# where_impact <- table_where_ecds_only |> 
+#   mutate(data_where = map(data_where, \(df)
+#                                df |>
+#                                  filter(fyear == "2019/20")
+#                                  # filter(fyear == "2023/24")
+#   )) |> 
+#   mutate(unfiltered = map_dbl(data_where, \(df)
+#                                df |>
+#                                  count(wt = n)|>
+#                                  pull()
+#   )) |> 
+#   # mutate(r_prov_excl = map_dbl(data_where, \(df)
+#   #                              df |>
+#   #                                count(a = where_is_rprov == 1, wt = n)|>
+#   #                                filter(a == 1) |>
+#   #                                pull()
+#   # )
+#   # ) |>
+#   # mutate(eng_excl = map_dbl(data_where, \(df)
+#   #                              df |>
+#   #                                count(a = where_is_rprov == 1 & where_is_eng == 1, wt = n)|>
+#   #                                filter(a == 1) |>
+#   #                                pull()
+#   # )
+#   # ) |>
+#   # mutate(valid_excl = map_dbl(data_where, \(df)
+#   #                              df |>
+#   #                                count(a = where_is_rprov == 1 &
+#   #                                        where_is_eng == 1 &
+#   #                                        where_is_valid == 1, wt = n)|>
+#   #                                filter(a == 1) |>
+#   #                                pull()
+#   # )
+#   # ) |>
+#   mutate(sex_etc_excl = map_dbl(data_where, \(df)
+#                                df |>
+#                                  count(a = where_is_rprov == 1 &
+#                                          where_is_eng == 1 &
+#                                          where_is_valid == 1 &
+#                                          where_is_sex ==1 , wt = n)|>
+#                                  filter(a == 1) |>
+#                                  pull()
+#   )
+#   ) |>
+#   mutate(type1_excl = map_dbl(data_where, \(df)
+#                                df |>
+#                                  count(a = where_is_rprov == 1 &
+#                                          where_is_eng == 1 &
+#                                          where_is_valid == 1 &
+#                                          where_is_sex == 1 &
+#                                          where_is_type1 == 1, wt = n)|>
+#                                  filter(a == 1) |>
+#                                  pull()
+#   )
+#   ) |>
+#   mutate(attcat1_excl = map_dbl(data_where, \(df)
+#                                df |>
+#                                  count(a = where_is_rprov == 1 &
+#                                          where_is_eng == 1 &
+#                                          where_is_valid == 1 &
+#                                          where_is_sex == 1 &
+#                                          where_is_type1 == 1 &
+#                                          where_is_attcat1 == 1 
+#                                        , wt = n)|>
+#                                  filter(a == 1) |>
+#                                  pull()
+#   )
+#   ) |>
+#   mutate(death_excl = map_dbl(data_where, \(df)
+#                                df |>
+#                                  count(a = where_is_rprov == 1 &
+#                                          where_is_eng == 1 &
+#                                          where_is_valid == 1 &
+#                                          where_is_sex == 1 &
+#                                          where_is_type1 == 1 &
+#                                          where_is_attcat1 == 1 & 
+#                                          where_is_live == 1  
+#                                        , wt = n)|>
+#                                  filter(a == 1) |>
+#                                  pull()
+#   )
+#   ) |>
+#   mutate(incompl_excl = map_dbl(data_where, \(df)
+#                                df |>
+#                                  count(a = where_is_rprov == 1 &
+#                                          where_is_eng == 1 &
+#                                          where_is_valid == 1 &
+#                                          where_is_sex == 1 &
+#                                          where_is_type1 == 1 &
+#                                          where_is_attcat1 == 1 & 
+#                                          where_is_live == 1 &
+#                                          where_is_complete == 1
+#                                        , wt = n)|>
+#                                  filter(a == 1) |>
+#                                  pull()
+#   )
+#   ) |>
+#   identity()
+# 
+# where_impact |> 
+#   mutate(across(3:7, ~ 1 - ./unfiltered))
+# 
+# # WHERE CLAUSE HAS LESS OF AN IMPACT FOR SAMPLE OF PROVIDERS THAN FOR POPULATION.
   
