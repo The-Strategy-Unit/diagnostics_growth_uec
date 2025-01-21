@@ -1,0 +1,142 @@
+# README
+# Process data on ED test rates for sample of 28 providers (NCDR DS SERVER)
+
+library("tidytable")
+library("DBI")
+library("here")
+library("purrr")
+library("dplyr")
+library("tidyr")
+library("dbplyr")
+library("ggplot2")
+library("stringr")
+library("janitor")
+library("lubridate")
+
+
+con_sandbox_su <- dbConnect(
+  odbc::odbc(),
+  Driver = "SQL Server",
+  Server = "XXX",
+  Database = "NHSE_Sandbox_StrategyUnit",
+  Trusted_Connection = "True"
+)
+
+tb_trend <- tbl(con_sandbox_su, in_schema("dbo", "2232_diagnostics_trend"))
+
+
+# 1. FOUNDATION ------------------------------------------------------------
+
+data_provider_sample <- tb_trend |>
+  filter(procode %in% c(
+    # SAMPLE OF PROVIDERS OBTAINED FROM DQ_TRENDS QUARTO DOC:
+    "R1F",
+    "R1H",
+    "RAX",
+    "RBL",
+    "RDU",
+    "REF",
+    "RF4",
+    "RHM",
+    "RJ1",
+    "RJ2",
+    "RKB",
+    "RLQ",
+    "RM1",
+    "RNS",
+    "RP5",
+    "RPA",
+    "RQX",
+    "RR8",
+    "RRK",
+    "RTD",
+    "RTH",
+    "RTX",
+    "RWA",
+    "RWY",
+    "RX1",
+    "RXF",
+    "RXN",
+    "RYR"
+  )) |>
+  count(fyear, procode, disdest_grp, Der_Investigation_All, wt = n) |>
+  collect()
+
+# USING AEA-STYLE CODES:
+invst_codes <- c(paste0("0", 1:9), 10:23, 99)
+
+list_invst_counts <- map(invst_codes, function(invst_code) {
+  data_provider_sample %>%
+    transmute(invst = str_count(Der_Investigation_All, str_c("^", invst_code, "| ", invst_code, "|,", invst_code)))
+})
+
+df_invst_rows <- list_invst_counts |>
+  reduce(bind_cols) |>
+  clean_names() |>
+  rename(invst_99 = invst_24)
+
+df_data_plus_invst <- data_provider_sample |>
+  bind_cols(df_invst_rows) |>
+  rename(n_att = n) |>
+  # TIDYTABLE OPERATION:
+  tidytable::mutate_rowwise(n_invst = sum(c_across(starts_with("invst_")), na.rm = T)) |>
+  mutate(disdest = case_when(
+    disdest_grp == "admitted" ~ "admitted",
+    T ~ "non-admitted"
+  ), .after = procode) |>
+  mutate(total_invst = n_att * n_invst) |>
+  select(-c(starts_with("invst_"), n_invst, Der_Investigation_All, disdest_grp))
+
+# 2. TREND BY DESTINATION ----------------------------------------------
+
+df_preplot_trends <- df_data_plus_invst |>
+  bind_rows(
+    df_data_plus_invst |>
+      group_by(fyear, procode) |>
+      summarise(n_att = sum(n_att), total_invst = sum(total_invst)) |>
+      ungroup() |>
+      mutate(disdest = "Overall (all destinations)", .after = procode)
+  ) |>
+  group_by(fyear, disdest) |>
+  summarise(
+    n_att = sum(n_att, na.rm = T),
+    n_invst = sum(total_invst, na.rm = T),
+    rate = sum(total_invst, na.rm = T) / sum(n_att, na.rm = T)
+  ) |>
+  ungroup() |>
+  mutate(disdest = case_when(
+    disdest == "admitted" ~ "Admitted patients",
+    disdest == "non-admitted" ~ "Non-admitted patients",
+    T ~ disdest
+  ))
+
+df_preplot_trends <- df_preplot_trends |>
+  arrange(disdest) |>
+  group_by(disdest) |>
+  mutate(gopy_att = n_att/lag(n_att), .after = n_att) |>
+  mutate(gopy_invst = n_invst/lag(n_invst), .after = n_invst) |>
+  ungroup()
+
+df_preplot_trends |> saveRDS("from_ncdr_trends_241204_df_preplot.rds")
+
+# 3. TREND BY TEST TYPE ------------------------------------------------
+
+preplot_trend_by_invest <- data_provider_sample |>
+  bind_cols(df_invst_rows) |>
+  rename(n_att = n) |>
+  mutate(disdest = case_when(
+    disdest_grp == "admitted" ~ "admitted",
+    T ~ "non-admitted"
+  ), .after = procode) |>
+  mutate(across(starts_with("invst_"), ~ n_att * .)) |>
+  group_by(fyear, procode, disdest) |>
+  summarise(n_att = sum(n_att, na.rm = T), across(starts_with("invst_"), ~ sum(., na.rm = T))) |>
+  ungroup() |>
+  pivot_longer(cols = starts_with("invst_"), names_to = "invst_type", values_to = "n_invst") |>
+  group_by(fyear, disdest, invst_type) |>
+  reframe(n_att = sum(n_att, na.rm = T), n_invst = sum(n_invst, na.rm = T)) |>
+  mutate(rate = n_invst / n_att)
+
+
+preplot_trend_by_invest |> saveRDS("from_ncdr_trends_241003_preplot_by_invst.rds")
+

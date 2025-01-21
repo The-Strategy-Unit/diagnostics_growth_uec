@@ -1,0 +1,834 @@
+---
+title: "Data Quality in the 'ECDS only' Table"
+subtitle: "Project: Diagnostic Growth UEC"
+date: 2024-08-20
+format:
+  html:
+    html-table-processing: none
+    embed-resources: true
+    grid:
+      margin-width: 350px
+  pdf: default
+toc: true
+toc-title: Contents
+toc-location: left
+reference-location: margin
+citation-location: margin
+theme: journal
+fig-cap-location: top
+number-sections: true
+title-block-banner: true
+editor_options: 
+  chunk_output_type: console
+---
+
+# Background
+
+In Phase I of the Diagnostic Growth project, we seek to answer five questions:
+
+::: {.callout-note appearance="minimal"}
+1.  How has the average number of investigations per ED attendance changed over time?
+
+2.  For each of the 20+ test types, how much more likely is it that a patient will receive a test in ED in year 2023/24 than in year 2019/20?
+
+3.  What proportion of the growth in each test, can be attributed to: (a) increases in raw demand; (b) changes in case-mix; and (c) changes in the propensity to test (i.e. clinical practice)?
+
+4.  How much (net) time does a test add to a patient’s stay in ED?
+
+5.  How do tests influence decisions to admit?
+:::
+
+To address questions 2-5, we will be building models using ED data from one or both of the years 2019/20 and 2023/24. Since the ECDS covers this entire period, these analyses will require the use of the ECDS, only. The following table, found on the NCDR SQL server, gathers potentially helpful variables for the years studied:
+
+```{sql connection = F, eval = F, error = T}
+[NHSE_Sandbox_StrategyUnit].[dbo].[2232_diagnostics_ecds_only] 
+```
+
+The SQL code that creates this table can be found in the *sql* folder, and is also provided in @sec-appendix-1 . Manipulation of the \[2232_diagnostics_ecds_only\] table was undertaken on the NCDR DS server (see code in @sec-appendix-2) to produce the summary tables which serve as the bases for this analysis of data quality.
+
+```{r}
+#| label: setup
+#| include: false
+
+library("gt")
+library("gtExtras")
+library("here")
+library("dplyr")
+library("tidyr")
+library("readr")
+library("purrr")
+library("tibble")
+library("stringr")
+library("ggplot2")
+library("janitor")
+library("lubridate")
+
+# TODO FLAG FOR MARCH 2020 / 2024
+# TODO ACCOUNT FOR MARCHES IN OTHER DATA BROUGHT THROUGH
+
+# 1. LOAD DATASETS --------------------------------------------
+
+# FOR REGION LKP:
+eric_2223 <- read_csv("https://files.digital.nhs.uk/FB/BE3AC8/ERIC%20-%20202223%20-%20Trust%20data.csv") |> 
+  clean_names() |> 
+  mutate(region = str_remove_all(commissioning_region, " COMMISSIONING REGION")) |> 
+  select(trust_code, trust_name, region, trust_type)
+
+# list.files(here("data_raw"))
+dqual_ecds_only <- readRDS(
+  here("data_raw", "from_ncdr_ecds_only_240917_dq_isna.RDS")
+  )
+dqual_ecds_only_provider_key <- readRDS(
+  here("data_raw", "from_ncdr_ecds_only_240917_dq_provider.RDS")
+  ) |> 
+   # NOT PROVIDERS WITH ARRIVAL MODE = NULL > 5% (SEE EDA ON NCDR DS SERVER):
+  filter(!procode %in% c(
+    "RCX",
+    "RQM",
+    "RJ7",
+    "RAX",
+    "RQX",
+    "RVY",
+    "RP5",
+    "RRV"
+  )) 
+dqual_ecds_only_timeseries <- readRDS(
+  here("data_raw", "from_ncdr_ecds_only_240917_ts_daily.RDS")
+  )
+dq_provider_represent <- readRDS(
+  here("data_raw", "from_ncdr_240917_prov_represent.rds")
+  ) |> 
+  filter(na_arrival == 0) |> 
+  select(-na_arrival) |> 
+  filter(covid_exclusion == 0) |> 
+  select(-covid_exclusion)
+
+ts_provider_attds <- readRDS(
+  here("data_raw", "from_ncdr_240917_ts_prov_att.rds")
+  )
+
+# 2. JOIN --------------------------------------------
+
+dq_provider_represent <- dq_provider_represent |> 
+  left_join(eric_2223, join_by(procode == trust_code))
+
+# 3. PROVIDER SURVIVAL --------
+
+providers_surviving_ecds_only <- ts_provider_attds |>
+    # NOT PROVIDERS WITH ARRIVAL MODE = NULL > 5% (SEE EDA ON NCDR DS SERVER):
+  filter(!procode %in% c(
+    "RCX",
+    "RQM",
+    "RJ7",
+    "RAX",
+    "RQX",
+    "RVY",
+    "RP5",
+    "RRV"
+  )) |> 
+  # MORE THAN AV OF 15 A DAY FOR A YEAR (EXCLUDES RVR ANOMALY):
+  filter(n > 15*365) |>
+  # NOW CLOSED (FROM MID 2023):
+  filter(procode != "RVY") |>
+  filter(fyear %in% c("2019/20", "2023/24")) |>
+  complete(fyear, procode) |>
+  group_by(procode) |>
+  filter(!is.na(sum(n))) |>
+  ungroup() |>
+  distinct(procode)
+
+# ts_provider_attds |> 
+#   semi_join(providers_surviving, join_by(procode)) |> 
+#   arrange(procode) |> 
+#   # slice(1:(33*12)) |> 
+#   # slice(((33*12)+1):(66*12)) |> 
+#   slice(((66*12)+1):(99*12)) |> 
+#   ggplot() +
+#   geom_blank(aes(y = 0)) +
+#   geom_line(aes(fyear, n, group = procode)) +
+#   scale_x_discrete(breaks = every_nth(n=7))+
+#   facet_wrap(vars(procode), scales = "free_y")
+
+```
+
+# On data quality
+
+Whilst the four planned analyses (Qs 2-5) rely on just one (relatively high-quality) data source, we expect substantial variation in recording practices by provider and over time. In this section, we will be looking at just one element of data quality: completeness. A later section, @sec-detail, may also assess accuracy and validity.
+
+In earlier [work in](https://www.strategyunitwm.nhs.uk/publications/waiting-times-and-attendance-durations-english-ae-departments) [this area](https://www.strategyunitwm.nhs.uk/publications/how-growth-diagnostic-testing-affecting-hospital-system), we based our analyses on data from a subset of providers who had a history of recording of diagnosis codes to a high standard. Indeed, one of the main considerations in these previous projects was the question of how to adjust for patient case-mix, given that diagnoses in the AEA data set were generally not well recorded. We ultimately identified a subset of 39 providers who had better recording of the 39 different AEA diagnosis codes. Whilst it is true that we will now be working with the ECDS, rather than the AEA data set, we expect to encounter data quality issues. Thus, it remains likely that we will have to rely on data from a subset providers.
+
+Our analyses are likely to utilise many of the few dozen variables in the \[2232_diagnostics_ecds_only\] table. As a first step, then, we might like an overview of the completeness of variables we have gathered in the table. Having gained this overview, we may want to pay closer attention to those variables that we decide are most important.
+
+# The effect of the pandemic on data quality
+
+For several analyses, we will be comparing activity in 2019/20 with 2023/24. In order to make this comparison a fair one, we will have to account for onset of the COVID-19 pandemic in March 2020. @fig-ts-covid shows daily ED attendances in England in 2020, and contrasts this with attendance patterns in 2024. The difference between March 2020 and March 2024 is clear. To address this, we might either remove March from both financial years, or use the 10th or 11th of March as cut-off date (removing any activity after this).
+
+```{r}
+#| label: fig-ts-covid 
+#| echo: false 
+#| fig-cap: "Daily ED attendances in England, 2019/20 and 2023/24"  
+ 
+dqual_ecds_only_timeseries |> 
+  rename(date = 2) |> 
+  mutate(date2 = 
+           if_else(month(date) %in% 1:3,
+           make_date(
+    year = "2024",
+    month = month(date),
+    day = day(date)
+           ),
+    make_date(
+    year = "2023",
+    month = month(date),
+    day = day(date)
+           )
+    
+  )) |>
+  ggplot() +
+  geom_line(aes(x = date2, y = n, color = fyear)) +
+  geom_blank(aes(y = 0)) +
+  scale_x_date(
+    date_labels = "%d %b",
+    date_breaks = "1 week",
+    # limits = c(as.Date("2023-04-01"), as.Date("2024-03-31"))
+    ) +
+  # facet_wrap(vars(measure), ncol = 1) +
+  theme_minimal() +
+  labs(y = "Attendances")+
+  theme(
+    legend.position = "bottom",
+    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 9),
+    axis.text.y = element_text(size = 9),
+    panel.grid.minor = element_blank(),
+    axis.title = element_blank(),
+    plot.subtitle = element_text(size = 9)
+    )
+```
+
+# Data completeness
+
+## A look at all variables in the study data set
+
+We start with an overview of incompleteness, by variable. @fig-vars-na shows variation in *in*completion rates, by variable, for our study dataset.
+
+```{r}
+#| label: fig-vars-na
+#| echo: false
+#| fig-cap: "Incompleteness of data, by variable"
+#| warning: false
+
+dqual_ecds_only |>
+  complete(var, is_na, fyear) |> 
+  filter(is_na == TRUE) |> 
+  ggplot() +
+  geom_col(aes(reorder(var, -p), p, fill = fyear), alpha = .3, show.legend = T, position = "identity") +
+  theme_minimal() +
+  geom_hline(yintercept = 0.1, lty = "dashed") +
+  scale_y_continuous(labels = scales::percent) +
+  coord_flip(ylim = c(0, 0.4)) +
+  # facet_wrap(vars(fyear))+
+  labs(y = "Percentage incomplete") +
+  theme(
+    axis.title.y = element_blank(),
+    axis.title.x = element_text(size = 9),
+    axis.text = element_text(size = 7.5),
+  )
+```
+
+From this overview of the submissions of all providers, @fig-vars-na suggests that demographic variables are largely complete; variables relating to time generally have some missing values but completion rates have improved; and that coding of variables relating to diagnosis remains patchy in ECDS. In this latter case, the situation seems to have worsened in recent years.
+
+On the subject of diagnosis coding, we must also recognise that the mapping of EC to AEA diagnosis codes stopped completely from 2022/23. If we were, then, to use diagnosis coding for these analyses, we would be reliant on ECDS-style (SNOMED?) diagnoses. The new system allows for 950 distinct codes - a multiplicity which is unlikely to be practical for modelling and model interpretation purposes.
+
+One solution to this problem may be to use other variables to understand case-mix (and may even be more valid measures). For example, the combination of *acuity* (composed of 5 levels) and Chief Complaint Group (15 groups) should allow us to account for differences in case-mix. Both variables have \<13% NULL values in both years when looking at the data set as a whole. The completion rates would likely improve further if we were to examine a subset of providers.
+
+It is possible, then, that the quality of a provider's submission of these two variables, along with *Der_EC_Investigation_All*, may determine whether we include the provider in our analyses. We will address this idea next.
+
+## A look at key variables, by provider
+
+```{r}
+#| label: list-providers
+#| include: false
+
+providers_key_90 <- dqual_ecds_only_provider_key |> 
+# TO KEEP CONSISTENT WITH ABOVE CHANGE TO % NA:
+  mutate(across(starts_with("x"), ~ 1 - .)) |> 
+  filter(!if_any(starts_with("x"), ~ is.na(.))) |> 
+  rowwise() |> 
+  mutate(xmean = mean(c_across(x2019_20: x2023_24))) |> 
+  ungroup() |> 
+  filter(if_all(starts_with("x"), ~ . < .10)) |> 
+  # pull(procode) %>%
+  # cat("With 90% threshold: ", .)
+  identity()
+
+providers_key_85 <- dqual_ecds_only_provider_key |> 
+# TO KEEP CONSISTENT WITH ABOVE CHANGE TO % NA:
+  mutate(across(starts_with("x"), ~ 1 - .)) |> 
+  filter(!if_any(starts_with("x"), ~ is.na(.))) |> 
+  rowwise() |> 
+  mutate(xmean = mean(c_across(x2019_20: x2023_24))) |> 
+  ungroup() |> 
+  filter(if_all(starts_with("x"), ~ . < .15)) |> 
+  anti_join(
+    providers_key_90, join_by(procode)
+  ) |> 
+  # pull(procode) %>%
+  # cat("With 85% threshold: ", .)
+  identity()
+  
+```
+
+In the lines above, we've suggested that the variables, *Der_EC_Investigation_All, chiefcompgrp,* and *acuity* may be of key interest. From @fig-provider-key-vars, we deduce that `r nrow(providers_key_90)` providers can claim to have **all 3 fields** **complete** for \>90% of attendances, in both years. If we were to relax the threshold to \>85%, we get `r nrow(providers_key_85) + nrow(providers_key_90)` providers.
+
+```{r}
+#| label: fig-provider-key-vars
+#| echo: false
+#| fig-cap: "Quality of key variables, by provider"
+
+dqual_ecds_only_provider_key |> 
+# TO KEEP CONSISTENT WITH ABOVE CHANGE TO % NA:
+  mutate(across(starts_with("x"), ~ 1 - .)) |> 
+  filter(!if_any(starts_with("x"), ~ is.na(.))) |> 
+  rowwise() |> 
+  mutate(xmean = mean(c_across(x2019_20: x2023_24))) |> 
+  ungroup() |> 
+  arrange(xmean) |> 
+  pivot_longer(cols = starts_with("x"), names_to = "fyear", values_to = "p") |>
+  slice(1:120) |> 
+  ggplot()+
+  geom_col(aes(reorder(procode, -p), p), alpha = .5)+
+  scale_y_continuous(labels = scales::percent
+                     # , limits = c(0, 0.4)
+                     )+
+  theme_minimal()+
+  facet_wrap(vars(fyear))+
+  geom_hline(yintercept = 0.10, lty = "dashed", alpha = .4)+ #
+  geom_text(x = 39, y = .13, label = "10%", alpha = .3, size = 2.5)+ # 
+  geom_hline(yintercept = 0.15, lty = "dashed", alpha = .6, col = "indianred3")+ #, col = "indianred1"
+  geom_text(x = 37.5, y = .18, label = "15%", alpha = .5, size = 2.5, col = "indianred3")+ 
+  coord_flip()+
+  labs(y = "% NULL", y = "Provider")+
+  theme(
+    axis.title.y = element_blank(),
+    plot.subtitle = element_text(size = 9),
+    axis.title = element_text(size = 9)
+    )
+```
+
+The `r nrow(providers_key_90)` providers that have all 3 fields complete for \>90% of attendances (in both years) are:
+
+`r providers_key_90 |> pull(procode)` .
+
+Providers that have all 3 fields complete for \>85% of attendances are those above, in addition to:
+
+`r providers_key_85 |> pull(procode)` .
+
+## How representative is the provider sample?
+
+We identified `r nrow(providers_surviving_ecds_only)` providers with provider codes that were present in the two years of interest and that, in addition, passed basic data quality checks. These providers will represent the total population of providers that we might have used for our analyses. Given the data quality issues, we have selected a sample of providers to improve the reliability and validity of our results. However, since we wish to make general statements about about the effect of diagnostic testing on urgent and emergency care, we must ensure that our samples are representative of the population of providers.
+
+More deprived, and older population, with more arrivals by ambulance results in more admissions. We will control for all of these factors - what difference does this make...?
+
+```{r}
+#| label: tbl-representation-ecds-only
+#| tbl-cap: "Is the Sample Representative of the Wider Provider Population?"
+#| echo: false
+#| message: false
+
+provider_sample <- bind_rows(
+  providers_key_90,
+  # providers_key_85
+) |> 
+  select(procode)
+
+# TODO FLAG FOR MARCH 2020 / 2024
+
+
+dq_provider_represent_ecds_only <- dq_provider_represent |>
+        filter(fyear %in% c("2019/20", "2023/24"))
+
+table_representation_ecds_only <- tibble(
+  data = list(
+    dq_provider_represent_ecds_only |>
+        semi_join(providers_surviving_ecds_only, join_by(procode)),
+    dq_provider_represent_ecds_only |>
+        semi_join(provider_sample, join_by(procode))
+  )
+) |>
+  mutate(n_providers = map_dbl(data, \(df)
+  df |>
+    count(procode) |>
+    nrow()
+  )) |>
+   mutate(f_year = map(data, \(df)
+  df |>
+    count(fyear, wt = n) |>
+    mutate(p = n / sum(n)) |>
+    filter(fyear == "2023/24") |> 
+  select(-n) |>
+  pivot_wider(names_from = fyear, values_from = p)
+    )) |>
+  mutate(size = map(data, \(df)
+  df |>
+    filter(fyear == "2023/24") |>
+    count(fyear, procode, wt = n) |>
+    group_by(procode) |>
+    # MEAN OF A PROVIDER'S SIZE OVER 1 YEARS:
+    reframe(mean_n = mean(n)) |>
+    mutate(size_group = case_when(
+      mean_n < 70e3 ~ "att < 70k",
+      mean_n >= 70e3 & mean_n < 95e3 ~ "att 70-94k",
+      mean_n >= 95e3 & mean_n < 130e3 ~ "att 95-129k",
+      mean_n >= 130e3 ~ "att > 130k",
+      T ~ NA_character_
+    )) |>
+    mutate(size_group = factor(
+      size_group,
+      levels = c("att < 70k", "att 70-94k", "att 95-129k", "att > 130k")
+    )) |>
+    count(size_group) |>
+    mutate(p = n / sum(n)) |>
+    select(-n) |>
+    pivot_wider(names_from = size_group, values_from = p)
+  
+  )) |>
+  mutate(arrive_ambulance = map_dbl(data, \(df)
+  df |>
+    count(fyear, is_ambulance, wt = n) |>
+    # filter(fyear != "2023/24") |>
+    group_by(fyear) |>
+    mutate(p = n / sum(n)) |>
+    ungroup() |>
+    filter(is_ambulance == 1) |>
+    summarise(av = round(mean(p), 3)) |>
+    pull(av))) |>
+  mutate(admitted = map_dbl(data, \(df)
+  df |>
+    count(fyear, is_adm, wt = n) |>
+    # filter(fyear == "2023/24") |>
+    group_by(fyear) |>
+    mutate(p = n / sum(n)) |>
+    ungroup() |>
+    filter(is_adm == 1) |>
+    summarise(av = round(mean(p), 3)) |>
+    pull(av))) |>
+  mutate(age_under_18 = map_dbl(data, \(df)
+  df |>
+    count(fyear, age_under_18, wt = n) |>
+    group_by(fyear) |>
+    mutate(p = n / sum(n)) |>
+    ungroup() |>
+    filter(age_under_18 == 1) |>
+    summarise(av = round(mean(p), 3)) |>
+    pull(av))) |>
+  mutate(age_75_plus = map_dbl(data, \(df)
+  df |>
+    count(fyear, age_75_plus, wt = n) |>
+    group_by(fyear) |>
+    mutate(p = n / sum(n)) |>
+    ungroup() |>
+    filter(age_75_plus == 1) |>
+    summarise(av = round(mean(p), 3)) |>
+    pull(av))) |>
+  mutate(urban = map_dbl(data, \(df)
+  df |>
+    count(fyear, is_urban, wt = n) |>
+    # BECAUSE LOTS OF NAS IN 2023/24:
+    filter(fyear != "2023/24") |>
+    group_by(fyear) |>
+    mutate(p = n / sum(n)) |>
+    ungroup() |>
+    filter(is_urban == 1) |>
+    summarise(av = round(mean(p), 3)) |>
+    pull(av))) |>
+  mutate(deprived_20pc = map_dbl(data, \(df)
+  df |>
+    count(fyear, imd_quint_1, wt = n) |>
+    group_by(fyear) |>
+    mutate(p = n / sum(n)) |>
+    ungroup() |>
+    filter(imd_quint_1 == 1) |>
+    summarise(av = round(mean(p), 3)) |>
+    pull(av))) |>
+  mutate(region = map(data, \(df)
+  df |>
+    count(fyear, region, wt = n, sort = T) |>
+    group_by(fyear) |>
+    mutate(p = n / sum(n)) |>
+    group_by(region) |>
+    summarise(av = round(mean(p), 3)) |>
+    ungroup() |>
+    pivot_wider(names_from = region, values_from = av) |>
+    clean_names() |>
+    rename_with(~ paste0("region_", .x, recycle0 = TRUE)) |>
+    identity())) |>
+  unnest(f_year) |>
+  # mutate(type = map(data, \(df)
+  #                   df |>
+  #                     count(fyear, trust_type, wt = n, sort = T) |>
+  #                     group_by(fyear) |>
+  #                     mutate(p = n/sum(n)) |>
+  #                     group_by(trust_type) |>
+  #                     summarise(av = round(mean(p), 3)) |>
+  #                     ungroup() |>
+  #                     pivot_wider(names_from = trust_type, values_from = av) |>
+  #                     clean_names() |>
+  #                     rename_with(~ paste0("type_", .x, recycle0 = TRUE)) |>
+  #                     identity()
+  # )) |>
+  # unnest(type) |>
+  unnest(region) |>
+  unnest(size) |>
+  # unnest(type) |>
+  select(-data) |>
+  mutate(zz = if_else(n_providers > 50, "population", "sample"), .before = n_providers) |>
+  pivot_longer(cols = !starts_with("zz"), names_to = "variable") |>
+  pivot_wider(names_from = zz, values_from = value)
+
+table_representation_ecds_only |> 
+  select(variable, population, sample) |> 
+  mutate(across(2:3, ~if_else(is.na(.), 0, .))) |> 
+  rowwise() |> 
+  mutate(diff = sample - population) |> 
+  gt() |> 
+  opt_row_striping(row_striping = F) |> 
+  fmt_auto() |> 
+  tab_style(
+    style = list(
+      cell_text(transform = "capitalize", weight = "bold")
+    ),
+    # different location
+    locations = cells_column_labels(everything())
+  ) |> 
+  fmt_percent(rows = c(2:19), decimals = 1) |>
+  tab_row_group(
+    label = "Patient demographics:",
+    rows =  str_detect(variable, "age|urban|depriv|region_")
+  ) |> 
+  tab_row_group(
+    label = "Case-mix-related:",
+    rows =  str_detect(variable, "arrive_|admitted")
+  ) |> 
+  tab_row_group(
+    label = "Provider Size (attendances 23/24):",
+    rows =  str_detect(variable, "att")
+  ) |> 
+  # tab_row_group(
+  #   group = "Provider-related",
+  #   rows =  str_detect(variable, "type_|min_|max_|av_")
+  # ) |> 
+  tab_row_group(
+    label = "",
+    rows =  str_detect(variable, "n_prov|2023")
+  ) |>
+  tab_style(
+  style = cell_text(weight = "bold"),
+  locations = cells_row_groups(groups = c(1, 2, 3, 4))
+) |> 
+    sub_values(values = -86, replacement = "") |> 
+   gt_highlight_cols(sample, fill = "grey", alpha = 0.1) |> 
+  tab_options(data_row.padding = px(1))
+```
+
+# Data quality in detail {#sec-detail}
+
+As we proceed with the modelling work, we will likely require deeper analysis of specific variables (for an agreed subset of providers). This section can be used to display the results and consequences of these analyses.
+
+```{r}
+dq_provider_represent_ecds_only |>
+        semi_join(providers_surviving_ecds_only, join_by(procode)) |>
+# dq_provider_represent_ecds_only |>
+ #       semi_join(provider_sample, join_by(procode)) |> 
+  distinct(procode, trust_name, trust_type) |> 
+  gt()
+```
+
+# Appendix 1 {#sec-appendix-1}
+
+SQL code used to create \[NHSE_Sandbox_StrategyUnit\].\[dbo\].\[2232_diagnostics_ecds_only\]. (Note: scroll bar at bottom of chunk.)
+
+```{sql connection = F, eval = F, error = T}
+
+/*            
+  _______   ______   ________    ________         ______    _____  ___   ___       ___  ___  
+ /"     "| /" _  "\ |"      "\  /"       )       /    " \  (\"   \|"  \ |"  |     |"  \/"  | 
+(: ______)(: ( \___)(.  ___  :)(:   \___/       // ____  \ |.\\   \    |||  |      \   \  /  
+ \/ ___|  |  |      |: \   ) || \___  \        /  /    ) :)|: \.   \\  ||:  |       \\  \/   
+ // ___)_ |  |   _  (| (___\ ||  __/  \\      (: (____/ // |.  \    \. | \  |___    /   /    
+(:      "|(: | _) \ |:       :) /" \   :)      \        /  |    \    \ |( \_|:  \  /   /     
+ \_______) \_______)(________/ (_______/        \"_____/    \___|\____\) \_______)|___/                                                                                             
+*/
+ 
+SELECT 'ecds' as data_source,
+
+/* TIME-RELATED VARIABLES */
+
+	ec.Der_Financial_Year as fyear, 
+    -- ec.EC_Ident AS id,
+    Der_EC_Arrival_Date_Time AS dttm_arr,
+    -- Arrival_Date,
+    EC_Initial_Assessment_Time AS time_assess,
+    EC_Seen_For_Treatment_Time AS time_treat,
+    EC_Conclusion_Time AS time_concl,
+    -- convert(DATE, EC_Departure_Date) AS date_depart,
+	-- EC_Departure_Time AS time_depart,
+    Der_EC_Departure_Date_Time AS dttm_depart,
+	-- THIS MAY BE DIFFERENT FROM THE ABOVE:
+    --cast(EC_Departure_Date AS DATETIME) + cast(EC_Departure_Time AS DATETIME) AS depart_dttm_manual,
+    CAST(EC_Initial_Assessment_Time_Since_Arrival AS INT) AS dur_arr_assess,
+    CAST(EC_Seen_For_Treatment_Time_Since_Arrival AS INT) AS dur_arr_treat,
+    CAST(EC_Conclusion_Time_Since_Arrival AS INT) AS dur_arr_concl,
+    CASE
+        WHEN Der_EC_Duration < 0 THEN NULL -- 4320 mins = 72 hours = 3 days
+        WHEN Der_EC_Duration > 4320 THEN NULL
+        ELSE Der_EC_Duration
+    END AS duration_ed,
+
+/* ARRIVAL/DISCHARGE VARIABLES */
+
+    -- ONLY DEP TYPE 1 IN WHERE CLAUSE, SO UNNECESSARY:
+    -- EC_Department_Type,
+    EC_Attendance_Source_SNOMED_CT AS att_source,
+    ref_attsrc.AttendanceSourceDescription AS att_source_desc,
+    CASE
+        WHEN ref_arr_mode.ArrivalModeKey IN (3, 4, 5, 6, 9) THEN 'amb'
+        WHEN ref_arr_mode.ArrivalModeKey IN (1, 2, 7, 8) THEN 'walk_in'
+        WHEN ref_arr_mode.ArrivalModeKey IS NULL THEN 'walk_in'
+        ELSE CAST(ref_arr_mode.ArrivalModeKey AS VARCHAR(2))
+    END AS arr_mode,
+     Discharge_Destination_SNOMED_CT AS disdest,
+    ref_dis_dest.DischargeDestinationDescription AS disdest_desc,
+    -- see ECDS_Group1 field, tab 26.4, ECDS_ETOS_v4.0.7
+    CASE
+        WHEN Discharge_Destination_SNOMED_CT = '306689006' THEN 'discharged'
+        WHEN Discharge_Destination_SNOMED_CT = '306691003' THEN 'discharged'
+        WHEN Discharge_Destination_SNOMED_CT = '306694006' THEN 'discharged'
+        WHEN Discharge_Destination_SNOMED_CT = '306705005' THEN 'discharged'
+        WHEN Discharge_Destination_SNOMED_CT = '50861005' THEN 'discharged'
+        WHEN Discharge_Destination_SNOMED_CT = '1066331000000109' THEN 'ambulatory'
+        WHEN Discharge_Destination_SNOMED_CT = '1066341000000100' THEN 'ambulatory'
+        WHEN Discharge_Destination_SNOMED_CT = '1066351000000102' THEN 'ambulatory'
+        WHEN Discharge_Destination_SNOMED_CT = '306706006' THEN 'admitted'
+        WHEN Discharge_Destination_SNOMED_CT = '1874161000000104' THEN 'admitted'
+        WHEN Discharge_Destination_SNOMED_CT = '1066361000000104' THEN 'admitted'
+        WHEN Discharge_Destination_SNOMED_CT = '1066371000000106' THEN 'admitted'
+        WHEN Discharge_Destination_SNOMED_CT = '1066381000000108' THEN 'admitted'
+        WHEN Discharge_Destination_SNOMED_CT = '1066391000000105' THEN 'admitted'
+        WHEN Discharge_Destination_SNOMED_CT = '1066401000000108' THEN 'admitted'
+        WHEN Discharge_Destination_SNOMED_CT = '19712007' THEN 'transfer'
+        WHEN Discharge_Destination_SNOMED_CT = '183919006' THEN 'transfer'
+        WHEN Discharge_Destination_SNOMED_CT = '305398007' THEN 'died'
+        ELSE Discharge_Destination_SNOMED_CT
+    END AS disdest_grp,
+    EC_Discharge_Status_SNOMED_CT AS dis_status,
+    ref_dis_stat.DischargeStatusDescription AS dis_status_desc,
+
+/* CARE-RELATED (INVEST-DIAG-TREAT) VARIABLES */
+
+    -- EC_Acuity_SNOMED_CT AS acuity_code, 
+    ref_acuity.AcuityID AS acuity, -- 5 ACUITY LEVELS
+    ref_acuity.AcuityDescription AS acuity_desc,
+    ec.EC_Chief_Complaint_SNOMED_CT AS chief_comp, -- 149 DISTINCT CHIEF COMPLAINTS
+    ref_chief_comp.ChiefComplaintDescription AS chief_comp_desc,
+	Clinical_Chief_Complaint_Code_Approved,
+    ref_chief_comp_grp.ChiefComplaintGrouping AS chief_comp_grp, -- 15 CHIEF COMPLAINT GROUPS
+    ec_diag.EC_Diagnosis_01 AS diag01_ec,
+    ref_diag.DiagnosisDescription AS diag01_ec_desc,
+	-- DERIVED FROM CHIEF COMPLAINT BUT MAY STILL BE USEFUL IF USING COMPLAINT GROUP
+    Clinical_Chief_Complaint_Injury_Related AS inj_flag,
+  	Der_Number_EC_Investigation AS n_invst_ec,
+	Der_Number_EC_Diagnosis AS n_diag_ec,
+    Der_Number_EC_Treatment AS n_treat_ec,
+	-- MAY NOT BE ALL THAT WELL RECORDED (?):
+    CASE
+        WHEN ec_comorb.Comorbidity_01 IS NOT NULL THEN 1
+        ELSE 0
+    END + CASE
+        WHEN ec_comorb.Comorbidity_02 IS NOT NULL THEN 1
+        ELSE 0
+    END + CASE
+        WHEN ec_comorb.Comorbidity_03 IS NOT NULL THEN 1
+        ELSE 0
+    END + CASE
+        WHEN ec_comorb.Comorbidity_04 IS NOT NULL THEN 1
+        ELSE 0
+	END + CASE
+        WHEN ec_comorb.Comorbidity_05 IS NOT NULL THEN 1
+        ELSE 0
+	END + CASE
+        WHEN ec_comorb.Comorbidity_06 IS NOT NULL THEN 1
+        ELSE 0
+	END AS n_cmrbd,
+	Der_EC_Diagnosis_All,
+	Der_EC_Investigation_All,
+	Der_EC_Treatment_All,
+   
+/* DEMOGRAPHIC VARIABLES */
+
+    CASE
+        WHEN Sex = '1' THEN 'm'
+        WHEN Sex = '2' THEN 'f'
+        WHEN Sex IN ('0', '9', 'X') THEN 'NA'
+        ELSE Sex
+    END AS sex,
+    CASE
+        WHEN Age_at_Arrival >= 110 THEN NULL
+        ELSE Age_At_Arrival
+    END AS age,
+    CASE
+        WHEN Age_at_Arrival < 10 THEN '00-09'
+        WHEN Age_at_Arrival >= 10
+        AND Age_at_Arrival < 20 THEN '10-19'
+        WHEN Age_at_Arrival >= 20
+        AND Age_at_Arrival < 30 THEN '20-29'
+        WHEN Age_at_Arrival >= 30
+        AND Age_at_Arrival < 40 THEN '30-39'
+        WHEN Age_at_Arrival >= 40
+        AND Age_at_Arrival < 50 THEN '40-49'
+        WHEN Age_at_Arrival >= 50
+        AND Age_at_Arrival < 60 THEN '50-59'
+        WHEN Age_at_Arrival >= 60
+        AND Age_at_Arrival < 70 THEN '60-69'
+        WHEN Age_at_Arrival >= 70
+        AND Age_at_Arrival < 80 THEN '70-79'
+        WHEN Age_at_Arrival >= 80
+        AND Age_at_Arrival < 90 THEN '80-89'
+        WHEN Age_at_Arrival >= 90
+        AND Age_at_Arrival < 110 THEN '90+'
+        WHEN Age_At_Arrival >= 110 THEN 'NA'
+    END AS age_grp,
+    Index_Of_Multiple_Deprivation_Decile AS imd_dec,
+    Ethnic_Category AS ethnic_grp,
+
+/* GEOGRAPHICAL VARIABLES */
+
+    Provider_Code AS procode,
+    Der_Postcode_Dist_Unitary_Auth AS lacd,
+    Government_Office_Region AS region,
+    Der_Postcode_LSOA_2011_Code AS lsoa11cd
+
+INTO  [NHSE_Sandbox_StrategyUnit].[dbo].[2232_diagnostics_ecds_only]
+FROM NHSE_SUSPlus_Live.dbo.tbl_Data_SUS_EC ec 
+    LEFT OUTER JOIN [NHSE_Reference].[dbo].[tbl_Ref_DataDic_ECDS_Arrival_Mode] ref_arr_mode ON ec.EC_Arrival_Mode_SNOMED_CT = ref_arr_mode.ArrivalModeCode
+    LEFT OUTER JOIN [NHSE_Reference].[dbo].[tbl_Ref_DataDic_ECDS_Attendance_Source] ref_attsrc ON ec.EC_Attendance_Source_SNOMED_CT = ref_attsrc.AttendanceSourceCode
+    LEFT OUTER JOIN [NHSE_Reference].[dbo].[tbl_Ref_DataDic_ECDS_Acuity] ref_acuity ON ec.EC_Acuity_SNOMED_CT = ref_acuity.AcuityCode
+    LEFT OUTER JOIN [NHSE_Reference].[dbo].[tbl_Ref_DataDic_ECDS_Chief_Complaint] ref_chief_comp ON ec.EC_Chief_Complaint_SNOMED_CT = ref_chief_comp.ChiefComplaintCode
+    LEFT OUTER JOIN [NHSE_Reference].[dbo].[tbl_Ref_DataDic_ECDS_Chief_Complaint_Group] ref_chief_comp_grp ON ec.EC_Chief_Complaint_SNOMED_CT = ref_chief_comp_grp.ChiefComplaintCode
+    LEFT OUTER JOIN [NHSE_Reference].[dbo].[tbl_Ref_DataDic_ECDS_Discharge_Status] ref_dis_stat ON ec.EC_Discharge_Status_SNOMED_CT = ref_dis_stat.DischargeStatusCode
+    LEFT OUTER JOIN [NHSE_Reference].[dbo].[tbl_Ref_DataDic_ECDS_Discharge_Destination] ref_dis_dest ON ec.Discharge_Destination_SNOMED_CT = ref_dis_dest.DischargeDestinationCode
+    LEFT OUTER JOIN [NHSE_SUSPlus_Live].[dbo].[tbl_Data_SUS_EC_Diagnosis] ec_diag ON ec.EC_Ident = ec_diag.EC_Ident
+    LEFT OUTER JOIN [NHSE_Reference].[dbo].[tbl_Ref_DataDic_ECDS_Diagnosis] ref_diag ON ec_diag.EC_Diagnosis_01 = ref_diag.DiagnosisCode
+    LEFT OUTER JOIN [NHSE_SUSPlus_Live].[dbo].[tbl_Data_SUS_EC_Comorbidities] ec_comorb ON ec_diag.EC_Ident = ec_comorb.EC_Ident
+WHERE ec.Der_Financial_Year IN (
+        '2019/20',
+        --'2020/21',
+        --'2021/22',
+        --'2022/23',
+        '2023/24'
+    )
+    AND -- EXCLUSIONS MIRRORING STEVEN'S PREVIOUS WORK BUT TYPE 1s ONLY (ECDS EQUIVALENTS TO AEA): 
+    EC_Department_Type IN ('01')
+    AND -- ARRIVAL MODE KNOWN (AMBULANCE OR, IN ECDS, VARIOUS NAMED OTHERS) :
+    (NOT ArrivalModeDescription IS NULL)
+    AND -- ATTENDANCE CATEGORY IS AN UNPLANNED FIRST (NOT FOLLOW UP / UNKNOWN):
+    EC_AttendanceCategory = '1'
+    AND -- NOT BROUGHT IN DEAD:
+    (NOT Der_AEA_Patient_Group = '70')
+    AND -- DURING ATTENDANCE DID NOT: DIE / LEAVE / UNKNOWN DISPOSAL / NOT STREAMED PATIENTS (GENERALLY)
+    (
+        DischargeStatusDescription = 'Treatment completed (situation)'
+        OR DischargeStatusDescription = 'Streamed to emergency department following initial assessment (situation)'
+        OR Discharge_Destination_SNOMED_CT = '305398007' -- died
+    )
+    AND SEX IN ('1', '2') 
+    -- FROM PAUL'S INDUSTRIAL ACTION CODE:
+    AND Der_Dupe_Flag = 0
+    AND LEFT(Der_Postcode_Dist_Unitary_Auth, 1) = 'E'
+    AND LEFT(Provider_Code, 1) = 'R'
+
+
+
+```
+
+# Appendix 2 {#sec-appendix-2}
+
+Manipulation of the \[2232_diagnostics_ecds_only\] table, undertaken on the NCDR DS server:
+
+```{r}
+#| eval: false
+#| message: false
+
+
+con_sandbox_su <- dbConnect(
+  odbc::odbc(),
+  Driver = "SQL Server",
+  Server = "PRODNHSESQL101",
+  Database = "NHSE_Sandbox_StrategyUnit",
+  Trusted_Connection = "True"
+)
+
+tb_ecds_only <- tbl(con_sandbox_su, in_schema("dbo", "2232_diagnostics_ecds_only"))
+
+ecds_only <- tb_ecds_only |>  
+  select(-data_source) |>
+  collect()
+
+
+# 1. COUNT OF PROVIDERS ---------------------------------------------------
+
+# 138 PROVIDERS TOTAL IN DATASET
+# BUT ONLY 108 PROVIDERS PRESENT IN BOTH YEARS
+ecds_only |> count(procode) |> count()
+ecds_only |> count(fyear, procode) |> count(procode) |> filter(n == 2)
+
+
+# 2. NAs BY VARIABLE ------------------------------------------------------
+
+tmp_count <- ecds_only %>% 
+  colnames() %>% 
+  map(~ count(ecds_only, .data[["fyear"]], is.na(.data[[.x]]), sort = T)) %>% 
+  map(list(. %>% mutate(var = (names(.))[2]))) %>% 
+  map(list(. %>% rename(cat = 2))) %>% 
+  map(list(. %>% mutate(is_na = as.character(cat)))) %>% 
+  reduce(bind_rows) %>% 
+  select(var, everything(), -cat) %>% 
+  arrange(var, -n) %>% 
+  group_by(var, fyear) |> 
+  mutate(p = round(n/sum(n), 4)) |> 
+  ungroup() |> 
+  filter(is_na == TRUE) |>
+  mutate(var = str_remove_all(var, "[:punct:]" )) |>
+  mutate(var = str_remove_all(var, "isnadata" )) |>
+  mutate(var = snakecase::to_snake_case(var)) |> 
+  relocate(n, .before = p) |> 
+  arrange(var, desc(p)) 
+
+tmp_count |>  filter(is_na == TRUE) |> saveRDS("from_ncdr_ecds_only_240820_dq_isna.RDS")
+
+
+# 3. QUALITY BY PROVIDER --------------------------------------------------
+
+dq_providers <- ecds_only |> 
+  count(procode, fyear, na_inv = is.na(Der_EC_Investigation_All), na_chief = is.na(chief_comp_grp), na_acuity = is.na(acuity)) 
+
+dq_providers |> 
+  group_by(fyear, procode) |> 
+  mutate(p = round(n/sum(n), 4)) |>
+  ungroup() |> 
+  filter(if_all(starts_with("na"), ~ . == F)) |> 
+  select(procode, fyear, p) |> 
+  pivot_wider(names_from = fyear, values_from = p) |> 
+  arrange(-`2019/20`) |> 
+  janitor::clean_names() |> 
+  saveRDS("from_ncdr_ecds_only_240807_dq_provider.RDS")
+
+
+# 4. EFFECT OF COVID ------------------------------------------------------
+
+ts_daily_ecds_only <- ecds_only |> 
+  count(fyear, date(dttm_arr))
+
+ts_daily_ecds_only |> saveRDS("from_ncdr_ecds_only_240807_ts_daily.RDS")
+
+
+```

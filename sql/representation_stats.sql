@@ -59,8 +59,67 @@ SELECT 'ecds' as data_source,
 	    WHEN Rural_Urban_Indicator IN ('1', '5') THEN 1
 		  ELSE 0
 	END AS is_urban,
+    CASE 
+        WHEN EC_Department_Type IN ('03') THEN 1 
+          ELSE 0
+    END AS is_type3, 
+    CASE
+		WHEN Der_EC_Duration >= 0 AND Der_EC_Duration < 240 THEN 1
+		ELSE 0
+	END AS 'under_4hrs',
+    CASE
+		WHEN Der_EC_Duration >= 0 AND Der_EC_Duration < 720 THEN 1
+		ELSE 0
+	END AS 'under_12hrs',
+
+------- WHERE CLAUSE FLAGS:
+
+    CASE 
+        WHEN EC_Department_Type IN ('01') THEN 1 
+          ELSE 0
+    END AS where_is_type1, 
+    CASE 
+        WHEN EC_AttendanceCategory = '1' THEN 1 
+          ELSE 0
+    END AS where_is_attcat1, 
+    CASE 
+        WHEN (
+		NOT (Der_AEA_Patient_Group = '70' OR Discharge_Destination_SNOMED_CT = '305398007') -- died
+        --  OR (Der_AEA_Patient_Group IS NULL AND Discharge_Destination_SNOMED_CT != '305398007')
+		--  OR (Der_AEA_Patient_Group != '70' AND Discharge_Destination_SNOMED_CT IS NULL) 
+		--  OR (Der_AEA_Patient_Group IS NULL AND Discharge_Destination_SNOMED_CT IS NULL)
+		 ) THEN 1 
+          ELSE 0
+    END AS where_is_live, 
+    CASE 
+        WHEN (
+      DischargeStatusDescription = 'Treatment completed (situation)'
+      OR DischargeStatusDescription = 'Streamed to emergency department following initial assessment (situation)'
+      ) THEN 1 
+          ELSE 0
+    END AS where_is_complete, 
+    CASE 
+        WHEN SEX IN ('1', '2')  THEN 1 
+          ELSE 0
+    END AS where_is_sex, 
+    CASE 
+        WHEN Der_Dupe_Flag = 0  THEN 1 
+          ELSE 0
+    END AS where_is_valid, 
+    CASE 
+        WHEN LEFT(Der_Postcode_Dist_Unitary_Auth, 1) = 'E' THEN 1 
+          ELSE 0
+    END AS where_is_eng, 
+    CASE 
+        WHEN LEFT(Provider_Code, 1) = 'R' THEN 1 
+          ELSE 0
+    END AS where_is_rprov, 
+    
+
+------- WHERE CLAUSE FLAGS END  
+
     COUNT(*) AS n
-INTO [NHSE_Sandbox_StrategyUnit].[dbo].[2232_diagnostics_provider_representation_stats]
+INTO [NHSE_Sandbox_StrategyUnit].[dbo].[2232_diagnostics_provider_representation_stats_augmented]
 FROM NHSE_SUSPlus_Live.dbo.tbl_Data_SUS_EC ec 
     LEFT OUTER JOIN [NHSE_Reference].[dbo].[tbl_Ref_DataDic_ECDS_Arrival_Mode] ref_arr_mode ON ec.EC_Arrival_Mode_SNOMED_CT = ref_arr_mode.ArrivalModeCode
     LEFT OUTER JOIN [NHSE_Reference].[dbo].[tbl_Ref_DataDic_ECDS_Discharge_Status] ref_dis_stat ON ec.EC_Discharge_Status_SNOMED_CT = ref_dis_stat.DischargeStatusCode
@@ -72,27 +131,32 @@ WHERE ec.Der_Financial_Year IN (
         '2022/23',
         '2023/24'
     )
-    AND -- EXCLUSIONS MIRRORING SW'S PREVIOUS WORK (ECDS EQUIVALENTS TO AEA): 
-    EC_Department_Type IN ('01')
-    -- SEE FLAG na_arrival COLUMN:
-    -- AND -- ARRIVAL MODE KNOWN (AMBULANCE OR, IN ECDS, VARIOUS NAMED OTHERS) :
-    -- (NOT ArrivalModeDescription IS NULL)
-    AND -- ATTENDANCE CATEGORY IS AN UNPLANNED FIRST (NOT FOLLOW UP / UNKNOWN):
-    EC_AttendanceCategory = '1'
-    AND -- NOT BROUGHT IN DEAD OR DIED DURING ATTENDANCE:
-      (
-      NOT (Der_AEA_Patient_Group = '70' OR Discharge_Destination_SNOMED_CT = '305398007') -- died
-      )
-    AND -- DURING ATTENDANCE DID NOT LEAVE / UNKNOWN DISPOSAL / NOT STREAMED PATIENTS (GENERALLY)
-      (
-      DischargeStatusDescription = 'Treatment completed (situation)'
-      OR DischargeStatusDescription = 'Streamed to emergency department following initial assessment (situation)'
-      )
-    AND SEX IN ('1', '2') 
-    -- FROM PS'S INDUSTRIAL ACTION CODE:
-    AND Der_Dupe_Flag = 0
-    AND LEFT(Der_Postcode_Dist_Unitary_Auth, 1) = 'E'
-    AND LEFT(Provider_Code, 1) = 'R'
+    -- THESE ARE NOW INCLUDED AS CASE WHEN STATEMENTS:
+
+    -- AND -- EXCLUSIONS MIRRORING SW'S PREVIOUS WORK (ECDS EQUIVALENTS TO AEA): 
+    -- EC_Department_Type IN ('01')
+    -- -- SEE FLAG na_arrival COLUMN:
+    -- -- AND -- ARRIVAL MODE KNOWN (AMBULANCE OR, IN ECDS, VARIOUS NAMED OTHERS) :
+    -- -- (NOT ArrivalModeDescription IS NULL)
+    -- AND -- ATTENDANCE CATEGORY IS AN UNPLANNED FIRST (NOT FOLLOW UP / UNKNOWN):
+    -- EC_AttendanceCategory = '1'
+--    AND -- NOT BROUGHT IN DEAD OR DIED DURING ATTENDANCE:
+--         (
+-- 		NOT (Der_AEA_Patient_Group = '70' OR Discharge_Destination_SNOMED_CT = '305398007') -- died
+--          OR (Der_AEA_Patient_Group IS NULL AND Discharge_Destination_SNOMED_CT != '305398007')
+-- 		 OR (Der_AEA_Patient_Group != '70' AND Discharge_Destination_SNOMED_CT IS NULL) 
+-- 		 OR (Der_AEA_Patient_Group IS NULL AND Discharge_Destination_SNOMED_CT IS NULL)
+-- 		 )
+    -- AND -- DURING ATTENDANCE DID NOT LEAVE / UNKNOWN DISPOSAL / NOT STREAMED PATIENTS (GENERALLY)
+    --   (
+    --   DischargeStatusDescription = 'Treatment completed (situation)'
+    --   OR DischargeStatusDescription = 'Streamed to emergency department following initial assessment (situation)'
+    --   )
+    -- AND SEX IN ('1', '2') 
+    -- -- FROM PS'S INDUSTRIAL ACTION CODE:
+    -- AND Der_Dupe_Flag = 0
+    -- AND LEFT(Der_Postcode_Dist_Unitary_Auth, 1) = 'E'
+    -- AND LEFT(Provider_Code, 1) = 'R'
 
 GROUP BY  
     CASE
@@ -140,4 +204,58 @@ GROUP BY
 	CASE 
 	    WHEN Rural_Urban_Indicator IN ('1', '5') THEN 1
 		ELSE 0
-	END 
+	END,
+    CASE 
+        WHEN EC_Department_Type IN ('03') THEN 1 
+          ELSE 0
+    END,
+    CASE
+		WHEN Der_EC_Duration >= 0 AND Der_EC_Duration < 240 THEN 1
+		ELSE 0
+	END,
+    CASE
+		WHEN Der_EC_Duration >= 0 AND Der_EC_Duration < 720 THEN 1
+		ELSE 0
+	END,
+------- WHERE CLAUSE FLAGS:
+
+    CASE 
+        WHEN EC_Department_Type IN ('01') THEN 1 
+          ELSE 0
+    END, 
+    CASE 
+        WHEN EC_AttendanceCategory = '1' THEN 1 
+          ELSE 0
+    END,
+    CASE 
+        WHEN (
+		NOT (Der_AEA_Patient_Group = '70' OR Discharge_Destination_SNOMED_CT = '305398007') -- died
+        --  OR (Der_AEA_Patient_Group IS NULL AND Discharge_Destination_SNOMED_CT != '305398007')
+		--  OR (Der_AEA_Patient_Group != '70' AND Discharge_Destination_SNOMED_CT IS NULL) 
+		--  OR (Der_AEA_Patient_Group IS NULL AND Discharge_Destination_SNOMED_CT IS NULL)
+		 ) THEN 1 
+          ELSE 0
+    END, 
+    CASE 
+        WHEN (
+      DischargeStatusDescription = 'Treatment completed (situation)'
+      OR DischargeStatusDescription = 'Streamed to emergency department following initial assessment (situation)'
+      ) THEN 1 
+          ELSE 0
+    END, 
+    CASE 
+        WHEN SEX IN ('1', '2')  THEN 1 
+          ELSE 0
+    END, 
+    CASE 
+        WHEN Der_Dupe_Flag = 0  THEN 1 
+          ELSE 0
+    END, 
+    CASE 
+        WHEN LEFT(Der_Postcode_Dist_Unitary_Auth, 1) = 'E' THEN 1 
+          ELSE 0
+    END,
+    CASE 
+        WHEN LEFT(Provider_Code, 1) = 'R' THEN 1 
+          ELSE 0
+    END 
