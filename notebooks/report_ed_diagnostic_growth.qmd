@@ -379,7 +379,8 @@ df_odds_results <- bind_rows(
     lkp_invst_ec_aea |> 
       select(InvestigationKey, invst_group), 
     join_by(InvestigationKey)
-  )
+  ) |> 
+  mutate(InvestigationDescription = str_remove(InvestigationDescription, " situation"))
 ```
 
 ::: panel-tabset
@@ -873,8 +874,8 @@ The materiality of these findings for ED patient flow in general (as opposed to 
 #| out-width: "85%"
 #| fig-align: center
 
-
 readRDS(here("data", "241204_df_preplot_duration.rds")) |>
+ mutate(InvestigationDescription = str_remove(InvestigationDescription, " situation")) |>
   # REDUCE TO TOP 32 INVESTIGATIONS:
   semi_join(df_odds_results, join_by(InvestigationDescription)) |>
   mutate(InvestigationKey = as.numeric(str_extract(term, "[:digit:]{2}"))) |>
@@ -913,6 +914,7 @@ left_join(
 #| width: 8
 
 readRDS(here("data", "241204_df_preplot_duration.rds")) |>
+   mutate(InvestigationDescription = str_remove(InvestigationDescription, " situation")) |>
     semi_join(df_odds_results, join_by(InvestigationDescription)) |>
   arrange(-estimate) |>
   left_join(
@@ -944,7 +946,6 @@ readRDS(here("data", "241204_df_preplot_duration.rds")) |>
     data_row.padding = px(1),
     table.font.size = "small"
   ) 
-
 ```
 :::
 
