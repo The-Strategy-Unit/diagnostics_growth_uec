@@ -88,7 +88,7 @@ Over the last decade, growth in diagnostic testing in emergency departments (EDs
 For the sake of readability, we use the term, “test”, to refer to a unit of diagnostic activity. We acknowledge that some of these “tests” might also be therapeutic procedures.
 :::
 
-This report is the first of two reports which will examine the impact of the growth in diagnostic testing on urgent and emergency care services. Here, we update and expand our previous analyses to assess the extent to which the trends identified in earlier reports have continued. We explore growth in diagnostic testing in EDs in England, and consider the implications of this growth. We sought to answer six questions:
+This is the first of two reports that will examine the impact of the growth in diagnostic testing on urgent and emergency care services. Here, we update and expand our previous analyses to assess the extent to which the trends identified in earlier reports have continued. We explore growth in diagnostic testing in EDs in England, and consider the implications of this growth. We sought to answer four questions:
 
 ::: {.callout-note appearance="minimal" icon="false"}
 #### Questions on diagnostic testing in EDs that we address in this report:
@@ -97,15 +97,11 @@ This report is the first of two reports which will examine the impact of the gro
 
 1.  How has the number of tests per attendance changed over time?
 
-2.  Can the rise in testing rates be explained by changes to casemix?
+2.  To what extent can changes in ED patient casemix explain the growth in test rates?
 
-3.  What is driving the growth in testing?
+3.  What are the implications of this growth for the timeliness of care in ED?
 
-4.  How much time do tests add to a patient’s attendance?
-
-5.  How does time in ED change according to the number of tests conducted?
-
-6.  How do tests influence decisions to admit?
+4.  What are the implications of this growth for decisions to admit?
 :::
 
 We start by describing our analytical approach, before addressing each question in turn. Detailed information about the methods and limitations are provided for each analysis.
