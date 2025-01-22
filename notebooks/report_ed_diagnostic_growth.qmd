@@ -310,7 +310,7 @@ df_preplot_trend |>
 ```
 :::
 
-## A2. Can the rise in testing rates be explained by changes to casemix?
+## A2. To what extent can changes in ED patient casemix explain the growth in test rates?
 
 The number and types of test that a patient receives in ED will be influenced by the patient’s characteristics and presenting conditions. The term "casemix" can be used to describe the combination of these factors. In this section of analysis, we explore whether patients are more or less likely to receive a test in 2023/24 than in 2019/20, having taken account of the patient casemix. The results are expressed as casemix-adjusted odds ratios, which is the odds of a patient receiving a test in 2023/24 divided by the odds in 2019/20, having adjusted for changes in casemix between the two years. We perform these calculations for 32 tests. These 32 tests account for over 99% of all tests recorded in EDs.
 
@@ -809,18 +809,18 @@ df_odds_results |>
 ```
 :::
 
-## A4. How much time do tests add to a patient's stay in the ED?
+## A3. What are the implications of this growth for the timeliness of care in ED?
 
 Patients will wait while tests are ordered and conducted, and they will likely wait while their clinician or clinical team interprets and communicates the results. However, tests can provide critical information that allows a patient’s care to be expedited.
 
-In this section, we investigate the net effect of testing on the time that patients spend in the ED. We examine 32 tests in the 2023/24 financial year and measure the effect for a single additional test, acknowledging that many patients receive several tests, of different types or the same type. Our results take patient casemix into account.
+In this section, we investigate the association between testing and the time that patients spend in the ED. We examine 32 tests in the 2023/24 financial year and measure the effect for a single additional test, acknowledging that many patients receive several tests (of different types or of the same type). Our results take patient casemix into account.
 
 ::: {.callout-note collapse="true"}
-## A4: Method and Limitations (click to unhide)
+## A3: Method and Limitations (click to unhide)
 
-<br>**A4:** **Method**
+<br>**A3:** **Method**
 
-This analysis again uses patient-level data from the 16 providers that passed our consistency and data quality criteria for A2-A6. (For further details of our sampling approach and data quality criteria see @sec-approach-sampling and @sec-appendix.) We use only records from the 2023/24 financial year for this analysis.
+This analysis again uses patient-level data from the 16 providers that passed our consistency and data quality criteria for A2-A4. (For further details of our sampling approach and data quality criteria see @sec-approach-sampling and @sec-appendix.) We use only records from the 2023/24 financial year for this analysis.
 
 As in Analysis 2, we deleted records that had missing values in a key field (our "key fields" are given in @sec-appendix). We also removed records with times that appeared to be poorly recorded. For example, there were attendances in which the arrival time was noted as occurring after the assessment time, and those in which the total time in the ED was recorded to be less than zero minutes. We also limited this analysis to attendances where the patient is recorded to have stayed in the ED for less than 30 hours. And we removed a low number of records in which the patient appeared to receive one (or more) test and then left the ED within 15 minutes. All these exclusions reduced our total sample of 1.8 million records by 6.7%.
 
@@ -836,7 +836,7 @@ We treated the provider variable as a random effect. This allowed us to control 
 
 We ran the model on a random sub-sample of 1 million attendance records.
 
-**A4: Limitations**
+**A3: Limitations**
 
 The findings of this analysis are based on a sample of 16 providers. These findings are therefore subject to the same sampling-related limitations we identified in the Limitations section of A1.
 
@@ -846,10 +846,10 @@ For reasons related to model interpretabilty, we specified a linear relationship
 
 Our results estimate the time impact of a single additional test on a patient's stay in the ED. We acknowledge that many patients receive several tests, of different types or the same type. With regression models, we have the ability to specify interactions between test terms (to account for the effect of one test, given the provision of another). However, this approach is impractical here, based both on the number of interaction terms we would produce and on our desire for interpretability.
 
-Finally, as noted in the Methods section of A4, above, we removed approximately 7% of records from our sample due to poor data quality. We expect this decision to have a limited impact on our results. However, as it reduced our sample size, the standard errors around our model coefficients will have increased as a consequence. There is also the potential for some bias in our results if these missing data were not missing completely at random.
+Finally, as noted in the Methods section of A3, above, we removed approximately 7% of records from our sample due to poor data quality. We expect this decision to have a limited impact on our results. However, as it reduced our sample size, the standard errors around our model coefficients will have increased as a consequence. There is also the potential for some bias in our results if these missing data were not missing completely at random.
 :::
 
-**A4: Results**
+**A3: Results**
 
 For 23 of the 32 tests we considered, we found statistically significant evidence that conducting the test added time to a patient’s stay in an ED (see @fig-test-time). MRI scans had the biggest impact adding 3 hours, on average, to a patient’s stay. Other forms of imaging, namely CT scan and ultrasound, and two other tests (urine sent for culture situation, and analysis of arterial blood gas and pH) added between 60 and 90 minutes to a patient’s stay in ED.
 
@@ -960,7 +960,7 @@ As the number of tests per attendance has increased, so has the number of patien
 
 <br>**A5:** **Method**
 
-This analysis uses patient-level data from the 16 providers that passed our consistency and data quality criteria for A2-A6. (For further details of our sampling approach and data quality criteria see @sec-approach-sampling and @sec-appendix.)
+This analysis uses patient-level data from the 16 providers that passed our consistency and data quality criteria for A2-A4. (For further details of our sampling approach and data quality criteria see @sec-approach-sampling and @sec-appendix.)
 
 In terms of data preparation, we removed March from both 2019/20 and 2023/24, to avoid any bias to our results that may have arisen due to the onset of the pandemic in March 2020.
 
@@ -1040,14 +1040,14 @@ readRDS(here("data", "df_nested_preplots_multi_tests.rds"))$data[[5]] |>
 
 ```
 
-## A6. How do tests influence decisions to admit?
+## A4. How do tests influence decisions to admit?
 
 In this section, we explore how increased testing in ED has influenced the rate of admissions to hospital beds. We do this by comparing the change in the casemix-adjusted *odds of a test* with the casemix-adjusted *odds of admission* *having received a test*. We examine these changes over the period from 2019/20 to 2023/24, for 32 test types.
 
 ::: {.callout-note collapse="true"}
-## A6: Methods and Limitations
+## A4: Methods and Limitations
 
-<br>**A6: Method**
+<br>**A4: Method**
 
 We used the SUS EC data set and identified 16 providers with provider codes that survived across the study period and that passed our data quality criteria for this question. For further details of our sampling approach and data quality criteria see @sec-approach-sampling and @sec-appendix.
 
@@ -1065,13 +1065,13 @@ We treated the provider variable as a random effect. This allowed us to control 
 
 We ran the model on a random sub-sample of 1 million attendance records.
 
-**A6: Limitations**
+**A4: Limitations**
 
 The findings of this analysis are based on a sample of 16 providers. These findings are therefore subject to the same sampling-related limitations we identified in the Limitations section of A1.
 
 We have labelled our estimates as "casemix-adjusted", as we controlled for a range of variables that might indicate a patient's risk of admission. However, there will be variables influencing a patient's risk of admission that go unrecorded. Because we are unable to control for unrecorded variables, our casemix adjustment is only partial. It is therefore possible that some of the effect we see is due to this unobserved casemix effect.
 
-Finally, as noted in the A6 Methods section, above, we decided to delete approximately 2% of records from our sample that had missing values for any of the variables used in the model. We expect this decision to have a limited impact on our results. However, as it reduced our sample size, the standard errors around our model coefficients have marginally increased as a consequence. There is also the potential for some bias in our results if these missing data were not missing completely at random.
+Finally, as noted in the A4 Methods section, above, we decided to delete approximately 2% of records from our sample that had missing values for any of the variables used in the model. We expect this decision to have a limited impact on our results. However, as it reduced our sample size, the standard errors around our model coefficients have marginally increased as a consequence. There is also the potential for some bias in our results if these missing data were not missing completely at random.
 :::
 
 @fig-adm-decision assigns each of the 32 tests to a quadrant, based on 2 values:
@@ -1378,7 +1378,7 @@ table_representation_trends |>
 ```
 :::
 
-### Sample used for A2-A6
+### Sample used for A2-A4
 
 To carry out these analyses, we require only the EC data set, and only two years of data (2019/20 and 2023/24). We identified 102 providers with provider codes that survived across this study period and that, in addition, passed basic data quality checks. These 102 providers represent the total population of providers that we might have used for our analysis had data quality been universally high.
 
@@ -1387,7 +1387,7 @@ Providers were included in our sample if they had all three of *Der_EC_Investiga
 We established that 16 providers met these criteria. The providers we intend to use for our sample are given in @tbl-sample-q2-6. In the adjacent tab, @tbl-representation-q2-6 suggests that this sample of 16 providers is generally representative of the population of providers. We note that the sample includes higher proportions of larger providers and providers in the Midlands. One of the seven regions, the East of England, is not represented.
 
 ::: panel-tabset
-## Provider Sample for A2-A6
+## Provider Sample for A2-A4
 
 ```{r}
 #| label: tbl-sample-q2-6
