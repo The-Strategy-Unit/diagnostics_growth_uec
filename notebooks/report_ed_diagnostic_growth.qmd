@@ -40,7 +40,9 @@ editor_options:
 
 # Executive Summary
 
-In this report, we examine rates of diagnostic testing in Emergency Departments (EDs) in England. We investigate how rates of testing have changed in recent years, and we explore how these changes have influenced both patient journeys through the ED and the likelihood of admission to hospital. We find that:
+In this report, we examine rates of diagnostic testing in Emergency Departments (EDs) in England. We investigate how rates of testing have changed in recent years, and we explore how these changes have influenced both patient journeys through the ED and the likelihood of admission to hospital.
+
+This analysis relied on the Emergency Care Data Set (ECDS) and its predecessor. The quality of these datasets is variable and changing. We therefore based the analysis on a subset of providers whose data submissions were sufficiently complete and consistent. The results obtained from this subset of providers - who were broadly representative of EDs in England – both approximate the changes seen in England as a whole and allow us to draw conclusions with more confidence. We find that:
 
 #### Testing rates in EDs continue to grow, but have slowed in recent years
 
