@@ -58,17 +58,21 @@ The increase in tests per attendance cannot be explained by changes in patient c
 
 In another report, we found that the increasing testing rates in ED between 2010/11 and 2015/16 were, in part, due to the growing complexity of the casemix. By contrast, casemix did not change substantially from 2019/20 to 2023/24. This negligible change in casemix, along with a slowing of casemix-adjusted growth rates for some tests, might explain why the growth in the number of tests per attendance has slowed in recent years.
 
-#### Though some tests appear to expedite a patient’s journey through the ED, most tests lead to a longer stay
+#### **Most tests were associated with a longer stay in the ED**
 
-We found that most tests added time to a patient’s stay in the ED. Four tests, including CT scans and ultrasounds, increased the length of a patient’s attendance by between 60 and 90 minutes, on average. Moreover, we found that an MRI scan added three hours to a patient’s stay.
+We found that most tests were associated with longer patient stays in the ED. We suggest two potential causal explanations, though these act in opposite directions and our analysis is not capable of distinguishing between these.
 
-Five tests appeared to *reduce* the amount of time that a patient spent in ED. A patient who received a lipid panel test stayed in the ED one hour less, on average, than a patient with similar characteristics who did not have the test.
+The first explanation is that longer patient ED stays may lead to more testing within the ED. This might arise, for example, when there are insufficient beds to enable prompt admission when required. The second explanation may be less of a surprise: it takes time to order and conduct tests, and to incorporate results into a patient’s treatment plan. From this perspective, we might see tests as adding time to a patients stay in the ED. 
 
-Of the tests that appeared to add time to ED attendances, five occured with sufficiently high frequency to have a material impact on an ED’s waiting times: CT scans, plain radiography, urea and electrolytes, complete blood count, and C-reactive protein measurement. Two of these tests, CT scan and C-reactive protein measurement, have increased in volume rapidly since 2019/20.
+The association between tests and duration in the ED was particularly marked for imaging tests. The presence of CT scans, ultrasounds, and plain radiography as part of a patient’s ED care, were associated with an additional hour in the ED, on average. MRI scans were associated with an additional three hours.
+
+It should be noted that five tests were associated with somewhat *shorter* stays in the ED. This finding might indicate that these tests provided information that allowed clinicians to expedite a patients journey through the ED.
+
+Of the tests that were associated with *longer* stays in the ED, five occurred with sufficiently high frequency to have a material impact on an ED’s waiting times: CT scans; plain radiography; urea and electrolytes; complete blood count; and C-reactive protein measurement. Two of these tests, CT scan and C-reactive protein measurement, have increased in volume rapidly since 2019/20.
 
 #### The relationship between the number of tests carried out and the time a patient spends in the ED has changed
 
-The number of patients who receive many tests has increased, which has consequences for ED waiting times. In 2019/20, the time added to a patient’s stay by each additional test beyond the fifth was minimal. By 2023/24, each of these additional tests was, on average, associated with a further 30+ minutes in the ED. Whilst this finding is clear in the data, it is not easy to explain. Potential lines of enquiry might focus on the extent of asynchronous testing, or on re-testing for those whose care is delayed.
+The number of patients who receive many tests has increased, which has consequences for ED waiting times. In 2019/20, the additional time associated with a patient’s stay for each test beyond the fifth was minimal. By 2023/24, each of these additional tests was, on average, associated with a further 30+ minutes in the ED. Whilst this finding is clear in the data, it is not easy to explain. Potential lines of enquiry might focus on the extent of asynchronous testing, or on re-testing for those whose care is delayed.
 
 #### Increased testing rates in EDs may mean that fewer patients are admitted
 
