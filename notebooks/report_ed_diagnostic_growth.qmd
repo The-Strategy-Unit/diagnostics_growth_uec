@@ -1254,7 +1254,7 @@ df_odds_results |>
 
 # Conclusion
 
-In these analyses, we investigated how rates of diagnostic testing in EDs have changed in recent years. We also explored how these changes have influenced both patient journeys through the ED and the likelihood of admission to hospital. This work concludes the first phase of a two-phase project, in which we are examing the impact of the growth in diagnostic testing on urgent and emergency care services. In the second phase of the project, we plan to disregard the boundary between EDs and inpatient beds, and investigate whether increased diagnostic testing means that patients spend less time in contact with hospital services overall.
+In this analysis, we investigated how rates of diagnostic testing in EDs have changed in recent years. We also explored how these changes have influenced both patient journeys through the ED and the likelihood of admission to hospital. This work concludes the first phase of a two-phase project. In the second phase, we plan to address the first of the *further research* questions listed below.
 
 # Further Research {#sec-further-work}
 
