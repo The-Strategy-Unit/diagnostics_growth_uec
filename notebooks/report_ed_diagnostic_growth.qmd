@@ -118,8 +118,6 @@ We were able to identify two distinct samples that met our needs for the six que
 
 Whilst sampling should improve the reliability and validity of our results, we can only make general statements about the effect of testing on EDs if our sample of providers is *representative* of the population of providers. That is to say, the providers in our sample(s) and population should have similar characteristics.
 
-<!--With a representative sample, we can be more confident that our findings for the sample are also applicable to the population.-->
-
 There is a trade-off to be made here. The larger our sample of providers, the more likely it is to be representative of the population of providers. But the larger we make our sample, the more we compromise on data quality, which will likely to decrease the reliability of our results.
 
 Details of the sampling methods, our approach to the trade-off, and the measures of representation can be found in @sec-appendix.
@@ -232,7 +230,7 @@ Although, over the study period, testing rates for non-admitted patients were lo
 <br>
 
 ::: panel-tabset
-#### Graphic
+#### Aggregated results 
 
 ```{r}
 #| label: fig-trend
@@ -271,6 +269,56 @@ df_preplot_trend |>
   facet_wrap(vars(disdest))+ # , scales = "free_y"
   scale_x_discrete(breaks = every_nth(n=4))+
   scale_y_continuous(breaks = seq(0,9, by = 2))
+```
+
+#### Results by (A&E) test type 
+
+```{r}
+#| label: fig-trend-2
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-cap: "Estimated average number of tests per ED attendance, in England, between 2012/13 and 2023/24. Results by A&E dataset test type. Source: SUS A&E and EC data sets."
+#| column: page
+#| fig-width: 10
+#| fig-asp: 0.618
+#| fig-align: center
+#| out-width: "85%"
+
+readRDS(here("data_raw", "from_ncdr_trends_241003_preplot_by_invst.rds")) |>
+  left_join(
+    readRDS(here("reference", "lkp_test_ec_to_aea.rds")) |> 
+      distinct(Der_AEA_Investigation_All, AEA_Investigation_Desc_Short, invst_group) |> 
+      mutate(invst_type = str_c("invst_", str_remove(Der_AEA_Investigation_All, "^0"))),
+    join_by(invst_type)
+              ) |> 
+  filter(!str_detect(AEA_Investigation_Desc_Short, "ental")) |> 
+  filter(!is.na(AEA_Investigation_Desc_Short)) |>
+ mutate(AEA_Investigation_Desc_Short = as_factor(AEA_Investigation_Desc_Short)) |>
+  mutate(AEA_Investigation_Desc_Short = fct_reorder(AEA_Investigation_Desc_Short, as.integer(invst_group))) |> 
+  ggplot(aes(fyear, rate*1000)) +
+  # geom_line(aes(col = disdest, group = disdest)) +
+  # geom_point(aes(col = disdest, group = disdest)) +
+  geom_smooth(aes(col = disdest, group = disdest), se = F, alpha = .3) +
+  geom_blank(aes(y = 0)) +
+  labs(
+    x = "Financial year",
+    y = "Average number of recorded tests per thousand ED attendances",
+    ) +
+  theme_bw() +
+  scale_color_manual(values = c("#D81159", "dodgerblue")) +
+  theme(
+    # axis.title.y = element_blank(),
+    axis.ticks = element_blank(),
+    axis.text.x = element_text(size = 6.5),
+    axis.text.y = element_text(size = 8),
+    legend.position = "top"
+  ) +
+  facet_wrap(vars(AEA_Investigation_Desc_Short), scales = "free_y") + # 
+  scale_x_discrete(breaks = every_nth(n = 3)) +
+  guides(colour = guide_legend(title = "Patient outcome"))
+
+
 ```
 
 #### Table
@@ -983,7 +1031,7 @@ df_odds_results |>
 
 # Conclusion
 
-In this analysis, we investigated how rates of diagnostic testing in EDs have changed in recent years. We also explored how these changes have influenced both patient journeys through the ED and the likelihood of admission to hospital. This work concludes the first phase of a two-phase project. In the second phase, we plan to address the first of the *further research* questions listed below.
+In this analysis, we investigated how rates of diagnostic testing in EDs have changed in recent years. We also explored how these changes have influenced both patient journeys through ED and the likelihood of admission to hospital. The analysis highlights the complex interplay between test thresholds, admission thresholds, and the timeliness of care in ED.  Given the constraints under which our health system operates, it may not be possible to optimise these three quantities simultaneously. Trade-off decisions are likely required, at least in the short term. In the second phase of this project, we plan to address the first of the *further research* questions listed below, which we hope will inform these challenging decisions.
 
 # Further Research {#sec-further-work}
 
