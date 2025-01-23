@@ -202,7 +202,7 @@ readRDS(here("data", "prep_table_1.rds")) |>
 We start the analysis proper by looking at the change in the crude rate of testing in EDs over the last twelve years.
 
 ::: {.callout-note collapse="true"}
-# A1: Method and Limitations (click to unhide)
+### A1: Method and Limitations (click to unhide)
 
 <br>**A1:** **Method**
 
@@ -315,7 +315,7 @@ df_preplot_trend |>
 The number and types of test that a patient receives in ED will be influenced by the patient’s characteristics and presenting conditions. The term "casemix" can be used to describe the combination of these factors. In this section of analysis, we explore whether patients are more or less likely to receive a test in 2023/24 than in 2019/20, having taken account of the patient casemix. The results are expressed as casemix-adjusted odds ratios, which is the odds of a patient receiving a test in 2023/24 divided by the odds in 2019/20, having adjusted for changes in casemix between the two years. We perform these calculations for 32 tests. These 32 tests account for over 99% of all tests recorded in EDs.
 
 ::: {.callout-note collapse="true"}
-# A2: Method and Limitations (click to unhide)
+### A2: Method and Limitations (click to unhide)
 
 <br>**A2: Method**
 
@@ -507,304 +507,6 @@ df_odds_results |>
         .fn = md
   ) |> 
   fmt_auto() |>
-  tab_options(
-    data_row.padding = px(1),
-    table.font.size = "small"
-  ) 
-
-```
-:::
-
-## A3. What is driving test growth in EDs?
-
-In this section, we seek to decompose the growth in ED tests between 2019/20 to 2023/24 into to three main effects:
-
-::: column-margin
-Strictly speaking, we examined growth in ED attendances with at least one test, rather than growth in ED tests. The effect of this difference on interpretation of the results is discussed in the A3 Limitations section.
-:::
-
--   Growth in activity: the number of patients presenting at ED
-
--   Changes in casemix: the acuity and complexity of patient presentations
-
--   Changes in practice: the ways in which ED respond to patients who present
-
-Because these changes occur simultaneously, they interact in complex ways to influence the number of tests delivered. We separate out this interaction or compounding effect as a separate quantity. This, often modest, residual effect can be thought of as the difference between the total observed change, and the sum of the three individual effects. 
-
-Note that this analysis is carried out on our provider sample and after excluding certain attendances (see @sec-approach).
-
-We present results for 32 tests. As noted, these 32 tests account for over 99% of all tests recorded in EDs.
-
-::: {.callout-note collapse="true"}
-# A3: Method and Limitations (click to unhide)
-
-<br>**A3: Method**
-
-Once again, this analysis relies on the ECDS and the 16 providers with provider codes that both survived across the study period and passed our data quality criteria for this question. For further details of our sampling approach and data quality criteria see @sec-approach-sampling and @sec-appendix.
-
-For each of the 32 tests covered in A2, we set out to find the percentage growth in *attendances with one or more of the specified test* ($T$), as a function of the growth due to: increased activity ($A$), changes in casemix ($C$), and changes driven by all other factors ($P$). (We expect $P$ to be dominated by the influence of clinical practice, but it may also contain other factors, such as the availability of resources.)
-
-We formulated a multiplicative model
-
-$1+T = (1+A)(1+C)(1+P)$ . \[1\]
-
-Expanding the right hand side and solving for $T$ we get:
-
-$T = A + C + P + [AC + AP + CP + ACP]$ . \[2\]
-
-Thus, we are able to isolate the main effects for growth due to changes in activity, casemix, and practice. The terms within the square brackets are interaction effects (providing, for example, the effect of casemix for different levels of activity growth). In most cases, the influence of these interaction effects is likely to be negligible.
-
-We have defined $T$ as,
-
-$T = t_{23/24}/t_{19/20} -1$ , \[3\]
-
-where $t$ is the number of attendances with one or more of the specified test in the financial year.
-
-We might also define $A$, independently, as,
-
-$A = a_{23/24}/a_{19/20} -1$ , \[4\]
-
-where $a$ is the total number of attendances (both with and without a test) in the financial year.
-
-We can then move to a calculation of $P$ which will rely on predictions from our logistic regression models from A2.
-
-We will imagine a counterfactual scenario in which there was no change in casemix between 2019/20 and 2023/24 (i.e. we saw identical sets of patients attend in both years). In this case, both $A$ and $C$ will be equal to zero, and Equation 2 becomes:
-
-$T_{cf} = P$ . \[5\]
-
-where,
-
-$T_{cf} = t'_{23/34(cf)} / t'_{19/20} -1$ . \[6\]
-
-We can find $t'_{23/34(cf)}$ and $t'_{19/20}$ , and therefore $T_{cf}$ and thus $P$, using predictions from the logistic regression models from A2. (For our counterfactual scenario, we make predictions having re-labelled the 2019/20 attendances as 2023/24 attendances.)
-
-We can then use Equation 2 and solve for C:
-
-$C = (T - A - P - AP)/(1 + A + P + AP)$. \[7\]
-
-Finally, we can find the interaction effects in Equation 2. We will collect them under the term, $X$, giving us:
-
-$T = A + C + P + X$ , \[8\]
-
-and therefore,
-
-$X = T-A-C-P$ . \[9\]
-
-The main graphical output of this analysis reflects Equation 8.
-
-**A3: Limitations**
-
-The findings of this analysis are based on a sample of 16 providers (of 102 providers whose provider codes remained unchanged over the study period). These findings are therefore subject to the same sampling-related limitations we identified in the Limitations section of A1.
-
-Moreover, the analysis relies on the logistic regression models we built for A2, hence the limitations we acknowledged in that analysis also apply here.
-
-Since we would be relying on the models from A2 (which had a binary outcome), we had to measure growth in *ED attendances with at least one test*, and not growth in ED tests. In most cases, the growth in these quantities will be similar (since, for the majority of test types, it is unusual for the same test to be provided more than once per attendance). However, there are a handful of tests types (see below) for which we more regularly see the same test conducted several times in the course of an attendance.
-
-| Test type | \% Attds. with test<br>(23/24) | \% Attds. with \>1 test<br>(23/24) |
-|------------------------|------------------------|------------------------|
-| Bone profile | 8% | 3% |
-| Complete blood count | 41% | 8% |
-| Plain radiography | 36% | 6% |
-| Urea and electrolytes | 46% | 7% |
-| Group and save | 1% | 0.2% |
-| CT | 14% | 2% |
-| Blood coagulation panel | 26% | 4% |
-
-In these cases, there will be some discrepancy in the two growth rates.
-:::
-
-**A3: Results**
-
-Of the total growth in the number of attendances with at least one test between 2019/20 and 2023/24, 21% can be attributed to growth in attendances, -4% to changes in casemix, and 12% to changes in practice, with the remaining 1% attributable to interactions between these terms. @fig-attrib-perc and @fig-attrib-abs provide this disaggregation by test type.
-
-The growth in attendances in our sample between 2019/20 and 2023/24 is much larger than the growth in ED attendances reported nationally.  Data published by [NHS England](https://gbr01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fwww.england.nhs.uk%2Fstatistics%2Fwp-content%2Fuploads%2Fsites%2F2%2F2024%2F11%2FMonthly-AE-Time-Series-October-2024.xls&data=05%7C02%7Candrew.jones40%40nhs.net%7C386c7f40323b47cd634a08dd1929b4ba%7C37c354b285b047f5b22207b48d774ee3%7C0%7C0%7C638694389096099339%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=Fgt7tVnWFciy4cc9zUJjO5I%2B%2FgTBhZRrPbI73qaLg9A%3D&reserved=0 "Original URL: https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2024/11/Monthly-AE-Time-Series-October-2024.xls. Click or tap if you trust this link.") suggests that attendances at type 1 EDs have increased by 1.8% over this period, whereas the growth in our sample is 21.4%.  There are two distinct reasons for this variance.  First, our sample excludes certain attendance records that were less relevant to our analysis (e.g. patients who died on arrival or who left before being seen) or did not meet basic data quality checks (e.g. valid age, arrival mode etc).  Second, our sample includes 3 providers that have seen rapid growth in the number of recorded attendances due to organisational changes.   (For further information, see appendix 1.)
-
-It is important, therefore, that the growth in tests attributed to growth in attendances in our sample is not generalised to England as a whole. However, the balance of growth attributable to casemix and practice changes *is* likely to be generalisable. On this basis, the analysis would suggest that the vast majority of the growth in tests per attendance is attributable to changes in practice rather than changes in casemix.
-
-In light of earlier analysis, which covered the period from 2010/11 to 2015/16, our findings here suggest that the driver of test growth in ED has changed in recent years. In the earlier analysis, we found that approximately one third of the growth in tests per attendance was attributable to changes in casemix. ED casemix became more complex and acute between 2010/11 and 2015/16, but it does not appear to have changed substantially between 2019/20 and 2023/24. This might explain, in part, the slowdown in the growth in tests per attendance seen since 2019/20.
-
-Of course, some tests are more common than others. When we consider both test frequency and the change in the casemix-adjusted odds of a test, we can identify those tests where changes in practice have had a material impact on the total number of tests carried out. These are C-reactive protein tests, hepatic function panel tests, and CT scans. 
-
-As medical practice and technology develops, and tests become more readily available, clinicians are able to replace older tests with more modern and (likely) more accurate tests. This might explain, for example, why the casemix-adjusted odds of CT and MRI scans has increased whilst there has been minimal change for plain radiography. And this same substitution effect may explain the different trends in electrocardiography and troponin measurement. Changes in coding practices may also play a part.
-
-```{r}
-#| include: false
-
-df_preplot_growth_components <- df_odds_results |>
-  mutate(d0 = 1, .before = dT) |>
-  relocate(dC, .before = dP) |>
-  pivot_longer(cols = matches("^d|^abs"), names_to = "component", values_to = "value") |>
-  select(-tests_2023_24) |>
-  mutate(value_abs = tests_2019_20 * value) |>
-  mutate(value_order = if_else(component == "d0", value_abs, NA_real_)) |>
-  mutate(value = if_else(component == "d0", NA_real_, value)) |>
-  mutate(component = case_when(
-    component == "d0" ~ "Attendances with test\n(in sub-sample) 19/20",
-    component == "dT" ~ "Growth in attds. with test\n19/20 to 23/24",
-    component == "dD" ~ "Growth in tests due to:\n       • growth in activity",
-    component == "dC" ~ "\n\       • change in case-mix",
-    component == "dP" ~ "\n       • change in practice",
-    component == "dI" ~ "\n  • interactions (residual)",
-    T ~ NA_character_
-  )) |>
-  mutate(component = forcats::as_factor(component)) |>
-  mutate(value_abs = as.integer(value_abs)) |>
-  group_by(InvestigationDescription) |>
-  mutate(value_order = max(value_order, na.rm = T)) |>
-  ungroup() |>
-  mutate(value_abs = round(value_abs / 1000)) |>
-  mutate(value_label_abs = if_else(is.na(value), str_c(value_abs, "k"), NA_character_)) |>
-  mutate(value_label_p = if_else(value >= 0, str_c("+", round(value * 100), "%"), str_c(round(value * 100), "%")))
-
-
-```
-
-::: panel-tabset
-## Percentage changes
-
-```{r}
-#| label: fig-attrib-perc
-#| fig-cap: "Growth in attendances with 1+ test (19/20 to 23/24), decomposed by factor."
-#| echo: false
-#| message: false
-#| warning: false
-#| column: page
-#| fig-width: 12
-#| fig-height: 12
-
-
-df_preplot_growth_components |>
-  ggplot(aes(reorder(InvestigationDescription, value_order), value_abs)) +
-  geom_col(
-    aes(
-      reorder(InvestigationDescription, value_order), value_abs,
-      fill = component
-    ),
-    position = "identity",
-    alpha = 0.4
-  ) +
-  geom_text(
-    aes(
-      label = value_label_abs,
-      vjust = ifelse(value_abs >= 0, -0.4, 1.4),
-      angle = 270
-    ),
-    size = 2.5,
-    colour = "grey20"
-  ) +
-  geom_text(
-    aes(
-      label = value_label_p,
-      vjust = ifelse(value_abs >= 0, -0.4, 1.4),
-      angle = 270
-    ),
-    size = 2.5,
-    colour = "grey20"
-  ) +
-  coord_flip() +
-  geom_hline(yintercept = 0, lty = "dashed") +
-  theme_minimal() +
-  theme(
-    axis.ticks = element_blank(),
-    axis.title.y = element_blank(),
-    legend.position = "none",
-    strip.text = element_text(size = 9),
-    axis.text = element_text(size = 8),
-    axis.title = element_text(size = 9),
-    panel.grid.minor = element_blank(),
-    # panel.spacing = unit(1, "lines")
-  ) +
-  scale_y_continuous(
-    limits = c(-50, 250)
-  ) +
-  facet_wrap(vars(component), ncol = 6) +
-  labs(y = "\nED attendances (thousands) with 1+ test of specified type")+
-  facet_grid(invst_group ~ component, space = "free", scales = "free_y")
-```
-
-## Absolute changes
-
-```{r}
-#| label: fig-attrib-abs
-#| fig-cap: "Growth in attendances with 1+ test (19/20 to 23/24), decomposed by factor."
-#| echo: false
-#| message: false
-#| warning: false
-#| column: page
-#| fig-width: 12
-#| fig-height: 12
-
-df_preplot_growth_components |>
-  mutate(value_label_abs = str_c(value_abs, "k")) |>
-  ggplot(aes(reorder(InvestigationDescription, value_order), value_abs)) +
-  geom_col(
-    aes(reorder(InvestigationDescription, value_order), value_abs, fill = component),
-    position = "identity",
-    alpha = 0.4
-  ) +
-  geom_text(
-    aes(
-      label = value_label_abs,
-      vjust = ifelse(value_abs >= 0, -0.4, 1.4),
-      angle = 270
-    ),
-    size = 2.5,
-    colour = "grey20"
-  ) +
-  coord_flip() +
-  geom_hline(yintercept = 0, lty = "dashed") +
-  theme_minimal() +
-  theme(
-    axis.ticks = element_blank(),
-    axis.title.y = element_blank(),
-    legend.position = "none",
-    strip.text = element_text(size = 9),
-    axis.text = element_text(size = 8),
-    axis.title = element_text(size = 9),
-    panel.grid.minor = element_blank(),
-    # panel.spacing = unit(1, "lines")
-  ) +
-  scale_y_continuous(
-    limits = c(-50, 250)
-  ) +
-  facet_wrap(vars(component), ncol = 6) +
-  labs(y = "\nED attendances (thousands) with 1+ test of specified type")+
-  facet_grid(invst_group ~ component, space = "free", scales = "free_y")
-
-```
-
-## Table
-
-```{r}
-#| label: tbl-attrib-abs
-#| echo: false
-#| message: false
-#| warning: false
-#| column: page
-
-
-df_odds_results |> 
-  select(InvestigationDescription, invst_group, tests_2019_20, tests_2023_24, dT, dD, dC, dP, dI) |> 
-  arrange(invst_group) |> 
-   gt() |>
-  cols_label(
-    InvestigationDescription = "Test type",
-    invst_group = "Test category",
-    # att_2023_24 = "Attendances in sample<br>2023/24",
-    tests_2019_20 = "Attendances with test<br>in 2019/20<br>(in sub-sample)",
-    tests_2023_24 = "Attendances with test<br>in 2023/24<br>(in sub-sample)",
-    dT = "Growth in attendances<br>with test<br>19/20 to 23/24",
-    dD = "Growth due<br>activity",
-    dC = "Growth due<br>casemix",
-    dP = "Growth due<br>practice",
-    dI = "Growth due<br>interactions",
-    .fn = md
-  ) |>
-  fmt_auto() |>
-  fmt_number(columns = c(tests_2019_20, tests_2023_24), n_sigfig = 4) |> 
-  # fmt_number(columns = c(rate), decimals = 2) |> 
-  fmt_percent(columns = c(dT, dP, dC, dI), decimals = 1) |>
-  fmt_percent(columns = c(dD), decimals = 0) |>
   tab_options(
     data_row.padding = px(1),
     table.font.size = "small"
@@ -1475,7 +1177,307 @@ Three of the providers in Sample 2 have undergone organisational change during o
 
 # Appendix 2
 
-Graphics supporting A5.
+## What is driving test growth in EDs?
+
+In this section, we seek to decompose the growth in ED tests between 2019/20 to 2023/24 into to three main effects:
+
+::: column-margin
+Strictly speaking, we examined growth in ED attendances with at least one test, rather than growth in ED tests. The effect of this difference on interpretation of the results is discussed in the Limitations section below.
+:::
+
+-   Growth in activity: the number of patients presenting at ED
+
+-   Changes in casemix: the acuity and complexity of patient presentations
+
+-   Changes in practice: the ways in which ED respond to patients who present
+
+Because these changes occur simultaneously, they interact in complex ways to influence the number of tests delivered. We separate out this interaction or compounding effect as a separate quantity. This, often modest, residual effect can be thought of as the difference between the total observed change, and the sum of the three individual effects. 
+
+Note that this analysis is carried out on our provider sample and after excluding certain attendances (see @sec-approach).
+
+We present results for 32 tests. As noted, these 32 tests account for over 99% of all tests recorded in EDs.
+
+::: {.callout-note collapse="true"}
+# Method and Limitations (click to unhide)
+
+<br>**Method**
+
+Once again, this analysis relies on the ECDS and the 16 providers with provider codes that both survived across the study period and passed our data quality criteria for this question. For further details of our sampling approach and data quality criteria see @sec-approach-sampling and @sec-appendix.
+
+For each of the 32 tests covered in A2, we set out to find the percentage growth in *attendances with one or more of the specified test* ($T$), as a function of the growth due to: increased activity ($A$), changes in casemix ($C$), and changes driven by all other factors ($P$). (We expect $P$ to be dominated by the influence of clinical practice, but it may also contain other factors, such as the availability of resources.)
+
+We formulated a multiplicative model
+
+$1+T = (1+A)(1+C)(1+P)$ . \[1\]
+
+Expanding the right hand side and solving for $T$ we get:
+
+$T = A + C + P + [AC + AP + CP + ACP]$ . \[2\]
+
+Thus, we are able to isolate the main effects for growth due to changes in activity, casemix, and practice. The terms within the square brackets are interaction effects (providing, for example, the effect of casemix for different levels of activity growth). In most cases, the influence of these interaction effects is likely to be negligible.
+
+We have defined $T$ as,
+
+$T = t_{23/24}/t_{19/20} -1$ , \[3\]
+
+where $t$ is the number of attendances with one or more of the specified test in the financial year.
+
+We might also define $A$, independently, as,
+
+$A = a_{23/24}/a_{19/20} -1$ , \[4\]
+
+where $a$ is the total number of attendances (both with and without a test) in the financial year.
+
+We can then move to a calculation of $P$ which will rely on predictions from our logistic regression models from A2.
+
+We will imagine a counterfactual scenario in which there was no change in casemix between 2019/20 and 2023/24 (i.e. we saw identical sets of patients attend in both years). In this case, both $A$ and $C$ will be equal to zero, and Equation 2 becomes:
+
+$T_{cf} = P$ . \[5\]
+
+where,
+
+$T_{cf} = t'_{23/34(cf)} / t'_{19/20} -1$ . \[6\]
+
+We can find $t'_{23/34(cf)}$ and $t'_{19/20}$ , and therefore $T_{cf}$ and thus $P$, using predictions from the logistic regression models from A2. (For our counterfactual scenario, we make predictions having re-labelled the 2019/20 attendances as 2023/24 attendances.)
+
+We can then use Equation 2 and solve for C:
+
+$C = (T - A - P - AP)/(1 + A + P + AP)$. \[7\]
+
+Finally, we can find the interaction effects in Equation 2. We will collect them under the term, $X$, giving us:
+
+$T = A + C + P + X$ , \[8\]
+
+and therefore,
+
+$X = T-A-C-P$ . \[9\]
+
+The main graphical output of this analysis reflects Equation 8.
+
+**Limitations**
+
+The findings of this analysis are based on a sample of 16 providers (of 102 providers whose provider codes remained unchanged over the study period). These findings are therefore subject to the same sampling-related limitations we identified in the Limitations section of A1.
+
+Moreover, the analysis relies on the logistic regression models we built for A2, hence the limitations we acknowledged in that analysis also apply here.
+
+Since we would be relying on the models from A2 (which had a binary outcome), we had to measure growth in *ED attendances with at least one test*, and not growth in ED tests. In most cases, the growth in these quantities will be similar (since, for the majority of test types, it is unusual for the same test to be provided more than once per attendance). However, there are a handful of tests types (see below) for which we more regularly see the same test conducted several times in the course of an attendance.
+
+| Test type | \% Attds. with test<br>(23/24) | \% Attds. with \>1 test<br>(23/24) |
+|------------------------|------------------------|------------------------|
+| Bone profile | 8% | 3% |
+| Complete blood count | 41% | 8% |
+| Plain radiography | 36% | 6% |
+| Urea and electrolytes | 46% | 7% |
+| Group and save | 1% | 0.2% |
+| CT | 14% | 2% |
+| Blood coagulation panel | 26% | 4% |
+
+In these cases, there will be some discrepancy in the two growth rates.
+:::
+
+**Results**
+
+Of the total growth in the number of attendances with at least one test between 2019/20 and 2023/24, 21% can be attributed to growth in attendances, -4% to changes in casemix, and 12% to changes in practice, with the remaining 1% attributable to interactions between these terms. @fig-attrib-perc and @fig-attrib-abs provide this disaggregation by test type.
+
+The growth in attendances in our sample between 2019/20 and 2023/24 is much larger than the growth in ED attendances reported nationally. Data published by [NHS England](https://gbr01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fwww.england.nhs.uk%2Fstatistics%2Fwp-content%2Fuploads%2Fsites%2F2%2F2024%2F11%2FMonthly-AE-Time-Series-October-2024.xls&data=05%7C02%7Candrew.jones40%40nhs.net%7C386c7f40323b47cd634a08dd1929b4ba%7C37c354b285b047f5b22207b48d774ee3%7C0%7C0%7C638694389096099339%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=Fgt7tVnWFciy4cc9zUJjO5I%2B%2FgTBhZRrPbI73qaLg9A%3D&reserved=0 "Original URL: https://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2024/11/Monthly-AE-Time-Series-October-2024.xls. Click or tap if you trust this link.") suggests that attendances at type 1 EDs have increased by 1.8% over this period, whereas the growth in our sample is 21.4%.  There are two distinct reasons for this variance. First, our sample excludes certain attendance records that were less relevant to our analysis (e.g. patients who died on arrival or who left before being seen) or did not meet basic data quality checks (e.g. valid age, arrival mode etc). Second, our sample includes 3 providers that have seen rapid growth in the number of recorded attendances due to organisational changes. (For further information, see appendix 1.)
+
+It is important, therefore, that the growth in tests attributed to growth in attendances in our sample is not generalised to England as a whole. However, the balance of growth attributable to casemix and practice changes *is* likely to be generalisable. On this basis, the analysis would suggest that the vast majority of the growth in tests per attendance is attributable to changes in practice rather than changes in casemix.
+
+In light of earlier analysis, which covered the period from 2010/11 to 2015/16, our findings here suggest that the driver of test growth in ED has changed in recent years. In the earlier analysis, we found that approximately one third of the growth in tests per attendance was attributable to changes in casemix. ED casemix became more complex and acute between 2010/11 and 2015/16, but it does not appear to have changed substantially between 2019/20 and 2023/24. This might explain, in part, the slowdown in the growth in tests per attendance seen since 2019/20.
+
+Of course, some tests are more common than others. When we consider both test frequency and the change in the casemix-adjusted odds of a test, we can identify those tests where changes in practice have had a material impact on the total number of tests carried out. These are C-reactive protein tests, hepatic function panel tests, and CT scans. 
+
+As medical practice and technology develops, and tests become more readily available, clinicians are able to replace older tests with more modern and (likely) more accurate tests. This might explain, for example, why the casemix-adjusted odds of CT and MRI scans has increased whilst there has been minimal change for plain radiography. And this same substitution effect may explain the different trends in electrocardiography and troponin measurement. Changes in coding practices may also play a part.
+
+```{r}
+#| include: false
+
+df_preplot_growth_components <- df_odds_results |>
+  mutate(d0 = 1, .before = dT) |>
+  relocate(dC, .before = dP) |>
+  pivot_longer(cols = matches("^d|^abs"), names_to = "component", values_to = "value") |>
+  select(-tests_2023_24) |>
+  mutate(value_abs = tests_2019_20 * value) |>
+  mutate(value_order = if_else(component == "d0", value_abs, NA_real_)) |>
+  mutate(value = if_else(component == "d0", NA_real_, value)) |>
+  mutate(component = case_when(
+    component == "d0" ~ "Attendances with test\n(in sub-sample) 19/20",
+    component == "dT" ~ "Growth in attds. with test\n19/20 to 23/24",
+    component == "dD" ~ "Growth in tests due to:\n       • growth in activity",
+    component == "dC" ~ "\n\       • change in case-mix",
+    component == "dP" ~ "\n       • change in practice",
+    component == "dI" ~ "\n  • interactions (residual)",
+    T ~ NA_character_
+  )) |>
+  mutate(component = forcats::as_factor(component)) |>
+  mutate(value_abs = as.integer(value_abs)) |>
+  group_by(InvestigationDescription) |>
+  mutate(value_order = max(value_order, na.rm = T)) |>
+  ungroup() |>
+  mutate(value_abs = round(value_abs / 1000)) |>
+  mutate(value_label_abs = if_else(is.na(value), str_c(value_abs, "k"), NA_character_)) |>
+  mutate(value_label_p = if_else(value >= 0, str_c("+", round(value * 100), "%"), str_c(round(value * 100), "%")))
+
+
+```
+
+::: panel-tabset
+## Percentage changes
+
+```{r}
+#| label: fig-attrib-perc
+#| fig-cap: "Growth in attendances with 1+ test (19/20 to 23/24), decomposed by factor."
+#| echo: false
+#| message: false
+#| warning: false
+#| column: page
+#| fig-width: 12
+#| fig-height: 12
+
+
+df_preplot_growth_components |>
+  ggplot(aes(reorder(InvestigationDescription, value_order), value_abs)) +
+  geom_col(
+    aes(
+      reorder(InvestigationDescription, value_order), value_abs,
+      fill = component
+    ),
+    position = "identity",
+    alpha = 0.4
+  ) +
+  geom_text(
+    aes(
+      label = value_label_abs,
+      vjust = ifelse(value_abs >= 0, -0.4, 1.4),
+      angle = 270
+    ),
+    size = 2.5,
+    colour = "grey20"
+  ) +
+  geom_text(
+    aes(
+      label = value_label_p,
+      vjust = ifelse(value_abs >= 0, -0.4, 1.4),
+      angle = 270
+    ),
+    size = 2.5,
+    colour = "grey20"
+  ) +
+  coord_flip() +
+  geom_hline(yintercept = 0, lty = "dashed") +
+  theme_minimal() +
+  theme(
+    axis.ticks = element_blank(),
+    axis.title.y = element_blank(),
+    legend.position = "none",
+    strip.text = element_text(size = 9),
+    axis.text = element_text(size = 8),
+    axis.title = element_text(size = 9),
+    panel.grid.minor = element_blank(),
+    # panel.spacing = unit(1, "lines")
+  ) +
+  scale_y_continuous(
+    limits = c(-50, 250)
+  ) +
+  facet_wrap(vars(component), ncol = 6) +
+  labs(y = "\nED attendances (thousands) with 1+ test of specified type")+
+  facet_grid(invst_group ~ component, space = "free", scales = "free_y")
+```
+
+## Absolute changes
+
+```{r}
+#| label: fig-attrib-abs
+#| fig-cap: "Growth in attendances with 1+ test (19/20 to 23/24), decomposed by factor."
+#| echo: false
+#| message: false
+#| warning: false
+#| column: page
+#| fig-width: 12
+#| fig-height: 12
+
+df_preplot_growth_components |>
+  mutate(value_label_abs = str_c(value_abs, "k")) |>
+  ggplot(aes(reorder(InvestigationDescription, value_order), value_abs)) +
+  geom_col(
+    aes(reorder(InvestigationDescription, value_order), value_abs, fill = component),
+    position = "identity",
+    alpha = 0.4
+  ) +
+  geom_text(
+    aes(
+      label = value_label_abs,
+      vjust = ifelse(value_abs >= 0, -0.4, 1.4),
+      angle = 270
+    ),
+    size = 2.5,
+    colour = "grey20"
+  ) +
+  coord_flip() +
+  geom_hline(yintercept = 0, lty = "dashed") +
+  theme_minimal() +
+  theme(
+    axis.ticks = element_blank(),
+    axis.title.y = element_blank(),
+    legend.position = "none",
+    strip.text = element_text(size = 9),
+    axis.text = element_text(size = 8),
+    axis.title = element_text(size = 9),
+    panel.grid.minor = element_blank(),
+    # panel.spacing = unit(1, "lines")
+  ) +
+  scale_y_continuous(
+    limits = c(-50, 250)
+  ) +
+  facet_wrap(vars(component), ncol = 6) +
+  labs(y = "\nED attendances (thousands) with 1+ test of specified type")+
+  facet_grid(invst_group ~ component, space = "free", scales = "free_y")
+
+```
+
+## Table
+
+```{r}
+#| label: tbl-attrib-abs
+#| echo: false
+#| message: false
+#| warning: false
+#| column: page
+
+
+df_odds_results |> 
+  select(InvestigationDescription, invst_group, tests_2019_20, tests_2023_24, dT, dD, dC, dP, dI) |> 
+  arrange(invst_group) |> 
+   gt() |>
+  cols_label(
+    InvestigationDescription = "Test type",
+    invst_group = "Test category",
+    # att_2023_24 = "Attendances in sample<br>2023/24",
+    tests_2019_20 = "Attendances with test<br>in 2019/20<br>(in sub-sample)",
+    tests_2023_24 = "Attendances with test<br>in 2023/24<br>(in sub-sample)",
+    dT = "Growth in attendances<br>with test<br>19/20 to 23/24",
+    dD = "Growth due<br>activity",
+    dC = "Growth due<br>casemix",
+    dP = "Growth due<br>practice",
+    dI = "Growth due<br>interactions",
+    .fn = md
+  ) |>
+  fmt_auto() |>
+  fmt_number(columns = c(tests_2019_20, tests_2023_24), n_sigfig = 4) |> 
+  # fmt_number(columns = c(rate), decimals = 2) |> 
+  fmt_percent(columns = c(dT, dP, dC, dI), decimals = 1) |>
+  fmt_percent(columns = c(dD), decimals = 0) |>
+  tab_options(
+    data_row.padding = px(1),
+    table.font.size = "small"
+  ) 
+
+```
+:::
+
+# Appendix 3
+
+Graphics supporting A3.
 
 ::: {.callout-note appearance="minimal" icon="false"}
 ## Tests per attendance
