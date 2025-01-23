@@ -900,6 +900,8 @@ df_odds_results |>
 #| out-width: "85%"
 
 df_odds_results |>
+  filter(!(odds > 1 & lci < 1 | odds < 1 & uci > 1)) |>
+  filter(adm.p.value < 0.05) |>
   ggplot() +
   geom_hline(yintercept = 1, lty = "dashed", alpha = 0.5) +
   geom_vline(xintercept = 1, lty = "dashed", alpha = 0.5) +
@@ -959,16 +961,19 @@ df_odds_results |>
 #| warning: false
 #| column: page
 #| width: 8
+
 df_odds_results |>
-  select(InvestigationDescription, odds, odds_adm) |>
+  select(InvestigationDescription, odds, odds_adm, adm.p.value) |>
   gt() |>
   cols_label(
     InvestigationDescription = "Test name",
     odds = "Odds ratio of test<br>(casemix adj.)<br>2023/24 vs. 2019/20",
     odds_adm = "Odds ratio of admission<br>given test (casemix adj.)<br>2023/24 vs. 2019/20",
+    adm.p.value = "p value",
     .fn = md
   ) |>
   fmt_auto() |>
+  fmt_number(columns = c(adm.p.value), decimals = 3) |>
   tab_options(
     data_row.padding = px(1),
     table.font.size = "small"
