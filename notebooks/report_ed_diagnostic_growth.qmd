@@ -352,6 +352,10 @@ For 6 of the 32 tests, the odds of receiving the test *fell* between 2019/20 and
 
 We can compare the increased odds of testing estimated here, with similar analysis covering the period 2012/13 to 2019/20. This comparison suggests that the increase in the casemix-adjusted odds of a patient receiving a CT scan has fallen, from +19% per annum between 2012/13 and 2019/20, to +16% per annum between 2019/20 and 2023/24. There has been a similar slowdown in the rate of increase for MRI scans (from 25% per annum between 2012/13 and 2019/20, to 17% per annum between 2019/20 and 2023/24).
 
+::: column-margin
+If casemix cannot fully explain the growth in tests per attendance, then the residual growth must represent a reduction in testing thresholds in EDs. We illustrate this in more detail in Appendix XXXXXX @sec-donk, by decomposing the growth in tests to (1) growth in activity: the number of patients presenting at EDs; (2) changes in casemix: the acuity and complexity of patient presentations; and (3) changes in practice: the ways in which EDs respond to patients who present.
+:::
+
 ```{r}
 #| include: false
 
@@ -1384,7 +1388,7 @@ table_representation_trends |>
 
 To carry out these analyses, we require only the EC data set, and only two years of data (2019/20 and 2023/24). We identified 102 providers with provider codes that survived across this study period and that, in addition, passed basic data quality checks. These 102 providers represent the total population of providers that we might have used for our analysis had data quality been universally high.
 
-Providers were included in our sample if they had all three of *Der_EC_Investigation_All, chiefcompgrp,* and *acuity* complete for 90% of records. (Relaxing this requirement to 85% gave us only four more providers and no improvement in representation.) For A4, we also required that time-related variables were largely complete.
+Providers were included in our sample if they had all three of *Der_EC_Investigation_All, chiefcompgrp,* and *acuity* complete for 90% of records. (Relaxing this requirement to 85% gave us only four more providers and no improvement in representation.) For A3, we also required that time-related variables were largely complete.
 
 We established that 16 providers met these criteria. The providers we intend to use for our sample are given in @tbl-sample-q2-6. In the adjacent tab, @tbl-representation-q2-6 suggests that this sample of 16 providers is generally representative of the population of providers. We note that the sample includes higher proportions of larger providers and providers in the Midlands. One of the seven regions, the East of England, is not represented.
 
@@ -1461,7 +1465,7 @@ table_representation_ecds_only |>
 ```
 :::
 
-Three of the providers in Sample 2 have undergone organisational change during our study period, leading to a substantial increase in the number of recorded attendances. This artefactual growth is controlled for in our analysis, but the reader should bear this in mind when interpreting the results, and in particular, those for section A3.
+Three of the providers in Sample 2 have undergone organisational change during our study period, leading to a substantial increase in the number of recorded attendances. This artefactual growth is controlled for in our analysis, but the reader should bear this in mind when interpreting the results, and in particular, those relating to the decomposition of test growth.
 
 -   RRK (University Hospitals Birmingham NHS Foundation Trust) merged with and subsumed RR1 (Heart Of England NHS Foundation Trust).
 
