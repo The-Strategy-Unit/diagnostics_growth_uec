@@ -62,7 +62,7 @@ In another report, we found that the increasing testing rates in ED between 2010
 
 We found that most tests were associated with longer patient stays in the ED. We suggest two potential causal explanations, though these act in opposite directions and our analysis is not capable of distinguishing between these.
 
-The first explanation is perhaps most intuitive: it takes time to order and conduct tests, and to incorporate results into a patient’s treatment plan. From this perspective, we might see tests as adding time to a patients stay in the ED. Another explanation is that longer patient ED stays might lead to more testing within the ED. This might arise, for example, when there are insufficient beds to enable prompt admission when required.
+The first explanation is perhaps most intuitive: it takes time to order and conduct tests, and to incorporate results into a patient’s treatment plan. From this perspective, we might see tests as adding time to a patient's ED stay. Another explanation is that longer ED stays might lead to more testing within the ED. This might arise, for example, when there are insufficient beds to enable prompt admission when required.
 
 The association between tests and duration in the ED was particularly marked for imaging tests. The presence of CT scans, ultrasounds, and plain radiography as part of a patient’s ED care, were associated with an additional hour in the ED, on average. MRI scans were associated with an additional three hours.
 
@@ -160,9 +160,9 @@ library("lubridate")
 lkp_invst_ec_aea <- readRDS(here("reference", "lkp_test_ec_to_aea.rds"))
 ```
 
-## Characteristics of patients in the study
+### Characteristics of patients in the study
 
-As detailed above, the analyses in this report rely on two data samples. All but the first of these analyses are based on Sample 2. Selected characteristics of patients in Sample 2 are shown in @tbl-one. Information on Sample 1 (and further information on Sample 2) can be found in @sec-appendix.
+As detailed above, the analyses in this report rely on two data samples. Analysis A1 is based on Sample 1, while all other analyses use Sample 2. Selected characteristics of patients in Sample 2 are shown in @tbl-one. Information on Sample 1 (and further information on Sample 2) can be found in @sec-appendix.
 
 ```{r}
 #| label: tbl-one
@@ -689,11 +689,13 @@ It is to be expected that more complex patients have more tests and so stay long
 
 **A3.2: Results**
 
-@fig-time-vs-tests shows that, in general, a patient’s (unadjusted) stay in the ED tends to increase with the number of tests performed. This relationship can be explained in part with reference to patient casemix (more complex patients have more tests and stay longer), but also because, as we have seen above, most tests add time to a patient’s stay. 
+@fig-time-vs-tests shows that, in general, a patient’s (unadjusted) stay in an ED tends to increase with the number of tests performed. This relationship can be explained in part with reference to patient casemix (more complex patients have more tests and stay longer), but also because, as we have seen above, most tests add time to a patient’s stay. 
 
 However, the nature of this relationship has changed between 2019/20 and 2023/24. In 2019/20, 28 minutes was added to a patients stay, on average, for each of the first 5 tests performed. But the impact of each additional test beyond the fifth was limited, adding on average only 7 minutes per test. By 2023/24, the time patients were spending in the ED had increased considerably. Each of the first five tests now added 44 minutes on average. Moreover, for each additional test beyond the fifth, the time in ED continued to rise considerably - by 38 minutes per test. This change can be seen whether the patient was admitted or discharged, and whether the patient was treated for an injury or an illness (although subtle differences in the relationship are present (see appendix)).
 
 Whilst this finding is clear in the data, it is not easy to explain. One potential line of enquiry would focus on the extent of asynchronous testing. The result might also be an emergent property of a system operating with reduced flow, which manifests as re-testing of patients whose care is delayed.
+
+Additional (exploratory) plots relating to this question can be found in @sec-appendix-three.
 
 ```{r}
 #| label: fig-time-vs-tests
@@ -1183,7 +1185,7 @@ Three of the providers in Sample 2 have undergone organisational change during o
 
 ## What is driving test growth in EDs?
 
-In this section, we seek to decompose the growth in ED tests between 2019/20 to 2023/24 into to three main effects:
+In this supplementary analysis, we seek to decompose the growth in ED tests between 2019/20 to 2023/24 into to three main effects:
 
 ::: column-margin
 Strictly speaking, we examined growth in ED attendances with at least one test, rather than growth in ED tests. The effect of this difference on interpretation of the results is discussed in the Limitations section below.
@@ -1481,7 +1483,7 @@ df_odds_results |>
 
 # Appendix 3 {#sec-appendix-three}
 
-Graphics supporting A3.
+Exploratory graphics supporting A3.
 
 ::: {.callout-note appearance="minimal" icon="false"}
 ## Tests per attendance
