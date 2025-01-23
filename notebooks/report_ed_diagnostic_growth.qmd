@@ -1130,7 +1130,7 @@ table_providers_s2 |>
   )
 ```
 
-## Sample representation statistics (A2-26)
+## Sample representation statistics (A2-A4)
 
 ```{r}
 #| label: tbl-representation-q2-6
