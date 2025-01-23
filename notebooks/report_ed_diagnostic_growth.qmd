@@ -789,13 +789,15 @@ We have labelled our estimates as "casemix-adjusted", as we controlled for a ran
 Finally, as noted in the A4 Methods section, above, we decided to delete approximately 2% of records from our sample that had missing values for any of the variables used in the model. We expect this decision to have a limited impact on our results. However, as it reduced our sample size, the standard errors around our model coefficients have marginally increased as a consequence. There is also the potential for some bias in our results if these missing data were not missing completely at random.
 :::
 
-@fig-adm-decision assigns each of the 32 tests to a quadrant, based on 2 values:
+@fig-adm-decision assigns tests to a quadrant, based on 2 values:
 
 -   the change in the casemix-adjusted odds of a test, and
 
 -   the change in the casemix-adjusted odds of admission having received a test.
 
-Many of the tests - including most of the high-volume tests - fall into the bottom-right quadrant. This indicates that, after adjusting for casemix, patients were more likely to receive the test in 2023/24, but less likely to be admitted having received it. This is true for complete blood count, blood coagulation, C-reactive protein measurement, CT scan, hepatic function, and urea and electrolytes. 
+The graphic shows 19 (of the original 32) tests for which the calculated odds-ratios are statistically significant in both dimensions.
+
+Many of the tests - including most of the high-volume tests - fall into the bottom-right quadrant. This indicates that, after adjusting for casemix, patients were more likely to receive the test in 2023/24, but less likely to be admitted having received it. This is true for complete blood count; C-reactive protein measurement; hepatic function panel; and urea and electrolytes. 
 
 Given that this analysis is casemix-adjusted, we can safely exclude casemix as an explanation for this finding. Thus, another theory is that clinicians are extending the use of tests as a means of ruling out conditions that would warrant admission. Unfortunately, this analysis cannot shed light on the motivation for such a change in practice. It might be that ED clinicians are proactively lowering test thresholds in response to changes in medical guidelines and emerging research. It might also be that test thresholds have fallen as tests have become more available, more timely, and less expensive. A further explanation might be that this change is driven by changes in bed availability. That is to say that, whilst, in the past, some tests may have been carried out after admission to a hospital bed, it may *now* be that these tests are performed in the ED. Further work would be required to determine the underlying cause of changes in testing practice (see @sec-further-work).
 
