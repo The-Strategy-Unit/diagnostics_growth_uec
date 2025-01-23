@@ -488,7 +488,7 @@ df_odds_results |>
 #| label: tab-odds
 #| echo: false
 #| message: false
-#| fig-cap: "Case-mix-adjusted odds-of-test ratios (2023/24 vs 2019/20)"
+#| tbl-cap: "Case-mix-adjusted odds-of-test ratios (2023/24 vs 2019/20)"
 #| column: page
 #| fig-width: 8
 #| fig-align: center
@@ -621,6 +621,7 @@ left_join(
 
 ```{r}
 #| label: tbl-test-time
+#| tbl-cap: "Estimated (net) time that 32 different ED tests add to an attendance, on average."
 #| echo: false
 #| message: false
 #| warning: false
@@ -816,6 +817,10 @@ Finally, there are two low-volume tests that appear to be outliers in this analy
 #| out-width: "85%"
 
 df_odds_results |>
+  filter(!(odds > 1 & lci < 1 | odds < 1 & uci > 1)) |>
+  filter(adm.p.value < 0.05) |>
+  # arrange(adm.p.value) |> 
+  # select(InvestigationDescription, adm.p.value)
   filter(InvestigationDescription != "Serologic test") |>
   ggplot() +
   geom_rect(
@@ -946,6 +951,7 @@ df_odds_results |>
 
 ```{r}
 #| label: tbl-adm-decisions
+#| tbl-cap: "Casemix-adjusted odds ratio of admission having received a test, 2023/24 vs 2019/20."
 #| echo: false
 #| message: false
 #| warning: false
