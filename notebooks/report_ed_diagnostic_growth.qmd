@@ -548,7 +548,7 @@ We ran the model on a random sub-sample of 1 million attendance records.
 
 **A3.1: Limitations**
 
-The findings of this analysis are based on a sample of 16 providers. These findings are therefore subject to the same sampling-related limitations we identified in the Limitations section of A1.
+The findings of this analysis are based on a sample of 16 providers. These findings are therefore subject to the same sampling-related limitations we identified in the Limitations section of A1. Of relevance to A3, are the representation statistics in @sec-appendix that indicate that the performance of providers in Sample 2 (in terms of 4-hour and 12-hour waits) is somewhat lower than that of the population of providers. This may have a bearing on the sizes of the effects that we report.
 
 We have labelled our estimates as "casemix-adjusted", as we controlled for a range of variables that might indicate the time a patient spends in the ED. However, we are unable to control for casemix factors that influence decisions (and time spent) in the ED, but go unrecorded. It is therefore possible that part of the effect we measure is due to unobserved casemix factors.
 
