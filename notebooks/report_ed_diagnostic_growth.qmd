@@ -350,11 +350,11 @@ Finally, as noted in the Methods section above, we decided to delete approximate
 
 For 6 of the 32 tests, the odds of receiving the test *fell* between 2019/20 and 2023/24. These tests were: erythrocyte sedimentation rate measurement, group and save, electrocardiography, serum lipase measurement, urinalysis, and human chorionic gonadotropin measurement.
 
-We can compare the increased odds of testing estimated here, with similar analysis covering the period 2012/13 to 2019/20. This comparison suggests that the increase in the casemix-adjusted odds of a patient receiving a CT scan has fallen, from +19% per annum between 2012/13 and 2019/20, to +16% per annum between 2019/20 and 2023/24. There has been a similar slowdown in the rate of increase for MRI scans (from 25% per annum between 2012/13 and 2019/20, to 17% per annum between 2019/20 and 2023/24).
-
 ::: column-margin
-If casemix cannot fully explain the growth in tests per attendance, then the residual growth must represent a reduction in testing thresholds in EDs. We illustrate this in more detail in Appendix XXXXXX @sec-donk, by decomposing the growth in tests to (1) growth in activity: the number of patients presenting at EDs; (2) changes in casemix: the acuity and complexity of patient presentations; and (3) changes in practice: the ways in which EDs respond to patients who present.
+If casemix cannot fully explain the growth in tests per attendance, then the residual growth must represent a reduction in testing thresholds in EDs. We illustrate this in more detail in an appendix (@sec-appendix-two), by decomposing the growth in tests to (1) growth in activity: the number of patients presenting at EDs; (2) changes in casemix: the acuity and complexity of patient presentations; and (3) changes in practice: the ways in which EDs respond to patients who present.
 :::
+
+We can compare the increased odds of testing estimated here, with similar analysis covering the period 2012/13 to 2019/20. This comparison suggests that the increase in the casemix-adjusted odds of a patient receiving a CT scan has fallen, from +19% per annum between 2012/13 and 2019/20, to +16% per annum between 2019/20 and 2023/24. There has been a similar slowdown in the rate of increase for MRI scans (from 25% per annum between 2012/13 and 2019/20, to 17% per annum between 2019/20 and 2023/24).
 
 ```{r}
 #| include: false
@@ -519,12 +519,16 @@ df_odds_results |>
 
 Patients will wait while tests are ordered and conducted, and they will likely wait while their clinician or clinical team interprets and communicates the results. However, tests can provide critical information that allows a patient’s care to be expedited.
 
-In this section, we investigate the association between testing and the time that patients spend in the ED. We examine 32 tests in the 2023/24 financial year and measure the effect for a single additional test, acknowledging that many patients receive several tests (of different types or of the same type). Our results take patient casemix into account.
+Analysis A3 is composed of two parts. In the first part (3.1), we investigate the association between testing - specifically, the addition of a single test to a patient's care - and the time that a patient spends in the ED. In the second part (3.2), we examine the relationship between the number of tests that a patient receives and their duration in the ED.
+
+### A3.1
+
+Here, we investigate the association between testing and the time that patients spend in the ED. We examine 32 tests in the 2023/24 financial year and measure the effect for a single additional test, acknowledging that many patients receive several tests (of different types or of the same type). Our results take patient casemix into account.
 
 ::: {.callout-note collapse="true"}
 ## A3: Method and Limitations (click to unhide)
 
-<br>**A3:** **Method**
+<br>**A3.1:** **Method**
 
 This analysis again uses patient-level data from the 16 providers that passed our consistency and data quality criteria for A2-A4. (For further details of our sampling approach and data quality criteria see @sec-approach-sampling and @sec-appendix.) We use only records from the 2023/24 financial year for this analysis.
 
@@ -542,7 +546,7 @@ We treated the provider variable as a random effect. This allowed us to control 
 
 We ran the model on a random sub-sample of 1 million attendance records.
 
-**A3: Limitations**
+**A3.1: Limitations**
 
 The findings of this analysis are based on a sample of 16 providers. These findings are therefore subject to the same sampling-related limitations we identified in the Limitations section of A1.
 
@@ -552,10 +556,10 @@ For reasons related to model interpretabilty, we specified a linear relationship
 
 Our results estimate the time impact of a single additional test on a patient's stay in the ED. We acknowledge that many patients receive several tests, of different types or the same type. With regression models, we have the ability to specify interactions between test terms (to account for the effect of one test, given the provision of another). However, this approach is impractical here, based both on the number of interaction terms we would produce and on our desire for interpretability.
 
-Finally, as noted in the Methods section of A3, above, we removed approximately 7% of records from our sample due to poor data quality. We expect this decision to have a limited impact on our results. However, as it reduced our sample size, the standard errors around our model coefficients will have increased as a consequence. There is also the potential for some bias in our results if these missing data were not missing completely at random.
+Finally, as noted in the Methods section of A3.1, above, we removed approximately 7% of records from our sample due to poor data quality. We expect this decision to have a limited impact on our results. However, as it reduced our sample size, the standard errors around our model coefficients will have increased as a consequence. There is also the potential for some bias in our results if these missing data were not missing completely at random.
 :::
 
-**A3: Results**
+**A3.1: Results**
 
 We found statistically significant evidence that 23 of the 32 we considered were associated with a longer stay in the ED (see @fig-test-time). MRI scans had the biggest impact, being associated with an increase of 3 hours, on average, to a patient’s stay. Other forms of imaging, namely CT scan and ultrasound, and two other tests (urine sent for culture, and analysis of arterial blood gas and pH) were associated with an increased stay of 60 to 90 minutes in the ED.
 
@@ -565,7 +569,7 @@ We found evidence that 5 tests were associated with *shorter* stays in EDs: lipi
 
 For 4 tests, we were unable to establish with confidence whether the test was associated with an increased or decreased time in the ED.
 
-An earlier [study](https://gbr01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fonlinelibrary.wiley.com%2Fdoi%2Ffull%2F10.1111%2Fj.1553-2712.2012.01353.x&data=05%7C02%7Candrew.jones40%40nhs.net%7C386c7f40323b47cd634a08dd1929b4ba%7C37c354b285b047f5b22207b48d774ee3%7C0%7C0%7C638694389096063532%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=EzB7ni9SY6vMgEswMB9ObJk8d5hUAULeCvHgyW2KTSI%3D&reserved=0 "Original URL: https://onlinelibrary.wiley.com/doi/full/10.1111/j.1553-2712.2012.01353.x. Click or tap if you trust this link.") explored this question for EDs in the US, in the years from 2006 to 2008, using subtly different methods. The authors concluded that the tests that had the greatest marginal impact on ED durations were blood tests (+72 mins); MRI scans (+64 mins); CT scans (+59 mins); and ultrasound scans (+56 mins). It is important to note that testing methods, technology, and efficiency have changed substantially in the 15 years that have passed since the study period.
+An earlier [study](#0 "Original URL: https://onlinelibrary.wiley.com/doi/full/10.1111/j.1553-2712.2012.01353.x. Click or tap if you trust this link.") explored this question for EDs in the US, in the years from 2006 to 2008, using subtly different methods. The authors concluded that the tests that had the greatest marginal impact on ED stays were blood tests (+72 mins); MRI scans (+64 mins); CT scans (+59 mins); and ultrasound scans (+56 mins). It is important to note that testing methods, technology, and efficiency have changed substantially in the 15 years that have passed since the study period.
 
 The potential materiality of these findings for ED patient flow in general (as opposed to the journey of a single patient) can be examined by considering both the time impact of the test and the test frequency. From this perspective, the tests that would appear to have the biggest potential impact on patient flow are likely to be CT scans, plain radiography, urea and electrolytes, complete blood count, and C-reactive protein measurement. Of these, we note that the casemix adjusted odds of receiving a CT scan and C-reactive protein measurement have increased considerably since 2019/20. 
 
@@ -659,14 +663,14 @@ readRDS(here("data", "241204_df_preplot_duration.rds")) |>
 ```
 :::
 
-## A5. How does time in ED change according to the number of tests conducted?
+### A3.2
 
-As the number of tests per attendance has increased, so has the number of patients who receive several tests. In this section we examine the relationship between the number of tests that a patient receives and their duration in the ED. We describe this relationship in 2019/20 and in 2023/24. Unlike previous sections, this analysis is not casemix-adjusted, since the methods that are usually employed to adjust for casemix are unlikely to be adequate in this context.
+As the number of tests per attendance has increased, so has the number of patients who receive several tests. Here, we examine the relationship between the number of tests that a patient receives and their duration in the ED. We describe this relationship in 2019/20 and in 2023/24. Unlike A2 and A3.1, this analysis is not casemix-adjusted, since the methods that are usually employed to adjust for casemix are unlikely to be adequate in this context.
 
 ::: {.callout-note collapse="true"}
-## A5: Method and Limitations (click to unhide)
+## A3.2: Method and Limitations (click to unhide)
 
-<br>**A5:** **Method**
+<br>**A3.2:** **Method**
 
 This analysis uses patient-level data from the 16 providers that passed our consistency and data quality criteria for A2-A4. (For further details of our sampling approach and data quality criteria see @sec-approach-sampling and @sec-appendix.)
 
@@ -683,7 +687,7 @@ The findings in this section are based on a sample of 16 providers and are there
 It is to be expected that more complex patients have more tests and so stay longer in the ED. Our results are not casemix-adjusted, and it is therefore possible that some of the effect we report might be attributable to patient casemix.
 :::
 
-**A5: Results**
+**A3.2: Results**
 
 @fig-time-vs-tests shows that, in general, a patient’s (unadjusted) stay in the ED tends to increase with the number of tests performed. This relationship can be explained in part with reference to patient casemix (more complex patients have more tests and stay longer), but also because, as we have seen above, most tests add time to a patient’s stay. 
 
@@ -748,7 +752,7 @@ readRDS(here("data", "df_nested_preplots_multi_tests.rds"))$data[[5]] |>
 
 ```
 
-## A4. How do tests influence decisions to admit?
+## A4. What are the implications of this growth for decisions to admit?
 
 In this section, we explore how increased testing in ED has influenced the rate of admissions to hospital beds. We do this by comparing the change in the casemix-adjusted *odds of a test* with the casemix-adjusted *odds of admission* *having received a test*. We examine these changes over the period from 2019/20 to 2023/24, for 32 test types.
 
@@ -1175,7 +1179,7 @@ Three of the providers in Sample 2 have undergone organisational change during o
 
 -   RWJ (Stockport NHS Foundation Trust) opened a new ED.
 
-# Appendix 2
+# Appendix 2 {#sec-appendix-two}
 
 ## What is driving test growth in EDs?
 
@@ -1475,7 +1479,7 @@ df_odds_results |>
 ```
 :::
 
-# Appendix 3
+# Appendix 3 {#sec-appendix-three}
 
 Graphics supporting A3.
 
