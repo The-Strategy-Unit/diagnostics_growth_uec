@@ -1,7 +1,7 @@
 ---
-title: "Growth in Diagnostic Testing and Its Impact on Emergency Departments<br><br>DRAFT REPORT"
+title: "Growth in Diagnostic Testing and Its Impact on Emergency Departments"
 #"Growth in Diagnostic Testing<br>and Its Impact on<br>Emergency Departments"
-subtitle: "December 2024"
+subtitle: "<br>January 2025"
 # <br>Steven Wyatt and Andrew Jones | The Strategy Unit | 
 author:
   - name: Steven Wyatt
@@ -42,7 +42,7 @@ editor_options:
 
 In this report, we examine rates of diagnostic testing in Emergency Departments (EDs) in England. We investigate how rates of testing have changed in recent years, and we explore how these changes have influenced both patient journeys through the ED and the likelihood of admission to hospital.
 
-This analysis relied on the Emergency Care Data Set (ECDS) and its predecessor. The quality of these datasets is variable and changing. We therefore based the analysis on a subset of providers whose data submissions were sufficiently complete and consistent. The results obtained from this subset of providers - who were broadly representative of EDs in England – both approximate the changes seen in England as a whole and allow us to draw conclusions with more confidence. We find that:
+This analysis relied on the Emergency Care Data Set (ECDS) and its predecessor. The quality of these datasets is variable and changing. We therefore based the study on a subset of providers whose data submissions were sufficiently complete and consistent. The results obtained from this subset of providers - who were broadly representative of EDs in England – both approximate the changes seen in England as a whole and allow us to draw conclusions with more confidence. We find that:
 
 #### Testing rates in EDs continue to grow, but have slowed in recent years
 
@@ -62,7 +62,7 @@ In another report, we found that the increasing testing rates in ED between 2010
 
 We found that most tests were associated with longer patient stays in the ED. We suggest two potential causal explanations, though these act in opposite directions and our analysis is not capable of distinguishing between these.
 
-The first explanation is that longer patient ED stays may lead to more testing within the ED. This might arise, for example, when there are insufficient beds to enable prompt admission when required. The second explanation is perhaps more intuitive: it takes time to order and conduct tests, and to incorporate results into a patient’s treatment plan. From this perspective, we might see tests as adding time to a patients stay in the ED. 
+The first explanation is perhaps most intuitive: it takes time to order and conduct tests, and to incorporate results into a patient’s treatment plan. From this perspective, we might see tests as adding time to a patients stay in the ED. Another explanation is that longer patient ED stays might lead to more testing within the ED. This might arise, for example, when there are insufficient beds to enable prompt admission when required.
 
 The association between tests and duration in the ED was particularly marked for imaging tests. The presence of CT scans, ultrasounds, and plain radiography as part of a patient’s ED care, were associated with an additional hour in the ED, on average. MRI scans were associated with an additional three hours.
 
@@ -368,7 +368,7 @@ tmp_admodds <- readRDS(
   mutate(term = str_remove(term,"fyear202324")) |> 
   mutate(term = str_remove_all(term,":")) |>
   mutate(term = str_sub(term, end = -2)) |> 
-  select(term, odds_adm = odds)
+  select(term, odds_adm = odds, adm.p.value = p.value)
 
 # ODDS MODEL RESULTS ARE BUNDLED WITH THE ATTRIBUTION DATA.
 df_odds_results <- bind_rows(
