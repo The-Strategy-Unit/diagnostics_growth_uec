@@ -278,7 +278,7 @@ df_preplot_trend |>
 #| echo: false
 #| message: false
 #| warning: false
-#| fig-cap: "Estimated average number of tests per ED attendance, in England, between 2012/13 and 2023/24. Results by A&E dataset test type. Source: SUS A&E and EC data sets."
+#| fig-cap: "Estimated average number of tests per ED attendance (smoothed), in England, between 2012/13 and 2023/24. Results by A&E dataset test type."
 #| column: page
 #| fig-width: 10
 #| fig-asp: 0.618
@@ -325,6 +325,7 @@ readRDS(here("data_raw", "from_ncdr_trends_241003_preplot_by_invst.rds")) |>
 
 ```{r}
 #| label: tab-trend
+#| tbl-cap: "Estimated average number of tests per ED attendance, in England, between 2012/13 and 2023/24. Source: SUS A&E and EC data sets."
 #| echo: false
 #| message: false
 #| column: page
