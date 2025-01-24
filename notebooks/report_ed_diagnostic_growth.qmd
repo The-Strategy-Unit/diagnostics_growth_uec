@@ -66,7 +66,7 @@ The first explanation is perhaps the most intuitive: it takes time to order and 
 
 The association between tests and duration in the ED was particularly marked for imaging tests. The presence of CT scans, ultrasounds, and plain radiography as part of a patient’s ED care, were associated with an additional hour in the ED, on average. MRI scans were associated with an additional three hours.
 
-It should be noted that five tests were associated with somewhat *shorter* stays in the ED. This finding might indicate that these tests provided information that allowed clinicians to expedite a patients journey through the ED.
+It should be noted that five tests were associated with somewhat *shorter* stays in the ED. This finding might indicate that these tests provided information that allowed clinicians to expedite a patient's journey through the ED.
 
 Of the tests that were associated with *longer* stays in the ED, five occurred with sufficiently high frequency to have a material impact on an ED’s waiting times: CT scans; plain radiography; urea and electrolytes; complete blood count; and C-reactive protein measurement. Two of these tests, CT scan and C-reactive protein measurement, have increased in volume rapidly since 2019/20.
 
@@ -76,7 +76,7 @@ The number of patients who receive many tests has increased, which has consequen
 
 #### Increased testing rates in EDs may mean that fewer patients are admitted
 
-We have already seen that the casemix-adjusted odds of receiving most tests has increased in recent years. But we also found that, for many tests, including most of the high-volume tests, the casemix-adjusted *odds of admission having received the test* have fallen. A similar pattern was observed in an earlier report, which examined the issue for the years 2010/11 to 2015/16.
+We have already seen that the casemix-adjusted odds of receiving most tests have increased in recent years. But we also found that, for many tests, including most of the high-volume tests, the casemix-adjusted *odds of admission having received the test* have fallen. A similar pattern was observed in an earlier report, which examined the issue for the years 2010/11 to 2015/16.
 
 These results might indicate that increased testing in EDs enables clinicians to rule out diagnoses that might otherwise lead to an admission. It is unclear, however, if clinical practice in EDs is leading this change, or if practice is responding to constraints in the operational context and, in particular, to the reduced availability of beds.
 
