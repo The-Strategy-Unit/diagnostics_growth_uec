@@ -232,7 +232,7 @@ Although, over the study period, testing rates for non-admitted patients were lo
 <br>
 
 ::: panel-tabset
-#### Aggregated results 
+#### Aggregated results
 
 ```{r}
 #| label: fig-trend
@@ -326,7 +326,7 @@ readRDS(here("data_raw", "from_ncdr_trends_241003_preplot_by_invst.rds")) |>
   guides(colour = guide_legend(title = "Patient outcome"))
 ```
 
-#### Results by test type 
+#### Results by test type
 
 ```{r}
 #| label: fig-trend-3
@@ -627,7 +627,7 @@ Patients will wait while tests are ordered and conducted, and they will likely w
 
 Analysis A3 is composed of two parts. In the first part (3.1), we investigate the association between testing - specifically, the addition of a single test to a patient's care - and the time that a patient spends in the ED. In the second part (3.2), we examine the relationship between the number of tests that a patient receives and their duration in the ED.
 
-### A3.1
+**A3.1**
 
 Here, we investigate the association between testing and the time that patients spend in the ED. We examine 32 tests in the 2023/24 financial year and measure the effect for a single additional test, acknowledging that many patients receive several tests (of different types or of the same type). Our results take patient casemix into account.
 
@@ -675,9 +675,9 @@ We found evidence that 5 tests were associated with *shorter* stays in EDs: lipi
 
 For 4 tests, we were unable to establish with confidence whether the test was associated with an increased or decreased time in the ED.
 
-An earlier [study](#0 "Original URL: https://onlinelibrary.wiley.com/doi/full/10.1111/j.1553-2712.2012.01353.x. Click or tap if you trust this link.") explored this question for EDs in the US, in the years from 2006 to 2008, using subtly different methods. The authors concluded that the tests that had the greatest marginal impact on ED stays were blood tests (+72 mins); MRI scans (+64 mins); CT scans (+59 mins); and ultrasound scans (+56 mins). It is important to note that testing methods, technology, and efficiency have changed substantially in the 15 years that have passed since the study period.
+An earlier [study](#0 "Original URL: https://onlinelibrary.wiley.com/doi/full/10.1111/j.1553-2712.2012.01353.x. Click or tap if you trust this link.") explored this question for EDs in the US, in the years from 2006 to 2008, using subtly different methods. The authors concluded that the tests that had the greatest marginal impact on ED stays were blood tests (+72 mins); MRI scans (+64 mins); CT scans (+59 mins); and ultrasound scans (+56 mins). It is important to note that testing methods, technology, and efficiency have changed substantially in the 15 years that have passed since the study period.
 
-The potential materiality of these findings for ED patient flow in general (as opposed to the journey of a single patient) can be examined by considering both the time impact of the test and the test frequency. From this perspective, the tests that would appear to have the biggest potential impact on patient flow are likely to be CT scans, plain radiography, urea and electrolytes, complete blood count, and C-reactive protein measurement. Of these, we note that the casemix adjusted odds of receiving a CT scan and C-reactive protein measurement have increased considerably since 2019/20. 
+The potential materiality of these findings for ED patient flow in general (as opposed to the journey of a single patient) can be examined by considering both the time impact of the test and the test frequency. From this perspective, the tests that would appear to have the biggest potential impact on patient flow are likely to be CT scans, plain radiography, urea and electrolytes, complete blood count, and C-reactive protein measurement. Of these, we note that the casemix adjusted odds of receiving a CT scan and C-reactive protein measurement have increased considerably since 2019/20.
 
 <br>
 
@@ -772,7 +772,7 @@ readRDS(here("data", "241204_df_preplot_duration.rds")) |>
 ```
 :::
 
-### A3.2
+**A3.2**
 
 As the number of tests per attendance has increased, so has the number of patients who receive several tests. Here, we examine the relationship between the number of tests that a patient receives and their duration in the ED. We describe this relationship in 2019/20 and in 2023/24. Unlike A2 and A3.1, this analysis is not casemix-adjusted, since the methods that are usually employed to adjust for casemix are unlikely to be adequate in this context.
 
@@ -798,7 +798,7 @@ It is to be expected that more complex patients have more tests and so stay long
 
 **A3.2: Results**
 
-@fig-time-vs-tests shows that, in general, a patient’s (unadjusted) stay in an ED tends to increase with the number of tests performed. This relationship can be explained in part with reference to patient casemix (more complex patients have more tests and stay longer), but also because, as we have seen above, most tests add time to a patient’s stay. 
+@fig-time-vs-tests shows that, in general, a patient’s (unadjusted) stay in an ED tends to increase with the number of tests performed. This relationship can be explained in part with reference to patient casemix (more complex patients have more tests and stay longer), but also because, as we have seen above, most tests add time to a patient’s stay.
 
 However, the nature of this relationship has changed between 2019/20 and 2023/24. In 2019/20, 28 minutes was added to a patients stay, on average, for each of the first 5 tests performed. But the impact of each additional test beyond the fifth was limited, adding on average only 7 minutes per test. By 2023/24, the time patients were spending in the ED had increased considerably. Each of the first five tests now added 44 minutes on average. Moreover, for each additional test beyond the fifth, the time in ED continued to rise considerably - by 38 minutes per test. This change can be seen whether the patient was admitted or discharged, and whether the patient was treated for an injury or an illness (although subtle differences in the relationship are present (see appendix)).
 
