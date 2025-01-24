@@ -62,7 +62,7 @@ In another report, we found that the increasing testing rates in ED between 2010
 
 We found that most tests were associated with longer patient stays in the ED. We suggest two potential causal explanations, though these act in opposite directions.
 
-The first explanation is perhaps the most intuitive: it takes time to order and conduct tests, and to incorporate results into a patient’s treatment plan. From this perspective, we might see tests as adding time to a patient's ED stay. Another explanation is that longer ED stays may lead to more testing within the ED. This might arise, for example, when there are insufficient beds to enable prompt admission when required. Whilst it is possible the relationship is bidirectional, we cannot distinguish between causal explanations on the basis of this analysis, and we note associations only.
+The first explanation is perhaps the most intuitive: it takes time to order and conduct tests, and to incorporate results into a patient’s treatment plan. From this perspective, we might see tests as adding time to a patient's ED stay. Another explanation is that longer ED stays may lead to more testing within the ED. This might arise, for example, when there are insufficient beds to enable prompt admission when required. Indeed, there may be truth in both explanations. However, we cannot distinguish between causal theories on the basis of this analysis, and we therefore state associations only.
 
 The association between tests and duration in the ED was particularly marked for imaging tests. The presence of CT scans, ultrasounds, and plain radiography as part of a patient’s ED care, were associated with an additional hour in the ED, on average. MRI scans were associated with an additional three hours.
 
