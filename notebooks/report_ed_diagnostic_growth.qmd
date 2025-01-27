@@ -789,7 +789,7 @@ We removed records with times that appeared to be poorly recorded. For example, 
 
 Our dependent variable was the average duration from a patient's assessment by a clinician to their departure from the ED. The distribution of this variable is heavily right-skewed, so we used the median time, rather than the mean time, to limit the impact of extreme values.
 
-**A5: Limitations**
+**A3.2: Limitations**
 
 The findings in this section are based on a sample of 16 providers and are therefore subject to the same sampling-related limitations we identified in the Limitations section of A1.
 
