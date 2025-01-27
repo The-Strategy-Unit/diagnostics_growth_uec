@@ -1230,7 +1230,7 @@ We established that 16 providers met these criteria. The providers we intend to 
 
 ```{r}
 #| label: tbl-sample-q2-6
-#| tbl-cap: "Provider sample used for Analyses 2-6"
+#| tbl-cap: "Provider sample used for Analyses 2-4"
 #| echo: false
 #| message: false
 
