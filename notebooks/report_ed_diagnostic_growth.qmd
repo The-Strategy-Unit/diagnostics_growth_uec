@@ -1126,7 +1126,7 @@ source(here("R", "representation_stats.R"))
 
 ```
 
-To increase the chances that our findings would be reliable and valid for a given question, we conducted each analysis on data from a sample of providers. We were able to identify two distinct samples that met our needs for the six questions. The first sample, of 28 providers, was used to address Question 1. A second sample, of 16 providers, was used in the analysis relating to Questions 2 to 6.
+To increase the chances that our findings would be reliable and valid for a given question, we conducted each analysis on data from a sample of providers. We were able to identify two distinct samples that met our needs for the six questions. The first sample, of 28 providers, was used to address Question 1. A second sample, of 16 providers, was used in the analysis relating to Questions 2 to 4.
 
 ### Sample used for A1
 
