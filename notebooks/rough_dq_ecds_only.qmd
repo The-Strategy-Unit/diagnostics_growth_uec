@@ -530,19 +530,6 @@ table_representation_ecds_only |>
   tab_options(data_row.padding = px(1))
 ```
 
-# Data quality in detail {#sec-detail}
-
-As we proceed with the modelling work, we will likely require deeper analysis of specific variables (for an agreed subset of providers). This section can be used to display the results and consequences of these analyses.
-
-```{r}
-dq_provider_represent_ecds_only |>
-        semi_join(providers_surviving_ecds_only, join_by(procode)) |>
-# dq_provider_represent_ecds_only |>
- #       semi_join(provider_sample, join_by(procode)) |> 
-  distinct(procode, trust_name, trust_type) |> 
-  gt()
-```
-
 # Appendix 1 {#sec-appendix-1}
 
 SQL code used to create \[NHSE_Sandbox_StrategyUnit\].\[dbo\].\[2232_diagnostics_ecds_only\]. (Note: scroll bar at bottom of chunk.)
