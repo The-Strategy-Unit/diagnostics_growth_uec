@@ -114,7 +114,7 @@ The analyses we present here investigate the consequences of increased diagnosti
 
 To increase the chances that our findings would be reliable and valid for a given question, we conducted each analysis on data from a sample of providers. These provider samples were non-random: we included a provider in a sample if the quality of their data submissions met our requirements for the given question.
 
-We were able to identify two distinct samples that met our needs for the six questions. The first sample (Sample 1), of 28 providers, was used to address Question 1. A second sample (Sample 2), of 16 providers, was used in the analysis relating to Questions 2 to 6.
+We were able to identify two distinct samples that met our needs for the four questions. The first sample (Sample 1), of 28 providers, was used to address Question 1. A second sample (Sample 2), of 16 providers, was used in the analyses relating to Questions 2 to 4.
 
 Whilst sampling should improve the reliability and validity of our results, we can only make general statements about the effect of testing on EDs if our sample of providers is *representative* of the population of providers. That is to say, the providers in our sample(s) and population should have similar characteristics.
 
@@ -1126,7 +1126,7 @@ source(here("R", "representation_stats.R"))
 
 ```
 
-To increase the chances that our findings would be reliable and valid for a given question, we conducted each analysis on data from a sample of providers. We were able to identify two distinct samples that met our needs for the six questions. The first sample, of 28 providers, was used to address Question 1. A second sample, of 16 providers, was used in the analysis relating to Questions 2 to 4.
+To increase the chances that our findings would be reliable and valid for a given question, we conducted each analysis on data from a sample of providers. We were able to identify two distinct samples that met our needs for the four questions. The first sample, of 28 providers, was used in Analysis 1 (to address Question 1). A second sample, of 16 providers, was used in the analyses relating to Questions 2 to 4.
 
 ### Sample used for A1
 
