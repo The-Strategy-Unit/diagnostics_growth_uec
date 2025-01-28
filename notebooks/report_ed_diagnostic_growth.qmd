@@ -867,7 +867,7 @@ readRDS(here("data", "df_nested_preplots_multi_tests.rds"))$data[[5]] |>
 
 ## A4. What are the implications of this growth for decisions to admit?
 
-In this section, we explore how increased testing in ED has influenced the rate of admissions to hospital beds. We do this by comparing the change in the casemix-adjusted *odds of a test* with the casemix-adjusted *odds of admission* *having received a test*. We examine these changes over the period from 2019/20 to 2023/24, for 32 test types.
+In this section, we explore how increased testing in EDs has influenced the rate of admissions to hospital beds. We do this by comparing the change in the casemix-adjusted *odds of a test* with the casemix-adjusted *odds of admission* *having received a test*. We examine these changes over the period from 2019/20 to 2023/24, for 32 test types.
 
 ::: {.callout-note collapse="true"}
 ## A4: Methods and Limitations
