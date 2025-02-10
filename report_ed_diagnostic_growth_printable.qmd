@@ -1,42 +1,24 @@
 ---
 title: "Growth in Diagnostic Testing and Its Impact on Emergency Departments"
-#"Growth in Diagnostic Testing<br>and Its Impact on<br>Emergency Departments"
-subtitle: "<br>January 2025"
-# <br>Steven Wyatt and Andrew Jones | The Strategy Unit | 
+subtitle: "January 2025"
+format: pdf
+editor: visual
 author:
-  - name: Steven Wyatt
+  - name: Steven Wyatt*
     email: swyatt@nhs.net
     corresponding: TRUE
     affiliation: The Strategy Unit
-  - name: Andrew Jones
+  - name: Andrew Jones*
     email: swyatt@nhs.net
     corresponding: FALSE
-# date: 2024-11-29
-format:
-  html:
-    html-table-processing: none
-    # code-fold: true
-    # code-tools: true
-    embed-resources: true
-    grid:
-      margin-width: 280px
-  pdf: default
-reference-location: margin
-citation-location: margin
-toc: true
-toc-title: Contents
-toc-location: left
-theme: journal
-fig-cap-location: top
-number-sections: false
-# backgroundcolor: '#FFE0B5'
-title-block-banner: '#f8be06'
-title-block-banner-color: '#242322'
-# mainfont: Gill Sans MT
-# mainfont: Helvetica
-editor_options: 
-  chunk_output_type: console
+  - name: (*The Strategy Unit)
 ---
+
+::: {.callout-note appearance="minimal"}
+## Note
+
+This document is a printable version of the original html report. The size and position of text and figures may differ between versions due to the distinct rendering processes.
+:::
 
 # Executive Summary
 
@@ -84,7 +66,7 @@ These results might indicate that increased testing in EDs enables clinicians to
 
 Over the last decade, growth in diagnostic testing in emergency departments (EDs) has been rapid. Earlier analysis conducted by the Strategy Unit ([2019](https://www.strategyunitwm.nhs.uk/publications/waiting-times-and-attendance-durations-english-ae-departments), [2023](https://www.strategyunitwm.nhs.uk/sites/default/files/2023-05/MDSN%20Diagnostic_growth_report%20Apr2023.pdf)) suggests that this growth may have implications for the timeliness of patient care, for decisions on whether to admit a patient, and for crowding in EDs.
 
-::: column-margin
+::: {.callout-note appearance="minimal" icon="false"}
 For the sake of readability, we use the term, “test”, to refer to a unit of diagnostic activity. We acknowledge that some of these “tests” might also be therapeutic procedures.
 :::
 
@@ -114,13 +96,13 @@ The analyses we present here investigate the consequences of increased diagnosti
 
 To increase the chances that our findings would be reliable and valid for a given question, we conducted each analysis on data from a sample of providers. These provider samples were non-random: we included a provider in a sample if the quality of their data submissions met our requirements for the given question.
 
-We were able to identify two distinct samples that met our needs for the four questions. The first sample (Sample 1), of 28 providers, was used to address Question 1. A second sample (Sample 2), of 16 providers, was used in the analyses relating to Questions 2 to 4.
+We were able to identify two distinct samples that met our needs for the four questions. The first sample (Sample 1), of 28 providers, was used to address Question 1. A second sample (Sample 2), of 16 providers, was used in the analysis relating to Questions 2 to 4.
 
 Whilst sampling should improve the reliability and validity of our results, we can only make general statements about the effect of testing on EDs if our sample of providers is *representative* of the population of providers. That is to say, the providers in our sample(s) and population should have similar characteristics.
 
 There is a trade-off to be made here. The larger our sample of providers, the more likely it is to be representative of the population of providers. But the larger we make our sample, the more we compromise on data quality, which will likely to decrease the reliability of our results.
 
-Details of the sampling methods, our approach to the trade-off, and the measures of representation can be found in @sec-appendix.
+Details of the sampling methods, our approach to the trade-off, and the measures of representation can be found in Appendix 1.
 
 ### Excluded attendances {#sec-approach-attd}
 
@@ -128,7 +110,7 @@ For providers within our samples, the analyses cover all unplanned attendances o
 
 ### Question-specific approaches
 
-Details of our approach to each distinct question can be found in the expandable "Method and Limitations" boxes, in the corresponding subsections of the Analysis section, below.
+Details of our approach to each distinct question can be found in Appendix 2.
 
 ### Reproducibility
 
@@ -160,68 +142,53 @@ lkp_invst_ec_aea <- readRDS(here("reference", "lkp_test_ec_to_aea.rds"))
 
 ### Characteristics of patients in the study
 
-As detailed above, the analyses in this report rely on two data samples. Analysis A1 is based on Sample 1, while all other analyses use Sample 2. Selected characteristics of patients in Sample 2 are shown in @tbl-one. Information on Sample 1 (and further information on Sample 2) can be found in @sec-appendix.
+As detailed above, the analyses in this report rely on two data samples. Analysis A1 is based on Sample 1, while all other analyses use Sample 2. Selected characteristics of patients in Sample 2 are shown in Table 1. Information on Sample 1 (and further information on Sample 2) can be found in Appendix 1.
 
 ```{r}
-#| label: tbl-one
-#| tbl-cap: "A summary of selected characteristics of the patients in Sample 2"
-#| echo: false
-#| message: false
-#| warning: false
-#| column: page
-#| width: 8
-
-# CREATED BY R/prep_table_1.R
-readRDS(here("data", "prep_table_1.rds")) |> 
- gt(groupname_col = "grouping") |> 
-  tab_options(row_group.as_column = TRUE) |> 
-  fmt_number(columns = c(`attendances 2019/20`, `attendances 2023/24`),
-             decimals = 0) |> 
-  fmt_percent(columns = c(`p_atts_2019/20`, `p_atts_2023/24`),
-              decimals = 1) |> 
-  cols_merge(columns = c(`attendances 2019/20`, `p_atts_2019/20`),
-             pattern = "{1} ({2})") |> 
-  cols_merge(columns = c(`attendances 2023/24`, `p_atts_2023/24`),
-             pattern = "{1} ({2})") |> 
-  cols_label(subgroup = "", 
-             `attendances 2019/20` = '2019/20',
-             `attendances 2023/24` = '2023/24') |> 
-  tab_spanner(label = 'attendances (%)',
-              columns = c(`attendances 2019/20`, `attendances 2023/24`)) |> 
-  tab_options(
-    data_row.padding = px(1),
-    table.font.size = "small"
-  ) 
+#| include: false
+# #| label: tbl-one
+# #| tbl-cap: ""
+# #| echo: false
+# #| message: false
+# #| warning: false
+# #| width: 8
+# 
+# # CREATED BY R/prep_table_1.R
+# readRDS(here("data", "prep_table_1.rds")) |> 
+#  gt(groupname_col = "grouping") |> 
+#   tab_options(row_group.as_column = TRUE) |> 
+#   fmt_number(columns = c(`attendances 2019/20`, `attendances 2023/24`),
+#              decimals = 0) |> 
+#   fmt_percent(columns = c(`p_atts_2019/20`, `p_atts_2023/24`),
+#               decimals = 1) |> 
+#   cols_merge(columns = c(`attendances 2019/20`, `p_atts_2019/20`),
+#              pattern = "{1} ({2})") |> 
+#   cols_merge(columns = c(`attendances 2023/24`, `p_atts_2023/24`),
+#              pattern = "{1} ({2})") |> 
+#   cols_label(subgroup = "", 
+#              `attendances 2019/20` = '2019/20',
+#              `attendances 2023/24` = '2023/24') |> 
+#   tab_spanner(label = 'attendances (%)',
+#               columns = c(`attendances 2019/20`, `attendances 2023/24`)) |> 
+#   tab_options(
+#     data_row.padding = px(1),
+#     table.font.size = "small"
+#   ) |> 
+#   gtsave(here("figures", "table_01.png"), expand = 10)
 
 ```
+
+![A summary of selected characteristics of the patients in Sample 2](figures/table_01.png)
 
 ## A1. How has the number of tests per ED attendance changed over time?
 
 We start the analysis proper by looking at the change in the crude rate of testing in EDs over the last twelve years.
 
-::: {.callout-note collapse="true"}
-### A1: Method and Limitations (click to unhide)
-
-<br>**A1:** **Method**
-
-To be precise, we estimated how the *average* number of tests per ED attendance has changed over time. As this analysis covers a period of 12 years - starting with the financial year 2012/13 and concluding with 2023/24 - we had to employ both A&E and EC data sets.
-
-We identified 28 providers with provider codes that survived across the 12 year study period and that passed our data quality criteria. See @sec-appendix.
-
-The numerator for our testing rate in a given year was the total number of tests performed across our provider sample. Where a patient received multiple tests of the same type, we counted these as multiple tests. The denominator for our testing rate in a given year was the total number of ED attendances across our provider sample that matched the criteria given in @sec-approach-attd.
-
-**A1: Limitations**
-
-Our aim in these analyses is to make general statements about diagnostic testing in EDs. However, due to concerns about data quality, we employed data sampling. Our results come from 28 of 99 providers whose provider codes remained unchanged over the 12-year period. As the 28 providers were chosen on the basis of their data quality, this constitutes a non-random sample of providers. Study conclusions drawn from non-random samples are at higher risk of bias. As noted in @sec-approach-sampling, we attempted to mitigate the risk of bias by confirming that the sample was generally representative of the population of providers in various dimensions. It is, however, possible that we unknowingly omitted important dimensions of representation for this particular question, and that our findings are less generalisable than we suggest.
-
-There are two additional points worth noting. Firstly, in order to complete this analysis, we were obliged to unite A&E and EC data sets, each of which has a slightly different structure. We used the A&E data set for financial years between 2012/13 and 2018/19 and the EC data set between 2019/20 and 2023/24. Whilst we attempted to ensure consistency across data sets, it may be that there are some differences in the definition of variables between the data sets.
-
-A second important point is that we included only those providers who appeared to record multiple instances of a given investigation (and who appeared to have been consistent in this practice over the whole study period). It is, however, possible that these providers were internally inconsistent in their recording practices over the period, or that in some cases, the recording of multiple tests of the same type represented an error.
-:::
+The Methods and Limitations sections relating to A1 can be found in Appendix 2.
 
 **A1: Results**
 
-@fig-trend shows the change in testing rates for the sample of 28 providers identified by the approach detailed above (and named in @tbl-sample-q1). In adjacent tabs, @fig-trend-2 and @fig-trend-3 show testing rates by broad test group and by (A&E dataset) test type, respectively.
+@fig-trend shows the change in testing rates for the sample of 28 providers identified by the approach detailed above (and named in Figure 15 in Appendix 1). In addition, @fig-trend-2 and @fig-trend-3 show testing rates by broad test group and by (A&E dataset) test type, respectively.
 
 It appears that, overall (as shown in the left-hand panel of @fig-trend), testing rates doubled over the study period, from an average of 2.2 tests per attendance in 2012/13 to 4.3 tests per attendance in 2023/24. This equates to a growth rate of 6.3% per annum. However, the growth in tests per attendance has reduced in recent years, from 9.2% per annum between 2012/13 to 2018/19, to 3.3% per annum between 2018/19 and 2023/24.
 
@@ -229,16 +196,10 @@ During the pandemic period, ED attendances fell. Evidence suggests that persons 
 
 Although, over the study period, testing rates for non-admitted patients were lower than for patients who were admitted, the *increase* in testing rates was greater for non-admitted patients (8.6% vs 4.4% per annum, respectively).
 
-<br>
-
-::: panel-tabset
-#### Aggregated results
-
 ```{r}
 #| label: fig-trend
 #| echo: false
 #| fig-cap: "Estimated average number of tests per ED attendance, in England, between 2012/13 and 2023/24. Source: SUS A&E and EC data sets."
-#| column: page
 #| fig-width: 10
 #| fig-asp: 0.618
 #| fig-align: center
@@ -271,9 +232,8 @@ df_preplot_trend |>
   facet_wrap(vars(disdest))+ # , scales = "free_y"
   scale_x_discrete(breaks = every_nth(n=4))+
   scale_y_continuous(breaks = seq(0,9, by = 2))
-```
 
-#### Results by test group
+```
 
 ```{r}
 #| label: fig-trend-2
@@ -281,7 +241,6 @@ df_preplot_trend |>
 #| message: false
 #| warning: false
 #| fig-cap: "Estimated average number of tests per ED attendance, in England, between 2012/13 and 2023/24. Results by broad test group."
-#| column: page
 #| fig-width: 10
 #| fig-asp: 0.618
 #| fig-align: center
@@ -326,7 +285,7 @@ readRDS(here("data_raw", "from_ncdr_trends_241003_preplot_by_invst.rds")) |>
   guides(colour = guide_legend(title = "Patient outcome"))
 ```
 
-#### Results by test type
+![Estimated average number of tests per ED attendance, in England, between 2012/13 and 2023/24. Source: SUS A&E and EC data sets.](figures/table_02_a1.png){width="600" fig-pos="T"}
 
 ```{r}
 #| label: fig-trend-3
@@ -334,11 +293,11 @@ readRDS(here("data_raw", "from_ncdr_trends_241003_preplot_by_invst.rds")) |>
 #| message: false
 #| warning: false
 #| fig-cap: "Estimated average number of tests per ED attendance (with local regression), in England, between 2012/13 and 2023/24. Results by A&E dataset test type."
-#| column: page
 #| fig-width: 10
 #| fig-asp: 0.618
 #| fig-align: center
 #| out-width: "85%"
+#| fig-pos: 'H'
 
 readRDS(here("data_raw", "from_ncdr_trends_241003_preplot_by_invst.rds")) |>
   left_join(
@@ -373,80 +332,50 @@ readRDS(here("data_raw", "from_ncdr_trends_241003_preplot_by_invst.rds")) |>
   scale_x_discrete(breaks = every_nth(n = 3)) +
   guides(colour = guide_legend(title = "Patient outcome"))
 
-
 ```
-
-#### Table
 
 ```{r}
-#| label: tab-trend
-#| tbl-cap: "Estimated average number of tests per ED attendance, in England, between 2012/13 and 2023/24. Source: SUS A&E and EC data sets."
-#| echo: false
-#| message: false
-#| column: page
-#| fig-width: 8
-#| out-width: "100%"
+#| include: false
+# #| label: tab-trend
+# #| tbl-cap: "Estimated average number of tests per ED attendance, in England, between 2012/13 and 2023/24. Source: SUS A&E and EC data sets."
+# #| echo: false
+# #| message: false
+# #| column: page
+# #| fig-width: 8
+# #| out-width: "100%"
+# 
+# df_preplot_trend |>
+#   mutate(disdest = as.character(disdest)) |> 
+#   mutate(across(c(gopy_att, gopy_invst), ~ . - 1)) |>
+#   arrange(desc(disdest)) |> 
+#   gt() |>
+#   cols_label(
+#     fyear = "Financial year",
+#     disdest = "Destination type",
+#     n_att = "Attendances in sample",
+#     gopy_att = "Attendance growth<br>on previous year",
+#     n_invst = "Tests in sample",
+#     gopy_invst = "Test growth<br>on previous year",
+#     rate = "Tests per attendance ",
+#         .fn = md
+#   ) |>
+#   fmt_auto() |>
+#   fmt_number(columns = c(n_att, n_invst), n_sigfig = 4) |> 
+#   fmt_number(columns = c(rate), decimals = 2) |> 
+#   fmt_percent(columns = c(gopy_att, gopy_invst), decimals = 1) |>
+#   tab_options(
+#     data_row.padding = px(1),
+#     table.font.size = "small"
+#   ) |> 
+#     gtsave(here("figures", "table_02_a1.png"), expand = 10)
 
-df_preplot_trend |>
-  mutate(disdest = as.character(disdest)) |> 
-  mutate(across(c(gopy_att, gopy_invst), ~ . - 1)) |>
-  arrange(desc(disdest)) |> 
-  gt() |>
-  cols_label(
-    fyear = "Financial year",
-    disdest = "Destination type",
-    n_att = "Attendances in sample",
-    gopy_att = "Attendance growth<br>on previous year",
-    n_invst = "Tests in sample",
-    gopy_invst = "Test growth<br>on previous year",
-    rate = "Tests per attendance ",
-        .fn = md
-  ) |>
-  fmt_auto() |>
-  fmt_number(columns = c(n_att, n_invst), n_sigfig = 4) |> 
-  fmt_number(columns = c(rate), decimals = 2) |> 
-  fmt_percent(columns = c(gopy_att, gopy_invst), decimals = 1) |>
-  tab_options(
-    data_row.padding = px(1),
-    table.font.size = "small"
-  ) 
-  
 ```
-:::
 
 ## A2. To what extent can changes in ED patient casemix explain the growth in test rates?
 
 The number and types of test that a patient receives in ED will be influenced by the patient’s characteristics and presenting conditions. The term "casemix" can be used to describe the combination of these factors. In this section of analysis, we explore whether patients are more or less likely to receive a test in 2023/24 than in 2019/20, having taken account of the patient casemix. The results are expressed as casemix-adjusted odds ratios, which is the odds of a patient receiving a test in 2023/24 divided by the odds in 2019/20, having adjusted for changes in casemix between the two years. We perform these calculations for 32 tests. These 32 tests account for over 99% of all tests recorded in EDs.
 
-::: {.callout-note collapse="true"}
-### A2: Method and Limitations (click to unhide)
-
-<br>**A2: Method**
-
-We used the SUS EC data set and identified 16 providers with provider codes that survived across the study period and that passed our data quality criteria for this question. For further details of our sampling approach and data quality criteria see @sec-approach-sampling and @sec-appendix.
-
-We built 32 distinct models to predict casemix-adjusted odds ratios (as specified above) for 32 (of 49) test types that appear in the EC data set. These 32 tests account for over 99% of all tests recorded in EDs.
-
-In terms of data preparation, we removed March from both 2019/20 and 2023/24, to avoid any bias in our results that may have arisen due to the onset of the pandemic in March 2020.
-
-Approximately 4% of the 3 million records had missing values in a key field (our "key fields" are given in @sec-appendix). The specified model type will not accept missing values, so we chose to delete the records with missing values in our key fields.
-
-We performed logistic regressions using generalised additive models (GAMs) with mixed-effects. All 32 models were specified in the same way, with the only difference being the binary dependent variable (whether the given test was carried out). Our fixed effects included the variable of interest, financial year, and several time-related variables to control for season, weekday, and time of arrival. We included variables to adjust for casemix (as far as possible), namely: *age* (as a spline-based smooth) interacting with *sex*; a re-engineered *chief complaint* variable; *acuity*; *arrival mode*; and *referral source*.
-
-(It is important to note that the *chief complaint* and *acuity* variables are recorded as part of an initial assessement ([NHSE, 2022](https://www.england.nhs.uk/guidance-for-emergency-departments-initial-assessment/#:~:text=chief%20complaint%20or%20suspected%20diagnosis,initially%20assessed%20by%20a%20clinician)). They are therefore akin to presentation codes. Whilst the diagnosis codes may give greater detail about a patient's condition (and better allow us to control for casemix), diagnosis is often a causal consequence of testing and it would therefore be inappropriate to use diagnosis-related information to predict whether a patient receives a given test.)
-
-We treated the provider variable as a random effect. This allowed us to control for factors that vary, at random, across providers. Moreover, the values produced by this random effect can be thought of as sample values from a larger population of values. As the providers in our data set were, in fact, a sample of all providers, this approach suits our case well.
-
-We ran each model on the same random sub-sample of 1 million attendance records.
-
-**A2: Limitations**
-
-The findings of this analysis are based on a sample of 16 providers (of 102 providers whose provider codes remained unchanged over the study period). These findings are therefore subject to the same sampling-related limitations we identified in the Limitations section of A1.
-
-We have labelled our estimates as "casemix-adjusted" as we controlled for a range of variables that might indicate a patient's need for a test. However, a clinician will order a test based on an array of factors and only some of these will be recorded in data sets. Therefore, as we are unable to control for unrecorded variables, part of the effect we measure may be due to unobserved case mix factors.
-
-Finally, as noted in the Methods section above, we decided to delete approximately 4% of records from our sample that had missing values for any of the variables used in the model. We expect this decision to have a limited impact on our results. However, as it reduced our sample size, the standard errors around our model coefficients have marginally increased as a consequence. There is also the potential for some bias in our results if these missing data were not missing completely at random.
-:::
+The Methods and Limitations sections relating to A2 can be found in Appendix 2.
 
 **A2: Results**
 
@@ -454,14 +383,11 @@ Finally, as noted in the Methods section above, we decided to delete approximate
 
 For 6 of the 32 tests, the odds of receiving the test *fell* between 2019/20 and 2023/24. These tests were: erythrocyte sedimentation rate measurement, group and save, electrocardiography, serum lipase measurement, urinalysis, and human chorionic gonadotropin measurement.
 
-::: column-margin
-If casemix cannot fully explain the growth in tests per attendance, then the residual growth must represent a reduction in testing thresholds in EDs. We illustrate this in more detail in an appendix (@sec-appendix-two), by decomposing the growth in tests to (1) growth in activity: the number of patients presenting at EDs; (2) changes in casemix: the acuity and complexity of patient presentations; and (3) changes in practice: the ways in which EDs respond to patients who present.
-:::
-
 We can compare the increased odds of testing estimated here, with similar analysis covering the period 2012/13 to 2019/20. This comparison suggests that the increase in the casemix-adjusted odds of a patient receiving a CT scan has fallen, from +19% per annum between 2012/13 and 2019/20, to +16% per annum between 2019/20 and 2023/24. There has been a similar slowdown in the rate of increase for MRI scans (from 25% per annum between 2012/13 and 2019/20, to 17% per annum between 2019/20 and 2023/24).
 
 ```{r}
 #| include: false
+
 
 tmp_admodds <- readRDS(
   here("data", "from_ncdr_241106_admission_odds.rds")
@@ -491,12 +417,8 @@ df_odds_results <- bind_rows(
     join_by(InvestigationKey)
   ) |> 
   mutate(InvestigationDescription = str_remove(InvestigationDescription, " situation"))
+
 ```
-
-<br>
-
-::: panel-tabset
-## Graphic<br>(excl. serological testing)
 
 ```{r}
 #| label: fig-odds-sans-sero
@@ -504,7 +426,6 @@ df_odds_results <- bind_rows(
 #| message: false
 #| warning: false
 #| fig-cap: "Case-mix-adjusted odds-of-test ratios (2023/24 vs 2019/20), excluding serological testing."
-#| column: page
 #| fig-width: 10
 #| fig-asp: 0.618
 #| out-width: "85%"
@@ -540,9 +461,8 @@ df_odds_results |>
   labs(y = "\nCase-mix-adjusted odds ratio of test (2023/24 vs 2019/20) on log scale")+
   facet_grid(invst_group ~ ., space = "free", scales = "free_y")
 
-```
 
-## Graphic<br>(incl. serological testing)
+```
 
 ```{r}
 #| label: fig-odds
@@ -550,7 +470,6 @@ df_odds_results |>
 #| message: false
 #| fig-cap: "Case-mix-adjusted odds-of-test ratios (2023/24 vs 2019/20), including serological testing."
 #| fig-align: center
-#| column: page
 #| fig-width: 10
 #| fig-asp: 0.618
 #| out-width: "85%"
@@ -588,37 +507,43 @@ df_odds_results |>
 
 ```
 
-## Table
-
 ```{r}
-#| label: tab-odds
-#| echo: false
-#| message: false
-#| tbl-cap: "Case-mix-adjusted odds-of-test ratios (2023/24 vs 2019/20)"
-#| column: page
-#| fig-width: 8
-#| fig-align: center
-##| fig-asp: 0.618
-##| out-width: "90%"
-
-df_odds_results |>
-  select(InvestigationDescription, att_2023_24, tests_2023_24, odds, lci, uci) |>
-  mutate(tests_2023_24 = as.integer(tests_2023_24)) |> 
-  gt() |>
-  cols_label(
-    InvestigationDescription = "Test name",
-    att_2023_24 = "Attendances in sub-sample<br>2023/24",
-    tests_2023_24 = "Tests in sub-sample<br>2023/24",
-    odds = "Odds ratio of test (casemix adj.)<br>2023/24 vs. 2019/20",
-        .fn = md
-  ) |> 
-  fmt_auto() |>
-  tab_options(
-    data_row.padding = px(1),
-    table.font.size = "small"
-  ) 
+#| include: false
+# #| label: tab-odds
+# #| echo: false
+# #| message: false
+# #| tbl-cap: "Case-mix-adjusted odds-of-test ratios (2023/24 vs 2019/20)"
+# #| column: page
+# #| fig-width: 8
+# #| fig-align: center
+# 
+# 
+# df_odds_results |>
+#   select(InvestigationDescription, att_2023_24, tests_2023_24, odds, lci, uci) |>
+#   mutate(tests_2023_24 = as.integer(tests_2023_24)) |> 
+#   gt() |>
+#   cols_label(
+#     InvestigationDescription = "Test name",
+#     att_2023_24 = "Attendances in sub-sample<br>2023/24",
+#     tests_2023_24 = "Tests in sub-sample<br>2023/24",
+#     odds = "Odds ratio of test (casemix adj.)<br>2023/24 vs. 2019/20",
+#         .fn = md
+#   ) |> 
+#   fmt_auto() |>
+#   tab_options(
+#     data_row.padding = px(1),
+#     table.font.size = "small"
+#   ) |> 
+#   gtsave(here("figures", "table_03_a2.png"), expand = 10)
 
 ```
+
+![Case-mix-adjusted odds-of-test ratios (2023/24 vs 2019/20).](figures/table_03_a2.png)
+
+::: {.callout-note appearance="minimal" icon="false"}
+## Note
+
+If casemix cannot fully explain the growth in tests per attendance, then the residual growth must represent a reduction in testing thresholds in EDs. We illustrate this in more detail in Appendix 3, by decomposing the growth in tests to (1) growth in activity: the number of patients presenting at EDs; (2) changes in casemix: the acuity and complexity of patient presentations; and (3) changes in practice: the ways in which EDs respond to patients who present.
 :::
 
 ## A3. What are the implications of this growth for the timeliness of care in ED?
@@ -627,49 +552,17 @@ Patients will wait while tests are ordered and conducted, and they will likely w
 
 Analysis A3 is composed of two parts. In the first part (3.1), we investigate the association between testing - specifically, the addition of a single test to a patient's care - and the time that a patient spends in the ED. In the second part (3.2), we examine the relationship between the number of tests that a patient receives and their duration in the ED.
 
+The Methods and Limitations sections relating to A3 can be found in Appendix 2.
+
 **A3.1**
 
 Here, we investigate the association between testing and the time that patients spend in the ED. We examine 32 tests in the 2023/24 financial year and measure the effect for a single additional test, acknowledging that many patients receive several tests (of different types or of the same type). Our results take patient casemix into account.
-
-::: {.callout-note collapse="true"}
-## A3: Method and Limitations (click to unhide)
-
-<br>**A3.1:** **Method**
-
-This analysis again uses patient-level data from the 16 providers that passed our consistency and data quality criteria for A2-A4. (For further details of our sampling approach and data quality criteria see @sec-approach-sampling and @sec-appendix.) We use only records from the 2023/24 financial year for this analysis.
-
-As in Analysis 2, we deleted records that had missing values in a key field (our "key fields" are given in @sec-appendix). We also removed records with times that appeared to be poorly recorded. For example, there were attendances in which the arrival time was noted as occurring after the assessment time, and those in which the total time in the ED was recorded to be less than zero minutes. We also limited this analysis to attendances where the patient is recorded to have stayed in the ED for less than 30 hours. And we removed a low number of records in which the patient appeared to receive one (or more) test and then left the ED within 15 minutes. All these exclusions reduced our total sample of 1.8 million records by 6.7%.
-
-We chose our dependent variable to be the duration from a patient's assessment by a clinician to their departure from the ED. The distribution of this variable is heavily right-skewed, and the presence of such a skew in the dependent variable is often cited as a reason to avoid the linear regression model. Specifically, given this distribution, we cannot expect residuals to be normally distributed or display constant variance (which are two key assumptions of the linear model). Thus, typical methods to calculate standard errors and confidence intervals will be biased (though point estimates from such a model remain unbiased).
-
-If, however, we choose popular alternatives to linear regression in this scenario, we are likely to end up with less interpretable, less useful results. Our solution, here, was to employ an approach often used in the field of Econometrics. We implemented a linear regression model but used a heteroscedasticity-consistent (HC) estimator to obtain the covariance of the model parameters, and obtain robust estimates of standard errors and confidence intervals. We chose the estimator recommended by Long and Ervin ([2000](https://www.tandfonline.com/doi/abs/10.1080/00031305.2000.10474549)), known as HC3.
-
-We employed a generalised additive model (GAM) with mixed-effects. We included a separate variable for 42 of the 48 tests recorded in the ECDS (we excluded 6 very low frequency tests). Unlike A2, where the test variable was binary (test conducted or not), these variables measured the number of times a patient received a test. Other fixed effects included month, weekday, and hour of arrival, and we included several variables to adjust for casemix (as far as this is possible), namely: *age* (as a spline-based smooth) interacting with *sex*; a re-engineered *chief complaint* variable; *acuity*; *arrival mode*; and *referral source*.
-
-(It is important to note that the *chief complaint* and *acuity* variables are recorded as part of an initial assessement ([NHSE, 2022](https://www.england.nhs.uk/guidance-for-emergency-departments-initial-assessment/#:~:text=chief%20complaint%20or%20suspected%20diagnosis,initially%20assessed%20by%20a%20clinician)). They are therefore akin to presentation codes. Whilst diagnosis codes may give us greater detail about a patient's condition (and better allow us to control for casemix), diagnosis is often a causal consequence of testing. If we were to include both tests and diagnoses in our model, we may fail to isolate the influence of tests on the time a patient spends in the ED.)
-
-We treated the provider variable as a random effect. This allowed us to control for factors that vary, at random, across providers. Moreover, the values produced by this random effect can be thought of as sample values from a larger population of values. As the providers in our data set were, in fact, a sample of all providers, this approach suits our case well.
-
-We ran the model on a random sub-sample of 1 million attendance records.
-
-**A3.1: Limitations**
-
-The findings of this analysis are based on a sample of 16 providers. These findings are therefore subject to the same sampling-related limitations we identified in the Limitations section of A1. Of relevance to A3, are the representation statistics in @sec-appendix that indicate that the performance of providers in Sample 2 (in terms of 4-hour and 12-hour waits) is somewhat lower than that of the population of providers. This may have a bearing on the sizes of the effects that we report.
-
-We have labelled our estimates as "casemix-adjusted", as we controlled for a range of variables that might indicate the time a patient spends in the ED. However, we are unable to control for casemix factors that influence decisions (and time spent) in the ED, but go unrecorded. It is therefore possible that part of the effect we measure is due to unobserved casemix factors.
-
-For reasons related to model interpretabilty, we specified a linear relationship between the number of times a test is conducted and the time a patient spends in an ED. In reality, the relationship is likely to be non-linear. That said, in most cases, a patient will receive only one test of a particular type. We therefore decided that the disadvantages of a linear assumption were modest and the advantages (over a non-linear assumption), clear.
-
-Our results estimate the time impact of a single additional test on a patient's stay in the ED. We acknowledge that many patients receive several tests, of different types or the same type. With regression models, we have the ability to specify interactions between test terms (to account for the effect of one test, given the provision of another). However, this approach is impractical here, based both on the number of interaction terms we would produce and on our desire for interpretability.
-
-Finally, as noted in the Methods section of A3.1, above, we removed approximately 7% of records from our sample due to poor data quality. We expect this decision to have a limited impact on our results. However, as it reduced our sample size, the standard errors around our model coefficients will have increased as a consequence. There is also the potential for some bias in our results if these missing data were not missing completely at random.
-:::
 
 **A3.1: Results**
 
 We found statistically significant evidence that 23 of the 32 we considered were associated with a longer stay in the ED (see @fig-test-time). MRI scans had the biggest impact, being associated with an increase of 3 hours, on average, to a patient’s stay. Other forms of imaging, namely CT scan and ultrasound, and two other tests (urine sent for culture, and analysis of arterial blood gas and pH) were associated with an increased stay of 60 to 90 minutes in the ED.
 
-Given these findings, it may be tempting to infer that tests lead to longer stays in the ED. There is good reason to believe this might be the case: it takes time to order and conduct tests, and to incorporate results into a patient’s treatment plan. However, an alternative explanation also exists: it may be that longer stays in ED - perhaps due to lack of beds (“exit block”) - lead to additional tests. Whilst this analysis is not capable of distinguishing between these two potential causal explanations, we set out how such work might be carried out in @sec-further-work.
+Given these findings, it may be tempting to infer that tests lead to longer stays in the ED. There is good reason to believe this might be the case: it takes time to order and conduct tests, and to incorporate results into a patient’s treatment plan. However, an alternative explanation also exists: it may be that longer stays in ED - perhaps due to lack of beds (“exit block”) - lead to additional tests. Whilst this analysis is not capable of distinguishing between these two potential causal explanations, we set out how such work might be carried out in the Further Work section.
 
 We found evidence that 5 tests were associated with *shorter* stays in EDs: lipid panel, glucose measurement blood test strip, serum lactate measurement, amylase measurement serum, and group and save tests. In most cases, this effect was modest. The effect for lipid panel was more marked, but these tests occurred at comparatively low frequency, and no clear and plausible explanation for this finding can be offered.
 
@@ -679,18 +572,12 @@ An earlier [study](#0 "Original URL: https://onlinelibrary.wiley.com/doi/full/10
 
 The potential materiality of these findings for ED patient flow in general (as opposed to the journey of a single patient) can be examined by considering both the time impact of the test and the test frequency. From this perspective, the tests that would appear to have the biggest potential impact on patient flow are likely to be CT scans, plain radiography, urea and electrolytes, complete blood count, and C-reactive protein measurement. Of these, we note that the casemix adjusted odds of receiving a CT scan and C-reactive protein measurement have increased considerably since 2019/20.
 
-<br>
-
-::: panel-tabset
-## Graphic
-
 ```{r}
 #| label: fig-test-time
 #| fig-cap: "Estimated (net) time that 32 different ED tests add to an attendance, on average."
 #| echo: false
 #| message: false
 #| warning: false
-#| column: page
 #| fig-width: 10
 #| fig-asp: 0.618
 #| out-width: "85%"
@@ -725,76 +612,58 @@ left_join(
   facet_grid(invst_group ~ ., space = "free", scales = "free_y")
 ```
 
-## Table
-
 ```{r}
-#| label: tbl-test-time
-#| tbl-cap: "Estimated (net) time that 32 different ED tests add to an attendance, on average."
-#| echo: false
-#| message: false
-#| warning: false
-#| column: page
-#| width: 8
+#| include: false
+# #| label: tbl-test-time
+# #| tbl-cap: "Estimated (net) time that 32 different ED tests add to an attendance, on average."
+# #| echo: false
+# #| message: false
+# #| warning: false
+# #| column: page
+# #| width: 8
+# 
+# readRDS(here("data", "241204_df_preplot_duration.rds")) |>
+#    mutate(InvestigationDescription = str_remove(InvestigationDescription, " situation")) |>
+#     semi_join(df_odds_results, join_by(InvestigationDescription)) |>
+#   arrange(-estimate) |>
+#   left_join(
+#     # FROM R/count_total_sample_tests
+#     readRDS(here("data", "df_growth_counts.rds")), 
+#     join_by(term == test)
+#   ) |> 
+#   select(
+#     InvestigationDescription.x,
+#     estimate,
+#     lci,
+#     uci,
+#     n_tests_2023_24, 
+#     test_growth 
+#     ) |> 
+#   gt() |> 
+#   cols_label(
+#     InvestigationDescription.x = "Test name",
+#     n_tests_2023_24 = "Number of tests<br>(in sample) 23/24",
+#     test_growth = "Growth in # tests<br>19/20 to 23/24",
+#     estimate = "Minutes added<br>(net, on average)",
+#     .fn = md
+#   ) |> 
+#   fmt_auto() |>
+#    fmt_number(columns = c(n_tests_2023_24), n_sigfig = 4) |> 
+#   fmt_number(columns = c(estimate, lci, uci), decimals = 0) |>
+#   fmt_percent(columns = c(test_growth), decimals = 0) |>
+#   tab_options(
+#     data_row.padding = px(1),
+#     table.font.size = "small"
+#   ) |> 
+#       gtsave(here("figures", "table_04_a3.png"), expand = 10)
 
-readRDS(here("data", "241204_df_preplot_duration.rds")) |>
-   mutate(InvestigationDescription = str_remove(InvestigationDescription, " situation")) |>
-    semi_join(df_odds_results, join_by(InvestigationDescription)) |>
-  arrange(-estimate) |>
-  left_join(
-    # FROM R/count_total_sample_tests
-    readRDS(here("data", "df_growth_counts.rds")), 
-    join_by(term == test)
-  ) |> 
-  select(
-    InvestigationDescription.x,
-    estimate,
-    lci,
-    uci,
-    n_tests_2023_24, 
-    test_growth 
-    ) |> 
-  gt() |> 
-  cols_label(
-    InvestigationDescription.x = "Test name",
-    n_tests_2023_24 = "Number of tests<br>(in sample) 23/24",
-    test_growth = "Growth in # tests<br>19/20 to 23/24",
-    estimate = "Minutes added<br>(net, on average)",
-    .fn = md
-  ) |> 
-  fmt_auto() |>
-   fmt_number(columns = c(n_tests_2023_24), n_sigfig = 4) |> 
-  fmt_number(columns = c(estimate, lci, uci), decimals = 0) |>
-  fmt_percent(columns = c(test_growth), decimals = 0) |>
-  tab_options(
-    data_row.padding = px(1),
-    table.font.size = "small"
-  ) 
 ```
-:::
+
+![Estimated (net) time that 32 different ED tests add to an attendance, on average.](figures/table_04_a3.png)
 
 **A3.2**
 
 As the number of tests per attendance has increased, so has the number of patients who receive several tests. Here, we examine the relationship between the number of tests that a patient receives and their duration in the ED. We describe this relationship in 2019/20 and in 2023/24. Unlike A2 and A3.1, this analysis is not casemix-adjusted, since the methods that are usually employed to adjust for casemix are unlikely to be adequate in this context.
-
-::: {.callout-note collapse="true"}
-## A3.2: Method and Limitations (click to unhide)
-
-<br>**A3.2:** **Method**
-
-This analysis uses patient-level data from the 16 providers that passed our consistency and data quality criteria for A2-A4. (For further details of our sampling approach and data quality criteria see @sec-approach-sampling and @sec-appendix.)
-
-In terms of data preparation, we removed March from both 2019/20 and 2023/24, to avoid any bias to our results that may have arisen due to the onset of the pandemic in March 2020.
-
-We removed records with times that appeared to be poorly recorded. For example, there were attendances in which the arrival time was noted as occurring after the assessment time, and those in which the total time in the ED was recorded to be less than zero minutes. These data quality exclusions reduced our total sample of 3 million records by 2%.
-
-Our dependent variable was the average duration from a patient's assessment by a clinician to their departure from the ED. The distribution of this variable is heavily right-skewed, so we used the median time, rather than the mean time, to limit the impact of extreme values.
-
-**A3.2: Limitations**
-
-The findings in this section are based on a sample of 16 providers and are therefore subject to the same sampling-related limitations we identified in the Limitations section of A1.
-
-It is to be expected that more complex patients have more tests and so stay longer in the ED. Our results are not casemix-adjusted, and it is therefore possible that some of the effect we report might be attributable to patient casemix.
-:::
 
 **A3.2: Results**
 
@@ -804,17 +673,12 @@ However, the nature of this relationship has changed between 2019/20 and 2023/24
 
 Whilst this finding is clear in the data, it is not easy to explain. One potential line of enquiry would focus on the extent of asynchronous testing. The result might also be an emergent property of a system operating with reduced flow, which manifests as re-testing of patients whose care is delayed.
 
-Additional (exploratory) plots relating to this question can be found in @sec-appendix-three.
-
-<br>
-
 ```{r}
 #| label: fig-time-vs-tests
 #| fig-cap: "Median time in ED by number of tests."
 #| echo: false
 #| message: false
 #| warning: false
-#| column: page
 #| fig-width: 10
 #| fig-asp: 0.618
 #| fig-align: center
@@ -869,54 +733,23 @@ readRDS(here("data", "df_nested_preplots_multi_tests.rds"))$data[[5]] |>
 
 In this section, we explore how increased testing in EDs has influenced the rate of admissions to hospital beds. We do this by comparing the change in the casemix-adjusted *odds of a test* with the casemix-adjusted *odds of admission* *having received a test*. We examine these changes over the period from 2019/20 to 2023/24, for 32 test types.
 
-::: {.callout-note collapse="true"}
-## A4: Methods and Limitations
+The Methods and Limitations sections relating to A4 can be found in Appendix 2.
 
-<br>**A4: Method**
+**A4: Results**
 
-We used the SUS EC data set and identified 16 providers with provider codes that survived across the study period and that passed our data quality criteria for this question. For further details of our sampling approach and data quality criteria see @sec-approach-sampling and @sec-appendix.
-
-We used two types of model for this analysis. The first provided the casemix-adjusted odds of a test (for which methods and limitations can be found under A2) and the second produced the casemix-adjusted odds of *admission* *having received a test*. We provide details of the latter model here.
-
-In terms of data preparation, we removed March from both 2019/20 and 2023/24, to avoid any bias to our results that may have arisen due to the onset of the pandemic in March 2020.
-
-Approximately 4% of the 3 million records had missing values in a key field (our "key fields" are given in @sec-appendix). Our specified model type will not accept missing values, so we chose to delete the records with missing values in our key fields.
-
-We performed logistic regression by way of a generalised additive model (GAM) with mixed-effects. Our dependent variable was a binary indicator of whether a patient was admitted following the ED attendance. Our fixed effects included a separate binary variable (test conducted or not) for every one of the 48 tests recorded in the ECDS. Other fixed effects included month, weekday, and hour of arrival, and we included several variables to adjust for casemix (as far as this is possible), namely: *age* (as a spline-based smooth) interacting with *sex*; a re-engineered *chief complaint* variable interacting with *arrival mode*; *acuity*; and *referral source*.
-
-Our variables of interest were interactions between each binary test variable and the financial year variable.
-
-We treated the provider variable as a random effect. This allowed us to control for factors that vary, at random, across providers. Moreover, the values produced by this random effect can be thought of as sample values from a larger population of values. As the providers in our data set were, in fact, a sample of all providers, this approach suits our case well.
-
-We ran the model on a random sub-sample of 1 million attendance records.
-
-**A4: Limitations**
-
-The findings of this analysis are based on a sample of 16 providers. These findings are therefore subject to the same sampling-related limitations we identified in the Limitations section of A1.
-
-We have labelled our estimates as "casemix-adjusted", as we controlled for a range of variables that might indicate a patient's risk of admission. However, there will be variables influencing a patient's risk of admission that go unrecorded. Because we are unable to control for unrecorded variables, our casemix adjustment is only partial. It is therefore possible that some of the effect we see is due to this unobserved casemix effect.
-
-Finally, as noted in the A4 Methods section, above, we decided to delete approximately 2% of records from our sample that had missing values for any of the variables used in the model. We expect this decision to have a limited impact on our results. However, as it reduced our sample size, the standard errors around our model coefficients have marginally increased as a consequence. There is also the potential for some bias in our results if these missing data were not missing completely at random.
-:::
-
-@fig-adm-decision assigns tests to a quadrant, based on 2 values:
+In @fig-adm-decision-sans-sero and @fig-adm-decision, we assign tests to a quadrant, based on 2 values:
 
 -   the change in the casemix-adjusted odds of a test, and
 
 -   the change in the casemix-adjusted odds of admission having received a test.
 
-The graphic shows 19 (of the original 32) tests for which the calculated odds-ratios are statistically significant in both dimensions.
+These graphics show 19 (of the original 32) tests for which the calculated odds-ratios are statistically significant in both dimensions.
 
 Many of the tests - including most of the high-volume tests - fall into the bottom-right quadrant. This indicates that, after adjusting for casemix, patients were more likely to receive the test in 2023/24, but less likely to be admitted having received it. This is true for complete blood count; C-reactive protein measurement; hepatic function panel; and urea and electrolytes. 
 
-Given that this analysis is casemix-adjusted, we can safely exclude casemix as an explanation for this finding. Thus, another theory is that clinicians are extending the use of tests as a means of ruling out conditions that would warrant admission. Unfortunately, this analysis cannot shed light on the motivation for such a change in practice. It might be that ED clinicians are proactively lowering test thresholds in response to changes in medical guidelines and emerging research. It might also be that test thresholds have fallen as tests have become more available, more timely, and less expensive. A further explanation might be that this change is driven by changes in bed availability. That is to say that, whilst, in the past, some tests may have been carried out after admission to a hospital bed, it may *now* be that these tests are performed in the ED. Further work would be required to determine the underlying cause of changes in testing practice (see @sec-further-work).
+Given that this analysis is casemix-adjusted, we can safely exclude casemix as an explanation for this finding. Thus, another theory is that clinicians are extending the use of tests as a means of ruling out conditions that would warrant admission. Unfortunately, this analysis cannot shed light on the motivation for such a change in practice. It might be that ED clinicians are proactively lowering test thresholds in response to changes in medical guidelines and emerging research. It might also be that test thresholds have fallen as tests have become more available, more timely, and less expensive. A further explanation might be that this change is driven by changes in bed availability. That is to say that, whilst, in the past, some tests may have been carried out after admission to a hospital bed, it may *now* be that these tests are performed in the ED. Further work would be required to determine the underlying cause of changes in testing practice (see the Further Work section).
 
 Finally, there are two low-volume tests that appear to be outliers in this analysis: wound microscopy culture and sensitivities; and lipid panel. These appear in the top-right quadrant, but some way from the origin. Their position indicates that patients were much more likely to receive these tests in 2023/24, and much more likely to be admitted having received the test. However, given the use cases for these tests, it does not seem plausible that they are being used to identify patients who require admission. It is more likely that these tests are being performed on patients after it becomes clear that admission is required. Furthermore, this result is subject to high levels of statistical uncertainty because the number of these tests that were performed in the baseline year (2019/20) was low.
-
-<br>
-
-::: panel-tabset
-## Graphic (excl. serological tests)
 
 ```{r}
 #| label: fig-adm-decision-sans-sero
@@ -924,7 +757,6 @@ Finally, there are two low-volume tests that appear to be outliers in this analy
 #| echo: false
 #| message: false
 #| warning: false
-#| column: page
 #| fig-width: 10
 #| fig-asp: 0.618
 #| fig-align: center
@@ -997,15 +829,12 @@ df_odds_results |>
   )
 ```
 
-## Graphic (incl. serological tests)
-
 ```{r}
 #| label: fig-adm-decision
 #| fig-cap: "Casemix-adjusted odds ratio of test, and of admission having received the test, 2023/24 vs 2019/20. (Including serological tests)"
 #| echo: false
 #| message: false
 #| warning: false
-#| column: page
 #| fig-width: 10
 #| fig-asp: 0.618
 #| fig-align: center
@@ -1063,39 +892,41 @@ df_odds_results |>
   )
 ```
 
-## Table
-
 ```{r}
-#| label: tbl-adm-decisions
-#| tbl-cap: "Casemix-adjusted odds ratio of admission having received a test, 2023/24 vs 2019/20."
-#| echo: false
-#| message: false
-#| warning: false
-#| column: page
-#| width: 8
+#| include: false
+# #| label: tbl-adm-decisions
+# #| tbl-cap: "Casemix-adjusted odds ratio of admission having received a test, 2023/24 vs 2019/20."
+# #| echo: false
+# #| message: false
+# #| warning: false
+# #| column: page
+# #| width: 8
+# 
+# df_odds_results |>
+#   select(InvestigationDescription, odds, odds_adm, adm.p.value) |>
+#   gt() |>
+#   cols_label(
+#     InvestigationDescription = "Test name",
+#     odds = "Odds ratio of test<br>(casemix adj.)<br>2023/24 vs. 2019/20",
+#     odds_adm = "Odds ratio of admission<br>given test (casemix adj.)<br>2023/24 vs. 2019/20",
+#     adm.p.value = "OR admission<br>p value",
+#     .fn = md
+#   ) |>
+#   fmt_auto() |>
+#   fmt_number(columns = c(adm.p.value), decimals = 3) |>
+#   tab_options(
+#     data_row.padding = px(1),
+#     table.font.size = "small"
+#   ) |> 
+#     gtsave(here("figures", "table_05_a4.png"), expand = 10)
 
-df_odds_results |>
-  select(InvestigationDescription, odds, odds_adm, adm.p.value) |>
-  gt() |>
-  cols_label(
-    InvestigationDescription = "Test name",
-    odds = "Odds ratio of test<br>(casemix adj.)<br>2023/24 vs. 2019/20",
-    odds_adm = "Odds ratio of admission<br>given test (casemix adj.)<br>2023/24 vs. 2019/20",
-    adm.p.value = "OR admission<br>p value",
-    .fn = md
-  ) |>
-  fmt_auto() |>
-  fmt_number(columns = c(adm.p.value), decimals = 3) |>
-  tab_options(
-    data_row.padding = px(1),
-    table.font.size = "small"
-  )
 ```
-:::
+
+![Casemix-adjusted odds ratio of admission having received a test, 2023/24 vs 2019/20.](figures/table_05_a4.png)
 
 # Conclusion
 
-In this analysis, we investigated how rates of diagnostic testing in EDs have changed in recent years. We also explored how these changes have influenced both patient journeys through EDs and the likelihood of admission to hospital. The analysis highlights the complex interplay between test thresholds, admission thresholds, and the timeliness of care in EDs.  Given the constraints under which our health system operates, it may not be possible to optimise these three quantities simultaneously. Trade-off decisions are likely required, at least in the short term. In the second phase of this project, we plan to address the first of the *further research* questions listed below, which we hope will inform these challenging decisions.
+In this analysis, we investigated how rates of diagnostic testing in EDs have changed in recent years. We also explored how these changes have influenced both patient journeys through EDs and the likelihood of admission to hospital. The analysis highlights the complex interplay between test thresholds, admission thresholds, and the timeliness of care in EDs. Given the constraints under which our health system operates, it may not be possible to optimise these three quantities simultaneously. Trade-off decisions are likely required, at least in the short term. In the second phase of this project, we plan to address the first of the *further research* questions listed below, which we hope will inform these challenging decisions.
 
 # Further Research {#sec-further-work}
 
@@ -1103,7 +934,7 @@ We describe, below, four potential projects that might develop or confirm the st
 
 #### Are ED test thresholds falling in response to lack of bed availability or proactive changes in medical practice?
 
-Our provisional analysis indicates that the casemix-adjusted odds of receiving a test have increased in recent years. This effect is present for most, but not all tests. Furthermore, we find that the casemix-adjusted odds of admission having had a test, have reduced. These two changes may be causally related. Our theory is that by testing more, clinicians are able to rule out conditions that would otherwise involve admission. It is unclear, however, if clinical practice in EDs is leading this change, or if practice is responding to changes in the operational context, and in particular to the reduced availability of beds. One way to explore this issue would be to develop regression models to examine whether, and the extent to which, the odds of a patient receiving a test, varies with bed occupancy, having controlled for casemix, temporal, and provider effects. Rather than explore these effects for all tests, we suggest a focus on two or three common tests (e.g. CT scan, C-reactive protein, full blood count). Evidence of such an effect would indicate that increased testing may be, in part, driven by reduced bed availability.
+Our provisional analysis indicates that the casemix-adjusted odds of receiving a test have increased in recent years. This effect is present for most, but not all tests. Furthermore, we find that the casemix-adjusted odds of admission having had a test, have reduced. These two changes may be causally related. Our theory is that by testing more, clinicians are able to rule out conditions that would otherwise involve admission. It is unclear, however, if clinical practice in ED is leading this change, or if practice is responding to changes in the operational context, and in particular to the reduced availability of beds. One way to explore this issue would be to develop regression models to examine whether, and the extent to which, the odds of a patient receiving a test, varies with bed occupancy, having controlled for casemix, temporal, and provider effects. Rather than explore these effects for all tests, we suggest a focus on two or three common tests (e.g. CT scan, C-reactive protein, full blood count). Evidence of such an effect would indicate that increased testing may be, in part, driven by reduced bed availability.
 
 #### Is there any evidence that increased admission thresholds via ED have led to adverse patient outcomes?
 
@@ -1126,7 +957,7 @@ source(here("R", "representation_stats.R"))
 
 ```
 
-To increase the chances that our findings would be reliable and valid for a given question, we conducted each analysis on data from a sample of providers. We were able to identify two distinct samples that met our needs for the four questions. The first sample, of 28 providers, was used in Analysis 1 (to address Question 1). A second sample, of 16 providers, was used in the analyses relating to Questions 2 to 4.
+To increase the chances that our findings would be reliable and valid for a given question, we conducted each analysis on data from a sample of providers. We were able to identify two distinct samples that met our needs for the four questions. The first sample, of 28 providers, was used to address Question 1. A second sample, of 16 providers, was used in the analysis relating to Questions 2 to 4.
 
 ### Sample used for A1
 
@@ -1140,82 +971,85 @@ Providers were included in our sample if their data submissions met the quality 
 
 2.  For attendances in which multiple investigations of the same type have been carried out, providers have recorded each instance of the investigation (and have been consistent in this practice over the whole study period).
 
-We established that 28 providers met these criteria. The providers we selected for our sample are given in @tbl-sample-q1. In the adjacent tab, @tbl-representation suggests that this sample of 28 providers is widely representative of the population of providers. We note that the sample includes higher proportions of larger providers and providers in London, and lower proportions of smaller providers and providers in the East of England.
-
-::: panel-tabset
-## Provider sample for A1
+We established that 28 providers met these criteria. The providers we selected for our sample are given in Figure 15, whilst Figure 16 suggests that this sample of 28 providers is widely representative of the population of providers. We note that the sample includes higher proportions of larger providers and providers in London, and lower proportions of smaller providers and providers in the East of England.
 
 ```{r}
-#| label: tbl-sample-q1
-#| tbl-cap: "Provider sample used in Analysis 1"
-#| echo: false
-#| message: false
+#| include: false
+# #| label: tbl-sample-q1
+# #| tbl-cap: "Provider sample used in Analysis 1"
+# #| echo: false
+# #| message: false
+# 
+# table_providers_s1 |>
+#   gt() |>
+#   fmt_auto() |>
+#   tab_style(
+#     style = list(
+#       cell_text(weight = "bold")
+#     ),
+#     locations = cells_column_labels(c(Provider_Name, Provider_Code))
+#   ) |>
+#   tab_options(
+#     data_row.padding = px(1),
+#     table.font.size = "small"
+#   ) |> 
+#     gtsave(here("figures", "table_appendix_prov_s1.png"), expand = 10)
 
-table_providers_s1 |>
-  gt() |>
-  fmt_auto() |>
-  tab_style(
-    style = list(
-      cell_text(weight = "bold")
-    ),
-    locations = cells_column_labels(c(Provider_Name, Provider_Code))
-  ) |>
-  tab_options(
-    data_row.padding = px(1),
-    table.font.size = "small"
-  )
 ```
 
-## Sample representation statistics (A1)
+![Provider sample used in Analysis 1](figures/table_appendix_prov_s1.png)
 
 ```{r}
-#| label: tbl-representation
-#| tbl-cap: "Is the Sample Representative of the Wider Provider Population?"
-#| echo: false
-#| message: false
-
-
-table_representation_trends |>
-  gt() |>
-  opt_row_striping(row_striping = F) |>
-  fmt_auto() |>
-  tab_style(
-    style = list(
-      cell_text(transform = "capitalize", weight = "bold")
-    ),
-    # different location
-    locations = cells_column_labels(everything())
-  ) |>
-  fmt_percent(rows = c(2:25), decimals = 1) |>
-  tab_row_group(
-    label = "Patient demographics:",
-    rows =  str_detect(variable, "age|urban|depriv|region_")
-  ) |>
-  tab_row_group(
-    label = "Case-mix-related:",
-    rows =  str_detect(variable, "arrive_|admitted")
-  ) |>
-  tab_row_group(
-    label = "Provider-related (23/24):",
-    rows =  str_detect(variable, "att|also|4h|12h")
-  ) |>
-  tab_row_group(
-    label = "",
-    rows =  str_detect(variable, "n_prov")
-  ) |>
-  tab_style(
-    style = cell_text(weight = "bold"),
-    locations = cells_row_groups(groups = c(1, 2, 3, 4))
-  ) |>
-  sub_values(values = -71, replacement = "") |>
-  gt_highlight_cols(sample, fill = "grey", alpha = 0.1) |>
-  tab_options(
-    data_row.padding = px(1),
-    table.font.size = "small"
-  )
+#| include: false
+# #| label: tbl-representation
+# #| tbl-cap: "Is the Sample Representative of the Wider Provider Population?"
+# #| echo: false
+# #| message: false
+# 
+# 
+# table_representation_trends |>
+#   gt() |>
+#   opt_row_striping(row_striping = F) |>
+#   fmt_auto() |>
+#   tab_style(
+#     style = list(
+#       cell_text(transform = "capitalize", weight = "bold")
+#     ),
+#     # different location
+#     locations = cells_column_labels(everything())
+#   ) |>
+#   fmt_percent(rows = c(2:25), decimals = 1) |>
+#   tab_row_group(
+#     label = "Patient demographics:",
+#     rows =  str_detect(variable, "age|urban|depriv|region_")
+#   ) |>
+#   tab_row_group(
+#     label = "Case-mix-related:",
+#     rows =  str_detect(variable, "arrive_|admitted")
+#   ) |>
+#   tab_row_group(
+#     label = "Provider-related (23/24):",
+#     rows =  str_detect(variable, "att|also|4h|12h")
+#   ) |>
+#   tab_row_group(
+#     label = "",
+#     rows =  str_detect(variable, "n_prov")
+#   ) |>
+#   tab_style(
+#     style = cell_text(weight = "bold"),
+#     locations = cells_row_groups(groups = c(1, 2, 3, 4))
+#   ) |>
+#   sub_values(values = -71, replacement = "") |>
+#   gt_highlight_cols(sample, fill = "grey", alpha = 0.1) |>
+#   tab_options(
+#     data_row.padding = px(1),
+#     table.font.size = "small"
+#   ) |> 
+#       gtsave(here("figures", "table_appendix_rep_s1.png"), expand = 10)
 
 ```
-:::
+
+![Is Sample 1 Representative of the Wider Provider Population?](figures/table_appendix_rep_s1.png)
 
 ### Sample used for A2-A4
 
@@ -1223,80 +1057,83 @@ To carry out these analyses, we require only the EC data set, and only two years
 
 Providers were included in our sample if they had all three of *Der_EC_Investigation_All, chiefcompgrp,* and *acuity* complete for 90% of records. (Relaxing this requirement to 85% gave us only four more providers and no improvement in representation.) For A3, we also required that time-related variables were largely complete.
 
-We established that 16 providers met these criteria. The providers we intend to use for our sample are given in @tbl-sample-q2-6. In the adjacent tab, @tbl-representation-q2-6 suggests that this sample of 16 providers is generally representative of the population of providers. We note that the sample includes higher proportions of larger providers and providers in the Midlands. One of the seven regions, the East of England, is not represented.
-
-::: panel-tabset
-## Provider Sample for A2-A4
+We established that 16 providers met these criteria. The providers we intend to use for our sample are given in Figure 17, whilst Figure 18 suggests that this sample of 16 providers is generally representative of the population of providers. We note that the sample includes higher proportions of larger providers and providers in the Midlands. One of the seven regions, the East of England, is not represented.
 
 ```{r}
-#| label: tbl-sample-q2-6
-#| tbl-cap: "Provider sample used for Analyses 2-4"
-#| echo: false
-#| message: false
+#| include: false
+# #| label: tbl-sample-q2-6
+# #| tbl-cap: "Provider sample used for Analyses 2-4"
+# #| echo: false
+# #| message: false
+# 
+# table_providers_s2 |>
+#   gt() |>
+#   fmt_auto() |>
+#   tab_style(
+#     style = list(
+#       cell_text(weight = "bold")
+#     ),
+#     locations = cells_column_labels(c(Provider_Name, Provider_Code))
+#   ) |>
+#   tab_options(
+#     data_row.padding = px(1),
+#     table.font.size = "small"
+#   ) |> 
+#         gtsave(here("figures", "table_appendix_prov_s2.png"), expand = 10)
 
-table_providers_s2 |>
-  gt() |>
-  fmt_auto() |>
-  tab_style(
-    style = list(
-      cell_text(weight = "bold")
-    ),
-    locations = cells_column_labels(c(Provider_Name, Provider_Code))
-  ) |>
-  tab_options(
-    data_row.padding = px(1),
-    table.font.size = "small"
-  )
 ```
 
-## Sample representation statistics (A2-A4)
+!["Provider sample used for Analyses 2-4"](figures/table_appendix_prov_s2.png)
 
 ```{r}
-#| label: tbl-representation-q2-6
-#| tbl-cap: "Is the Sample Representative of the Wider Provider Population?"
-#| echo: false
-#| message: false
-
-table_representation_ecds_only |> 
-  gt() |> 
-  opt_row_striping(row_striping = F) |> 
-  fmt_auto() |> 
-  tab_style(
-    style = list(
-      cell_text(transform = "capitalize", weight = "bold")
-    ),
-    # different location
-    locations = cells_column_labels(everything())
-  ) |> 
-  fmt_percent(rows = c(2:26), decimals = 1) |>
-  tab_row_group(
-    label = "Patient demographics:",
-    rows =  str_detect(variable, "age|urban|depriv|region_")
-  ) |> 
-  tab_row_group(
-    label = "Case-mix-related:",
-    rows =  str_detect(variable, "arrive_|admitted")
-  ) |> 
-  tab_row_group(
-    label = "Provider-related (23/24):",
-    rows =  str_detect(variable, "att|also|4h|12h")
-  ) |> 
-  tab_row_group(
-    label = "",
-    rows =  str_detect(variable, "n_prov|23")
-  ) |>
-  tab_style(
-    style = cell_text(weight = "bold"),
-    locations = cells_row_groups(groups = c(1, 2, 3, 4))
-  ) |> 
-  sub_values(values = -86, replacement = "") |> 
-  gt_highlight_cols(sample, fill = "grey", alpha = 0.1) |> 
-  tab_options(
-    data_row.padding = px(1),
-    table.font.size = "small"
-  )
+#| include: false
+# #| label: tbl-representation-q2-6
+# #| tbl-cap: "Is the Sample Representative of the Wider Provider Population?"
+# #| echo: false
+# #| message: false
+# 
+# table_representation_ecds_only |> 
+#   gt() |> 
+#   opt_row_striping(row_striping = F) |> 
+#   fmt_auto() |> 
+#   tab_style(
+#     style = list(
+#       cell_text(transform = "capitalize", weight = "bold")
+#     ),
+#     # different location
+#     locations = cells_column_labels(everything())
+#   ) |> 
+#   fmt_percent(rows = c(2:26), decimals = 1) |>
+#   tab_row_group(
+#     label = "Patient demographics:",
+#     rows =  str_detect(variable, "age|urban|depriv|region_")
+#   ) |> 
+#   tab_row_group(
+#     label = "Case-mix-related:",
+#     rows =  str_detect(variable, "arrive_|admitted")
+#   ) |> 
+#   tab_row_group(
+#     label = "Provider-related (23/24):",
+#     rows =  str_detect(variable, "att|also|4h|12h")
+#   ) |> 
+#   tab_row_group(
+#     label = "",
+#     rows =  str_detect(variable, "n_prov|23")
+#   ) |>
+#   tab_style(
+#     style = cell_text(weight = "bold"),
+#     locations = cells_row_groups(groups = c(1, 2, 3, 4))
+#   ) |> 
+#   sub_values(values = -86, replacement = "") |> 
+#   gt_highlight_cols(sample, fill = "grey", alpha = 0.1) |> 
+#   tab_options(
+#     data_row.padding = px(1),
+#     table.font.size = "small"
+#   ) |> 
+#   gtsave(here("figures", "table_appendix_rep_s2.png"), expand = 10)
 ```
-:::
+
+![Is Sample 2 Representative of the Wider Provider Population?](figures/table_appendix_rep_s2.png)
 
 Three of the providers in Sample 2 have undergone organisational change during our study period, leading to a substantial increase in the number of recorded attendances. This artefactual growth is controlled for in our analysis, but the reader should bear this in mind when interpreting the results, and in particular, those relating to the decomposition of test growth.
 
@@ -1308,13 +1145,127 @@ Three of the providers in Sample 2 have undergone organisational change during o
 
 # Appendix 2 {#sec-appendix-two}
 
+Here we provide detailed methods for the analyses A1-A4. We also note limitations of these analyses.
+
+**A1: Method**
+
+To be precise, we estimated how the *average* number of tests per ED attendance has changed over time. As this analysis covers a period of 12 years - starting with the financial year 2012/13 and concluding with 2023/24 - we had to employ both A&E and EC data sets.
+
+We identified 28 providers with provider codes that survived across the 12 year study period and that passed our data quality criteria. See Appendix 1.
+
+The numerator for our testing rate in a given year was the total number of tests performed across our provider sample. Where a patient received multiple tests of the same type, we counted these as multiple tests. The denominator for our testing rate in a given year was the total number of ED attendances across our provider sample that matched the criteria given in the Analytical Approach section.
+
+**A1: Limitations**
+
+Our aim in these analyses is to make general statements about diagnostic testing in EDs. However, due to concerns about data quality, we employed data sampling. Our results come from 28 of 99 providers whose provider codes remained unchanged over the 12-year period. As the 28 providers were chosen on the basis of their data quality, this constitutes a non-random sample of providers. Study conclusions drawn from non-random samples are at higher risk of bias. As noted in the Analytical Approach section, we attempted to mitigate the risk of bias by confirming that the sample was generally representative of the population of providers in various dimensions. It is, however, possible that we unknowingly omitted important dimensions of representation for this particular question, and that our findings are less generalisable than we suggest.
+
+There are two additional points worth noting. Firstly, in order to complete this analysis, we were obliged to unite A&E and EC data sets, each of which has a slightly different structure. We used the A&E data set for financial years between 2012/13 and 2018/19 and the EC data set between 2019/20 and 2023/24. Whilst we attempted to ensure consistency across data sets, it may be that there are some differences in the definition of variables between the data sets.
+
+A second important point is that we included only those providers who appeared to record multiple instances of a given investigation (and who appeared to have been consistent in this practice over the whole study period). It is, however, possible that these providers were internally inconsistent in their recording practices over the period, or that in some cases, the recording of multiple tests of the same type represented an error.
+
+**A2: Method**
+
+We used the SUS EC data set and identified 16 providers with provider codes that survived across the study period and that passed our data quality criteria for this question. For further details of our sampling approach and data quality criteria see the Analytical Approach section and Appendix 1.
+
+We built 32 distinct models to predict casemix-adjusted odds ratios (as specified above) for 32 (of 49) test types that appear in the EC data set. These 32 tests account for over 99% of all tests recorded in EDs.
+
+In terms of data preparation, we removed March from both 2019/20 and 2023/24, to avoid any bias in our results that may have arisen due to the onset of the pandemic in March 2020.
+
+Approximately 4% of the 3 million records had missing values in a key field (our "key fields" are given in Appendix 1). The specified model type will not accept missing values, so we chose to delete the records with missing values in our key fields.
+
+We performed logistic regressions using generalised additive models (GAMs) with mixed-effects. All 32 models were specified in the same way, with the only difference being the binary dependent variable (whether the given test was carried out). Our fixed effects included the variable of interest, financial year, and several time-related variables to control for season, weekday, and time of arrival. We included variables to adjust for casemix (as far as possible), namely: *age* (as a spline-based smooth) interacting with *sex*; a re-engineered *chief complaint* variable; *acuity*; *arrival mode*; and *referral source*.
+
+(It is important to note that the *chief complaint* and *acuity* variables are recorded as part of an initial assessement ([NHSE, 2022](https://www.england.nhs.uk/guidance-for-emergency-departments-initial-assessment/#:~:text=chief%20complaint%20or%20suspected%20diagnosis,initially%20assessed%20by%20a%20clinician)). They are therefore akin to presentation codes. Whilst the diagnosis codes may give greater detail about a patient's condition (and better allow us to control for casemix), diagnosis is often a causal consequence of testing and it would therefore be inappropriate to use diagnosis-related information to predict whether a patient receives a given test.)
+
+We treated the provider variable as a random effect. This allowed us to control for factors that vary, at random, across providers. Moreover, the values produced by this random effect can be thought of as sample values from a larger population of values. As the providers in our data set were, in fact, a sample of all providers, this approach suits our case well.
+
+We ran each model on the same random sub-sample of 1 million attendance records.
+
+**A2: Limitations**
+
+The findings of this analysis are based on a sample of 16 providers (of 102 providers whose provider codes remained unchanged over the study period). These findings are therefore subject to the same sampling-related limitations we identified in the Limitations section of A1.
+
+We have labelled our estimates as "casemix-adjusted" as we controlled for a range of variables that might indicate a patient's need for a test. However, a clinician will order a test based on an array of factors and only some of these will be recorded in data sets. Therefore, as we are unable to control for unrecorded variables, part of the effect we measure may be due to unobserved case mix factors.
+
+Finally, as noted in the Methods section above, we decided to delete approximately 4% of records from our sample that had missing values for any of the variables used in the model. We expect this decision to have a limited impact on our results. However, as it reduced our sample size, the standard errors around our model coefficients have marginally increased as a consequence. There is also the potential for some bias in our results if these missing data were not missing completely at random.
+
+**A3.1:** **Method**
+
+This analysis again uses patient-level data from the 16 providers that passed our consistency and data quality criteria for A2-A4. (For further details of our sampling approach and data quality criteria see the Analytical Approach section and Appendix 1) We use only records from the 2023/24 financial year for this analysis.
+
+As in Analysis 2, we deleted records that had missing values in a key field (our "key fields" are given in Appendix 1). We also removed records with times that appeared to be poorly recorded. For example, there were attendances in which the arrival time was noted as occurring after the assessment time, and those in which the total time in the ED was recorded to be less than zero minutes. We also limited this analysis to attendances where the patient is recorded to have stayed in the ED for less than 30 hours. And we removed a low number of records in which the patient appeared to receive one (or more) test and then left the ED within 15 minutes. All these exclusions reduced our total sample of 1.8 million records by 6.7%.
+
+We chose our dependent variable to be the duration from a patient's assessment by a clinician to their departure from the ED. The distribution of this variable is heavily right-skewed, and the presence of such a skew in the dependent variable is often cited as a reason to avoid the linear regression model. Specifically, given this distribution, we cannot expect residuals to be normally distributed or display constant variance (which are two key assumptions of the linear model). Thus, typical methods to calculate standard errors and confidence intervals will be biased (though point estimates from such a model remain unbiased).
+
+If, however, we choose popular alternatives to linear regression in this scenario, we are likely to end up with less interpretable, less useful results. Our solution, here, was to employ an approach often used in the field of Econometrics. We implemented a linear regression model but used a heteroscedasticity-consistent (HC) estimator to obtain the covariance of the model parameters, and obtain robust estimates of standard errors and confidence intervals. We chose the estimator recommended by Long and Ervin ([2000](https://www.tandfonline.com/doi/abs/10.1080/00031305.2000.10474549)), known as HC3.
+
+We employed a generalised additive model (GAM) with mixed-effects. We included a separate variable for 42 of the 48 tests recorded in the ECDS (we excluded 6 very low frequency tests). Unlike A2, where the test variable was binary (test conducted or not), these variables measured the number of times a patient received a test. Other fixed effects included month, weekday, and hour of arrival, and we included several variables to adjust for casemix (as far as this is possible), namely: *age* (as a spline-based smooth) interacting with *sex*; a re-engineered *chief complaint* variable; *acuity*; *arrival mode*; and *referral source*.
+
+(It is important to note that the *chief complaint* and *acuity* variables are recorded as part of an initial assessement ([NHSE, 2022](https://www.england.nhs.uk/guidance-for-emergency-departments-initial-assessment/#:~:text=chief%20complaint%20or%20suspected%20diagnosis,initially%20assessed%20by%20a%20clinician)). They are therefore akin to presentation codes. Whilst diagnosis codes may give us greater detail about a patient's condition (and better allow us to control for casemix), diagnosis is often a causal consequence of testing. If we were to include both tests and diagnoses in our model, we may fail to isolate the influence of tests on the time a patient spends in the ED.)
+
+We treated the provider variable as a random effect. This allowed us to control for factors that vary, at random, across providers. Moreover, the values produced by this random effect can be thought of as sample values from a larger population of values. As the providers in our data set were, in fact, a sample of all providers, this approach suits our case well.
+
+We ran the model on a random sub-sample of 1 million attendance records.
+
+**A3.1: Limitations**
+
+The findings of this analysis are based on a sample of 16 providers. These findings are therefore subject to the same sampling-related limitations we identified in the Limitations section of A1. Of relevance to A3, are the representation statistics in Appendix 1 that indicate that the performance of providers in Sample 2 (in terms of 4-hour and 12-hour waits) is somewhat lower than that of the population of providers. This may have a bearing on the sizes of the effects that we report.
+
+We have labelled our estimates as "casemix-adjusted", as we controlled for a range of variables that might indicate the time a patient spends in the ED. However, we are unable to control for casemix factors that influence decisions (and time spent) in the ED, but go unrecorded. It is therefore possible that part of the effect we measure is due to unobserved casemix factors.
+
+For reasons related to model interpretabilty, we specified a linear relationship between the number of times a test is conducted and the time a patient spends in an ED. In reality, the relationship is likely to be non-linear. That said, in most cases, a patient will receive only one test of a particular type. We therefore decided that the disadvantages of a linear assumption were modest and the advantages (over a non-linear assumption), clear.
+
+Our results estimate the time impact of a single additional test on a patient's stay in the ED. We acknowledge that many patients receive several tests, of different types or the same type. With regression models, we have the ability to specify interactions between test terms (to account for the effect of one test, given the provision of another). However, this approach is impractical here, based both on the number of interaction terms we would produce and on our desire for interpretability.
+
+Finally, as noted in the Methods section of A3.1, above, we removed approximately 7% of records from our sample due to poor data quality. We expect this decision to have a limited impact on our results. However, as it reduced our sample size, the standard errors around our model coefficients will have increased as a consequence. There is also the potential for some bias in our results if these missing data were not missing completely at random.
+
+**A3.2:** **Method**
+
+This analysis uses patient-level data from the 16 providers that passed our consistency and data quality criteria for A2-A4. (For further details of our sampling approach and data quality criteria see the Analytical Approach section and Appendix 1.)
+
+In terms of data preparation, we removed March from both 2019/20 and 2023/24, to avoid any bias to our results that may have arisen due to the onset of the pandemic in March 2020.
+
+We removed records with times that appeared to be poorly recorded. For example, there were attendances in which the arrival time was noted as occurring after the assessment time, and those in which the total time in the ED was recorded to be less than zero minutes. These data quality exclusions reduced our total sample of 3 million records by 2%.
+
+Our dependent variable was the average duration from a patient's assessment by a clinician to their departure from the ED. The distribution of this variable is heavily right-skewed, so we used the median time, rather than the mean time, to limit the impact of extreme values.
+
+**A3.2: Limitations**
+
+The findings in this section are based on a sample of 16 providers and are therefore subject to the same sampling-related limitations we identified in the Limitations section of A1.
+
+It is to be expected that more complex patients have more tests and so stay longer in the ED. Our results are not casemix-adjusted, and it is therefore possible that some of the effect we report might be attributable to patient casemix.
+
+**A4: Method**
+
+We used the SUS EC data set and identified 16 providers with provider codes that survived across the study period and that passed our data quality criteria for this question. For further details of our sampling approach and data quality criteria see the Analytical Approach section and Appendix 1.
+
+We used two types of model for this analysis. The first provided the casemix-adjusted odds of a test (for which methods and limitations can be found under A2) and the second produced the casemix-adjusted odds of *admission* *having received a test*. We provide details of the latter model here.
+
+In terms of data preparation, we removed March from both 2019/20 and 2023/24, to avoid any bias to our results that may have arisen due to the onset of the pandemic in March 2020.
+
+Approximately 4% of the 3 million records had missing values in a key field (our "key fields" are given in Appendix 1). Our specified model type will not accept missing values, so we chose to delete the records with missing values in our key fields.
+
+We performed logistic regression by way of a generalised additive model (GAM) with mixed-effects. Our dependent variable was a binary indicator of whether a patient was admitted following the ED attendance. Our fixed effects included a separate binary variable (test conducted or not) for every one of the 48 tests recorded in the ECDS. Other fixed effects included month, weekday, and hour of arrival, and we included several variables to adjust for casemix (as far as this is possible), namely: *age* (as a spline-based smooth) interacting with *sex*; a re-engineered *chief complaint* variable interacting with *arrival mode*; *acuity*; and *referral source*.
+
+Our variables of interest were interactions between each binary test variable and the financial year variable.
+
+We treated the provider variable as a random effect. This allowed us to control for factors that vary, at random, across providers. Moreover, the values produced by this random effect can be thought of as sample values from a larger population of values. As the providers in our data set were, in fact, a sample of all providers, this approach suits our case well.
+
+We ran the model on a random sub-sample of 1 million attendance records.
+
+**A4: Limitations**
+
+The findings of this analysis are based on a sample of 16 providers. These findings are therefore subject to the same sampling-related limitations we identified in the Limitations section of A1.
+
+We have labelled our estimates as "casemix-adjusted", as we controlled for a range of variables that might indicate a patient's risk of admission. However, there will be variables influencing a patient's risk of admission that go unrecorded. Because we are unable to control for unrecorded variables, our casemix adjustment is only partial. It is therefore possible that some of the effect we see is due to this unobserved casemix effect.
+
+Finally, as noted in the A4 Methods section, above, we decided to delete approximately 2% of records from our sample that had missing values for any of the variables used in the model. We expect this decision to have a limited impact on our results. However, as it reduced our sample size, the standard errors around our model coefficients have marginally increased as a consequence. There is also the potential for some bias in our results if these missing data were not missing completely at random.
+
+# Appendix 3 {#sec-appendix-three}
+
 ## What is driving test growth in EDs?
 
 In this supplementary analysis, we seek to decompose the growth in ED tests between 2019/20 to 2023/24 into to three main effects:
-
-::: column-margin
-Strictly speaking, we examined growth in ED attendances with at least one test, rather than growth in ED tests. The effect of this difference on interpretation of the results is discussed in the Limitations section below.
-:::
 
 -   Growth in activity: the number of patients presenting at ED
 
@@ -1322,18 +1273,19 @@ Strictly speaking, we examined growth in ED attendances with at least one test, 
 
 -   Changes in practice: the ways in which ED respond to patients who present
 
+::: {.callout-note appearance="minimal"}
+Strictly speaking, we examined growth in ED attendances with at least one test, rather than growth in ED tests. The effect of this difference on interpretation of the results is discussed in the Limitations section below.
+:::
+
 Because these changes occur simultaneously, they interact in complex ways to influence the number of tests delivered. We separate out this interaction or compounding effect as a separate quantity. This, often modest, residual effect can be thought of as the difference between the total observed change, and the sum of the three individual effects. 
 
-Note that this analysis is carried out on our provider sample and after excluding certain attendances (see @sec-approach).
+Note that this analysis is carried out on Sample 2 and after excluding certain attendances (see the Analytical Approach section).
 
 We present results for 32 tests. As noted, these 32 tests account for over 99% of all tests recorded in EDs.
 
-::: {.callout-note collapse="true"}
-# Method and Limitations (click to unhide)
+**Method**
 
-<br>**Method**
-
-Once again, this analysis relies on the ECDS and the 16 providers with provider codes that both survived across the study period and passed our data quality criteria for this question. For further details of our sampling approach and data quality criteria see @sec-approach-sampling and @sec-appendix.
+This analysis relies on the ECDS and the 16 providers in Sample 2 with provider codes that both survived across the study period and passed our data quality criteria for this question. For further details of our sampling approach and data quality criteria see the Analytical Approach section and Appendix 1.
 
 For each of the 32 tests covered in A2, we set out to find the percentage growth in *attendances with one or more of the specified test* ($T$), as a function of the growth due to: increased activity ($A$), changes in casemix ($C$), and changes driven by all other factors ($P$). (We expect $P$ to be dominated by the influence of clinical practice, but it may also contain other factors, such as the availability of resources.)
 
@@ -1404,7 +1356,6 @@ Since we would be relying on the models from A2 (which had a binary outcome), we
 | Blood coagulation panel | 26% | 4% |
 
 In these cases, there will be some discrepancy in the two growth rates.
-:::
 
 **Results**
 
@@ -1452,16 +1403,12 @@ df_preplot_growth_components <- df_odds_results |>
 
 ```
 
-::: panel-tabset
-## Percentage changes
-
 ```{r}
 #| label: fig-attrib-perc
 #| fig-cap: "Growth in attendances with 1+ test (19/20 to 23/24), decomposed by factor."
 #| echo: false
 #| message: false
 #| warning: false
-#| column: page
 #| fig-width: 12
 #| fig-height: 12
 
@@ -1515,15 +1462,12 @@ df_preplot_growth_components |>
   facet_grid(invst_group ~ component, space = "free", scales = "free_y")
 ```
 
-## Absolute changes
-
 ```{r}
 #| label: fig-attrib-abs
 #| fig-cap: "Growth in attendances with 1+ test (19/20 to 23/24), decomposed by factor."
 #| echo: false
 #| message: false
 #| warning: false
-#| column: page
 #| fig-width: 12
 #| fig-height: 12
 
@@ -1566,325 +1510,44 @@ df_preplot_growth_components |>
 
 ```
 
-## Table
-
 ```{r}
-#| label: tbl-attrib-abs
-#| echo: false
-#| message: false
-#| warning: false
-#| column: page
-
-
-df_odds_results |> 
-  select(InvestigationDescription, invst_group, tests_2019_20, tests_2023_24, dT, dD, dC, dP, dI) |> 
-  arrange(invst_group) |> 
-   gt() |>
-  cols_label(
-    InvestigationDescription = "Test type",
-    invst_group = "Test category",
-    # att_2023_24 = "Attendances in sample<br>2023/24",
-    tests_2019_20 = "Attendances with test<br>in 2019/20<br>(in sub-sample)",
-    tests_2023_24 = "Attendances with test<br>in 2023/24<br>(in sub-sample)",
-    dT = "Growth in attendances<br>with test<br>19/20 to 23/24",
-    dD = "Growth due<br>activity",
-    dC = "Growth due<br>casemix",
-    dP = "Growth due<br>practice",
-    dI = "Growth due<br>interactions",
-    .fn = md
-  ) |>
-  fmt_auto() |>
-  fmt_number(columns = c(tests_2019_20, tests_2023_24), n_sigfig = 4) |> 
-  # fmt_number(columns = c(rate), decimals = 2) |> 
-  fmt_percent(columns = c(dT, dP, dC, dI), decimals = 1) |>
-  fmt_percent(columns = c(dD), decimals = 0) |>
-  tab_options(
-    data_row.padding = px(1),
-    table.font.size = "small"
-  ) 
-
-```
-:::
-
-# Appendix 3 {#sec-appendix-three}
-
-Exploratory graphics supporting A3.
-
-::: {.callout-note appearance="minimal" icon="false"}
-## Tests per attendance
-
-```{r}
-#| label: fig-tests-per-attd
-#| echo: false
-#| message: false
-#| warning: false
-#| fig-align: center
-#| column: page
-#| fig-width: 8
-#| fig-asp: 0.618
-#| out-width: "90%"
-
-readRDS(here("data", "df_nested_preplots_multi_tests.rds"))$data[[1]] |>
-  ggplot() +
-  theme_bw() +
-  # theme_minimal() +
-  geom_vline(aes(xintercept = mean_tests, colour = fyear), linetype = "dashed") +
-  geom_line(aes(x = n_tests_all, y = p_patients, colour = fyear)) +
-  geom_point(aes(x = n_tests_all, y = p_patients, colour = fyear)) +
-  scale_y_continuous(
-    name = "Proportion of attendances",
-    label = label_percent(accuracy = 1)
-  ) +
-  scale_x_continuous(name = "Number of tests") +
-  labs(
-    # title = "Number of tests per attendance",
-    # subtitle = "Selected providers | Apr19-Feb20 & Apr23-Feb24",
-    caption = "Selected providers | Apr19-Feb20 & Apr23-Feb24\nDashed lines indicate mean number of tests"
-  )
-```
-
-## Tests per attendance (grouped)
-
-```{r}
-#| label: fig-grpd-tests-per-attd
-#| echo: false
-#| message: false
-#| warning: false
-#| fig-align: center
-#| column: page
-#| fig-width: 8
-#| fig-asp: 0.618
-#| out-width: "90%"
-
-readRDS(here("data", "df_nested_preplots_multi_tests.rds"))$data[[2]] |>
-  ggplot() +
-  geom_col(
-    aes(fyear, p_patients_adj, fill = n_tests_all_grp),
-    position = position_stack()
-  ) +
-  geom_hline(aes(yintercept = 0), colour = "grey20", lty = "dashed") +
-  geom_text(aes(x = fyear, y = p_patients_adj, group = n_tests_all_grp, label = p_patients_label),
-    position = position_stack(vjust = 0.5)
-  ) +
-  # scale_fill_manual(values = c("red", "orange", "yellow", "grey")) +
-  # scale_colour_manual(values = c("red", "orange", "yellow", "grey")) +
-  scale_y_continuous(
-    name = "Proportion of attendances",
-    label = label_percent(accuracy = 1)
-  ) +
-  scale_x_discrete(name = "Financial year") +
-  theme_minimal() +
-  theme(
-    legend.title = element_blank(),
-    panel.grid = element_blank(),
-    axis.text.y = element_blank()
-  ) +
-  labs(
-    # title = "Number of tests per attendance",
-    # subtitle = "Selected providers | Apr19-Feb20 & Apr23-Feb24", 
-    caption = "Selected providers | Apr19-Feb20 & Apr23-Feb24"
-  )
-```
-:::
-
-```{r}
+#| include: false
+# #| label: tbl-attrib-abs
+# #| echo: false
+# #| message: false
+# #| warning: false
+# #| column: page
+# 
+# 
+# df_odds_results |> 
+#   select(InvestigationDescription, invst_group, tests_2019_20, tests_2023_24, dT, dD, dC, dP, dI) |> 
+#   arrange(invst_group) |> 
+#    gt() |>
+#   cols_label(
+#     InvestigationDescription = "Test type",
+#     invst_group = "Test category",
+#     # att_2023_24 = "Attendances in sample<br>2023/24",
+#     tests_2019_20 = "Attendances with test<br>in 2019/20<br>(in sub-sample)",
+#     tests_2023_24 = "Attendances with test<br>in 2023/24<br>(in sub-sample)",
+#     dT = "Growth in attendances<br>with test<br>19/20 to 23/24",
+#     dD = "Growth due<br>activity",
+#     dC = "Growth due<br>casemix",
+#     dP = "Growth due<br>practice",
+#     dI = "Growth due<br>interactions",
+#     .fn = md
+#   ) |>
+#   fmt_auto() |>
+#   fmt_number(columns = c(tests_2019_20, tests_2023_24), n_sigfig = 4) |> 
+#   # fmt_number(columns = c(rate), decimals = 2) |> 
+#   fmt_percent(columns = c(dT, dP, dC, dI), decimals = 1) |>
+#   fmt_percent(columns = c(dD), decimals = 0) |>
+#   tab_options(
+#     data_row.padding = px(1),
+#     table.font.size = "small"
+#   ) |> 
+#    gtsave(here("figures", "table_app_a5.png"), expand = 10)
+#   
 
 ```
 
-::: {.callout-note collapse="true" appearance="minimal" icon="false"}
-```{r}
-#| label: fig-grpd-tests-per-attd-disp
-#| echo: false
-#| message: false
-#| warning: false
-#| fig-align: center
-#| column: page
-#| fig-width: 8
-#| fig-asp: 0.618
-#| out-width: "90%"
-
-readRDS(here("data", "df_nested_preplots_multi_tests.rds"))$data[[3]] |>
-  ggplot() +
-  geom_col(aes(x = fyear, y = p_patients_adj, fill = n_tests_all_grp),
-    position = position_stack()
-  ) +
-  geom_hline(aes(yintercept = 0), colour = "grey20", lty = "dashed") +
-  geom_text(
-    aes(x = fyear, y = p_patients_adj, group = n_tests_all_grp, label = p_patients_label),
-    position = position_stack(vjust = 0.5),
-    size = 2
-  ) +
-  facet_grid(cols = vars(is_admitted), rows = vars(inj_illness)) +
-  scale_fill_manual(values = c("red", "orange", "yellow", "grey")) +
-  scale_y_continuous(
-    name = "Proportion of attendances",
-    label = label_percent(accuracy = 1)
-  ) +
-  scale_x_discrete(name = "Financial year") +
-  theme(legend.title = element_blank()) +
-  theme_minimal() +
-  theme(
-    legend.title = element_blank(),
-    panel.grid = element_blank(),
-    axis.text.y = element_blank(),
-    axis.ticks = element_blank()
-  ) +
-  labs(
-    title = "Number of tests per patient by disposal and presentation type",
-    subtitle = "Selected providers | Apr19-Feb20 & Apr23-Feb24"
-  )
-```
-
-```{r}
-#| label: fig-grpd-tests-per-attd-type
-#| echo: false
-#| message: false
-#| warning: false
-#| fig-align: center
-#| column: page
-#| fig-width: 8
-#| fig-asp: 0.618
-#| out-width: "90%"
-
-readRDS(here("data", "df_nested_preplots_multi_tests.rds"))$data[[4]] |>
-  ggplot() +
-  geom_col(aes(x = fyear, y = p_patients_adj, fill = n_tests_grp),
-    position = position_stack()
-  ) +
-  geom_hline(aes(yintercept = 0), colour = "grey20", lty = "dashed") +
-  geom_text(aes(x = fyear, y = p_patients_adj, group = n_tests_grp, label = p_patients_label),
-    position = position_stack(vjust = 0.5)
-  ) +
-  facet_wrap(vars(test_type)) +
-  scale_fill_manual(values = c("orange", "yellow", "grey")) +
-  scale_y_continuous(
-    name = "Proportion of attendances",
-    # label = label_percent(accuracy = 1),
-    breaks = c(-0.5, -0.25, 0, 0.25, 0.5),
-    labels = c("50%", "25%", "0%", "25%", "50%")
-  ) +
-  scale_x_discrete(name = "Financial year") +
-  theme_bw() +
-  theme(
-    legend.title = element_blank(),
-    panel.grid = element_blank(),
-    axis.text.y = element_blank(),
-    axis.ticks = element_blank()
-  ) +
-  labs(
-    title = "Number of tests per patient by test type",
-    subtitle = "Selected providers | Apr19-Feb20 & Apr23-Feb24"
-  )
-
-```
-
-```{r}
-#| label: fig-time-vs-tests-grp-disp
-#| echo: false
-#| message: false
-#| warning: false
-#| fig-align: center
-#| column: page
-#| fig-width: 8
-#| fig-asp: 0.618
-#| out-width: "90%"
-
-readRDS(here("data", "df_nested_preplots_multi_tests.rds"))$data[[6]] |>
-  ggplot() +
-  # theme_minimal()+
-  theme_bw() +
-  theme(
-    axis.ticks = element_blank(),
-    panel.grid.minor.x = element_blank()
-  ) +
-  geom_line(aes(
-    x = n_tests_trunc,
-    y = median_dur_assess_depart,
-    colour = fyear
-  )) +
-  geom_point(aes(
-    x = n_tests_trunc,
-    y = median_dur_assess_depart,
-    colour = fyear,
-    size = n_patients
-  )) +
-  facet_grid(
-    cols = vars(is_admitted),
-    rows = vars(inj_illness)
-  ) +
-  scale_y_continuous(
-    name = "Median time in ED (assessment to departure)",
-    limits = c(0, NA_real_)
-  ) +
-  scale_x_continuous(
-    name = "Number of tests",
-    limits = c(0, 12),
-    breaks = (0:12),
-    labels = c(
-      "0", "1", "2", "3", "4",
-      "5", "6", "7", "8", "9",
-      "10", "11", "12+"
-    )
-  ) +
-  scale_size_continuous(name = "Number of attendances") +
-  scale_colour_discrete(name = "Financial year") +
-  labs(
-    title = "Median time in ED and number of tests by dispsosal and presentation type",
-    subtitle = "Selected providers | Apr19-Feb20 & Apr23-Feb24"
-  )
-
-```
-
-```{r}
-#| label: fig-time-vs-tests-grp-type
-#| echo: false
-#| message: false
-#| warning: false
-#| fig-align: center
-#| column: page
-#| fig-width: 8
-#| fig-asp: 0.618
-#| out-width: "90%"
-
-readRDS(here("data", "df_nested_preplots_multi_tests.rds"))$data[[7]] |>
-  ggplot() +
-  theme_bw() +
-  theme(
-    axis.ticks = element_blank(),
-    panel.grid.minor.x = element_blank()
-  ) +
-  geom_line(aes(
-    x = n_tests_trunc,
-    y = median_dur_assess_depart,
-    colour = fyear
-  )) +
-  geom_point(aes(
-    x = n_tests_trunc,
-    y = median_dur_assess_depart,
-    colour = fyear,
-    size = n_patients
-  )) +
-  facet_wrap(vars(test_type)) +
-  scale_y_continuous(
-    name = "Median time in ED (assessment to departure)",
-    limits = c(0, NA_real_)
-  ) +
-  scale_x_continuous(
-    name = "Number of tests",
-    limits = c(0, 5),
-    breaks = (0:5),
-    labels = c(
-      "0", "1", "2", "3", "4",
-      "5+"
-    )
-  ) +
-  scale_size_continuous(name = "Number of attendances") +
-  scale_colour_discrete(name = "Financial year") +
-  labs(
-    title = "Median time and number of tests in ED by test type",
-    subtitle = "Selected providers | Apr19-Feb20 & Apr23-Feb24"
-  )
-
-
-```
-:::
+![Growth in attendances with 1+ test (19/20 to 23/24), decomposed by factor.](figures/table_app_a5.png)
