@@ -560,19 +560,22 @@ table_representation |>
 vec_provider_selection <- provider_selection |>
   pull() 
 
-ecds_extract_1 <- tb_ecds_0 |>
-  filter(procode %in% local(vec_provider_selection)) |> 
-  collect()
+# ecds_extract_1 <- tb_ecds_0 |>
+#   filter(procode %in% local(vec_provider_selection)) |> 
+#   collect()
 
 gc()
 
 # OR TO PASTE IN QUERY:
 provider_selection |>
-  mutate(procode = str_c("\'", procode, "\'")) |>
-  # mutate(procode = str_c("\"", procode, "\"")) |>
+  # mutate(procode = str_c("\'", procode, "\'")) |>
+  mutate(procode = str_c("\"", procode, "\"")) |>
   pull() |>
   str_flatten_comma() |>
   cat()
 
-# 'RKB', 'RWJ', 'RCB', 'RHM', 'RCU', 'RVJ', 'RWA', 'RJC', 'RWW', 'RK9', 'RWH', 'RLT', 'RFF', 'RVW', 'REM', 'RBK', 'RTF', 'RX1', 'RYR', 'RQW', 'RWD', 'RYJ', 'RXF', 'RNN', 'RNZ', 'RTG', 'RHQ', 'RCD', 'RXC', 'RFS'
-# "RKB", "RWJ", "RCB", "RHM", "RCU", "RVJ", "RWA", "RJC", "RWW", "RK9", "RWH", "RLT", "RFF", "RVW", "REM", "RBK", "RTF", "RX1", "RYR", "RQW", "RWD", "RYJ", "RXF", "RNN", "RNZ", "RTG", "RHQ", "RCD", "RXC", "RFS"
+# 'RKB', 'RCB', 'RHM', 'RCU', 'RVJ', 'RWW', 'RK9', 'RWH', 'RLT', 'RFF', 'RVW', 'REM', 'RBK', 'RTF', 'RX1', 'RYR', 'RQW', 'RWD', 'RYJ', 'RNN', 'RNZ', 'RTG', 'RHQ', 'RXC', 'RFS'
+# "RKB", "RCB", "RHM", "RCU", "RVJ", "RWW", "RK9", "RWH", "RLT", "RFF", "RVW", "REM", "RBK", "RTF", "RX1", "RYR", "RQW", "RWD", "RYJ", "RNN", "RNZ", "RTG", "RHQ", "RXC", "RFS"
+
+### 'RKB', 'RWJ', 'RCB', 'RHM', 'RCU', 'RVJ', 'RWA', 'RJC', 'RWW', 'RK9', 'RWH', 'RLT', 'RFF', 'RVW', 'REM', 'RBK', 'RTF', 'RX1', 'RYR', 'RQW', 'RWD', 'RYJ', 'RXF', 'RNN', 'RNZ', 'RTG', 'RHQ', 'RCD', 'RXC', 'RFS'
+### "RKB", "RWJ", "RCB", "RHM", "RCU", "RVJ", "RWA", "RJC", "RWW", "RK9", "RWH", "RLT", "RFF", "RVW", "REM", "RBK", "RTF", "RX1", "RYR", "RQW", "RWD", "RYJ", "RXF", "RNN", "RNZ", "RTG", "RHQ", "RCD", "RXC", "RFS"
