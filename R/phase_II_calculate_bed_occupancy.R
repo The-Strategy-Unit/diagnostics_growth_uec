@@ -3,9 +3,6 @@
 # Calculate bed occupancy for providers in our sample, 
 # for every hour over the study period.
 
-# TODO: HAVE TO REVISIT DQ OF PROVIDER SAMPLE - 
-# MISSINGNESS IS HIGHER THAN EXPECTED HERE
-
 library("gt")
 library("DBI")
 library("VIM")
@@ -81,28 +78,33 @@ FROM [NHSE_SUSPlus_Live].[dbo].[tbl_Data_SEM_APCS] apcs
 WHERE 1 = 1
   AND apcs.Der_Financial_Year IN ('2022/23', '2023/24', '2024/25')
   AND (
-    Discharge_Date >= '2023-01-01'
+    Discharge_Date >= '2023-03-31'
     OR Discharge_Date is NULL
   )
-  AND Admission_Date <= '2024-06-30'
+  AND Admission_Date <= '2024-04-01'
   AND LEFT(Der_Provider_Code, 3) IN (
-    'RKB', 'RWJ', 'RCB', 'RHM', 'RCU', 'RVJ',
-    'RWA', 'RJC', 'RWW', 'RK9', 'RWH', 'RLT',
-    'RFF', 'RVW', 'REM', 'RBK', 'RTF', 'RX1',
-    'RYR', 'RQW', 'RWD', 'RYJ', 'RXF', 'RNN',
-    'RNZ', 'RTG', 'RHQ', 'RCD', 'RXC', 'RFS'
+    'RKB', 'RCB', 'RHM', 'RCU', 'RVJ',
+    'RWW', 'RK9', 'RWH', 'RLT', 'RFF',
+    'RVW', 'REM', 'RBK', 'RTF', 'RX1',
+    'RYR', 'RQW', 'RWD', 'RYJ', 'RNN',
+    'RNZ', 'RTG', 'RHQ', 'RXC', 'RFS'
+    --'RKB', 'RWJ', 'RCB', 'RHM', 'RCU', 'RVJ',
+    --'RWA', 'RJC', 'RWW', 'RK9', 'RWH', 'RLT',
+    --'RFF', 'RVW', 'REM', 'RBK', 'RTF', 'RX1',
+    --'RYR', 'RQW', 'RWD', 'RYJ', 'RXF', 'RNN',
+    --'RNZ', 'RTG', 'RHQ', 'RCD', 'RXC', 'RFS'
     )
 "
 
 df_raw_apcs_times <- dbGetQuery(con_sus_plus, query_apcs) |> 
   tibble()
 
-df_raw_apcs_times |> 
-  # filter(is.na(Admission_Time) & is.na(Discharge_Time)) |> 
-  filter(Der_Financial_Year == "2023/24") |> 
-  # count(procode,  sort = T)
-  count(procode, is.na(Admission_Time) & is.na(Discharge_Time), sort = T)
-
+# df_raw_apcs_times |>
+#   filter(is.na(Admission_Time) & is.na(Discharge_Time)) |>
+# #   # filter(Der_Financial_Year == "2023/24") |> 
+#   count(procode,  sort = T)
+# #   count(procode, is.na(Admission_Time) & is.na(Discharge_Time), sort = T)
+#   
 
 df_apcs_times <- df_raw_apcs_times |> 
   # set null discharge times to some date well past 2024-07-31
@@ -172,6 +174,7 @@ df_apcs_times <- df_raw_apcs_times |>
 # 2. CHECK MISSINGNESS OF TIMES ----------------------------------------------------------
 
 df_apcs_times |> 
+  # filter(der_financial_year == "2023/24") |>
   group_by(at_dt_status, admission_method_min) |> 
   summarise(n = n()) |> 
   ungroup() |> 
@@ -208,17 +211,22 @@ df_apcs_times |>
 
 provider_selection <- c(
   # FROM DATA QUALITY ASSESSMENT:
-  "RKB", "RWJ", "RCB", "RHM", "RCU", "RVJ",
-  "RWA", "RJC", "RWW", "RK9", "RWH", "RLT", 
-  "RFF", "RVW", "REM", "RBK", "RTF", "RX1",
-  "RYR", "RQW", "RWD", "RYJ", "RXF", "RNN",
-  "RNZ", "RTG", "RHQ", "RCD", "RXC", "RFS"
+  "RKB", "RCB", "RHM", "RCU", "RVJ",
+  "RWW", "RK9", "RWH", "RLT", "RFF", 
+  "RVW", "REM", "RBK", "RTF", "RX1", 
+  "RYR", "RQW", "RWD", "RYJ", "RNN", 
+  "RNZ", "RTG", "RHQ", "RXC", "RFS"
+  # "RKB", "RWJ", "RCB", "RHM", "RCU", "RVJ",
+  # "RWA", "RJC", "RWW", "RK9", "RWH", "RLT", 
+  # "RFF", "RVW", "REM", "RBK", "RTF", "RX1",
+  # "RYR", "RQW", "RWD", "RYJ", "RXF", "RNN",
+  # "RNZ", "RTG", "RHQ", "RCD", "RXC", "RFS"
 ) |> 
   enframe(name = NULL, value = "procode")
 
 df_admi_meth <- df_apcs_times |> distinct(admission_method_min)
 
-# PREPARE BASE DF (APPROX 3 MINS):
+# PREPARE BASE DF (RUNTIME: ~ 3 MINS):
 df_impute_prep <- cross_join(
   provider_selection,
   df_admi_meth
@@ -239,9 +247,11 @@ df_impute_prep <- cross_join(
 
 gc()
 
-# RUNTIME <= 15 MINS:
+
+# RUNTIME: <= 7 MINS:
 tictoc::tic()
-set.seed(728)
+# set.seed(728)
+set.seed(456)
 plan(multisession, workers = 4)
 
 df_impute <- df_impute_prep |> 
@@ -383,9 +393,12 @@ df_imputed_only <- df_impute |>
 
 
 # 4. IMPUTATION CHECKS ----------------------------------------------------------
-
+df_imputed_only |> 
+  count(is.na(admission_date))
 # check no admissions after discharges
 df_imputed_only |> 
+  # filter(der_financial_year == "2024/25") |>
+  filter(der_financial_year == "2023/24") |>
   filter(
     admission_date_days == discharge_date_days & 
       admission_time_sec > discharge_time_sec
@@ -419,7 +432,6 @@ ggplot() +
                      breaks = c(0, 21600, 43200, 64800, 86400))
 
 
-# TODO: NOTE OVERNIGHT SPELLS DISCHARGE IN GRAPHICS
 ggplot() +
   geom_density(data = subset(df_apcs_times, !is.na(disc_wkend)),
                aes(x = discharge_time_sec),
@@ -448,12 +460,14 @@ df_imputed_only |>
 
 df_apcs_times_imputed <-
   df_imputed_only |> 
+  # filter(der_financial_year == "2023/24") |> 
   mutate(
-    dmission_time_hms = seconds_to_period(admission_time_sec),
+    admission_time_hms = seconds_to_period(admission_time_sec),
     discharge_time_hms = seconds_to_period(discharge_time_sec)
   ) |>  
   bind_rows(
     df_apcs_times |> 
+      # filter(der_financial_year == "2023/24") |>
       filter(at_dt_status == "at_dt_complete")
   ) |> 
   mutate(
@@ -461,6 +475,14 @@ df_apcs_times_imputed <-
     discharge_datetime = discharge_date + discharge_time_hms
   ) |> 
   select(procode, admission_datetime, discharge_datetime, admission_method_min, at_dt_status)
+
+
+df_apcs_times_imputed |> 
+  # count(is.na(admission_datetime))
+  count(is.na(discharge_datetime))
+filter(is.na(admission_datetime)) |> 
+  select(admission_datetime, discharge_datetime, der_spell_los) |> 
+  count(der_spell_los)
 
 # 6. SAVE FILE --------------------------------------------------------------
 
@@ -471,8 +493,8 @@ gc()
 # 7. CALCULATE OCCUPANCY -----------------------------------------------------
 # by provider hour and day - at half past the hour
 
-start_datetime <- as_datetime("2023-01-01 00:30:00")
-end_datetime <- as_datetime("2024-06-30 23:30:00")
+start_datetime <- as_datetime("2023-03-31 00:30:00")
+end_datetime <- as_datetime("2024-04-10 23:30:00")
 
 clock <- tibble(census_dttm = seq(start_datetime, end_datetime, by = "hours"))
 
@@ -496,6 +518,7 @@ df_bed_occupancy <- clock |>
 
 # visual checks
 df_bed_occupancy |>
+  filter(census_dttm >= as_date("2024-03-01")) |> 
   group_by(census_dttm) |> 
   summarise(ip_occ = sum(ip_occ)) |> 
   ggplot() +
