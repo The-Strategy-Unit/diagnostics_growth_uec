@@ -78,7 +78,7 @@ FROM [NHSE_SUSPlus_Live].[dbo].[tbl_Data_SEM_APCS] apcs
 WHERE 1 = 1
   AND apcs.Der_Financial_Year IN ('2022/23', '2023/24', '2024/25')
   AND (
-    Discharge_Date >= '2023-03-31'
+    Discharge_Date >= '2023-04-01'
     OR Discharge_Date is NULL
   )
   AND Admission_Date <= '2024-04-01'
@@ -250,8 +250,7 @@ gc()
 
 # RUNTIME: <= 7 MINS:
 tictoc::tic()
-# set.seed(728)
-set.seed(456)
+set.seed(1337)
 plan(multisession, workers = 4)
 
 df_impute <- df_impute_prep |> 
@@ -393,8 +392,7 @@ df_imputed_only <- df_impute |>
 
 
 # 4. IMPUTATION CHECKS ----------------------------------------------------------
-df_imputed_only |> 
-  count(is.na(admission_date))
+
 # check no admissions after discharges
 df_imputed_only |> 
   # filter(der_financial_year == "2024/25") |>
@@ -407,7 +405,19 @@ df_imputed_only |>
     at_dt_status, same_day,
     admission_date_days, discharge_date_days,
     admission_time_sec, discharge_time_sec
-  ) 
+  )
+# identity() |> 
+# select(
+#   procode, admission_method_min,
+#   at_dt_status, same_day,
+#   admi_wkend,
+#   disc_wkend,
+#   der_spell_los,
+#   admission_date_days, discharge_date_days,
+#   admission_time_sec, discharge_time_sec
+#   ) |> 
+# view("")
+# MEAN FOR PROVIDER
 
 # visual imputed values follow similar distribution as non-imputed values
 
@@ -451,15 +461,14 @@ ggplot() +
 
 # 5. COMBINE KNOWN AND IMPUTED VALUES ---------------------------------------
 
-df_apcs_times |> 
-  filter(at_dt_status != "at_dt_complete") |> 
-  count(at_dt_status, sort = T) 
+# df_apcs_times |> 
+#   filter(at_dt_status != "at_dt_complete") |> 
+#   count(at_dt_status, sort = T) 
+# 
+# df_imputed_only |> 
+#   count(at_dt_status, sort = T)
 
-df_imputed_only |> 
-  count(at_dt_status, sort = T)
-
-df_apcs_times_imputed <-
-  df_imputed_only |> 
+df_apcs_times_imputed <- df_imputed_only |> 
   # filter(der_financial_year == "2023/24") |> 
   mutate(
     admission_time_hms = seconds_to_period(admission_time_sec),
@@ -477,13 +486,6 @@ df_apcs_times_imputed <-
   select(procode, admission_datetime, discharge_datetime, admission_method_min, at_dt_status)
 
 
-df_apcs_times_imputed |> 
-  # count(is.na(admission_datetime))
-  count(is.na(discharge_datetime))
-filter(is.na(admission_datetime)) |> 
-  select(admission_datetime, discharge_datetime, der_spell_los) |> 
-  count(der_spell_los)
-
 # 6. SAVE FILE --------------------------------------------------------------
 
 saveRDS(df_apcs_times_imputed, "df_diagnostics_apcs_times_imputed.RDS")
@@ -494,7 +496,7 @@ gc()
 # by provider hour and day - at half past the hour
 
 start_datetime <- as_datetime("2023-03-31 00:30:00")
-end_datetime <- as_datetime("2024-04-10 23:30:00")
+end_datetime <- as_datetime("2024-04-04 23:30:00")
 
 clock <- tibble(census_dttm = seq(start_datetime, end_datetime, by = "hours"))
 
@@ -518,7 +520,11 @@ df_bed_occupancy <- clock |>
 
 # visual checks
 df_bed_occupancy |>
-  filter(census_dttm >= as_date("2024-03-01")) |> 
+  # EITHER PERIOD OF INTEREST:
+  filter(between(date(census_dttm), as_date("2023-04-01"), as_date("2024-03-31"))) |>
+  # OR CLOSER LOOK AT TRANSITIONS:
+  # filter(date(census_dttm) <= as_date("2023-04-30")) |> 
+  # filter(date(census_dttm) >= as_date("2024-03-01")) |> 
   group_by(census_dttm) |> 
   summarise(ip_occ = sum(ip_occ)) |> 
   ggplot() +
@@ -527,15 +533,17 @@ df_bed_occupancy |>
   geom_blank(aes(y = 0))
 
 df_bed_occupancy |> 
+  filter(between(date(census_dttm), as_date("2023-04-01"), as_date("2024-03-31"))) |>
   group_by(census_dttm, admission_method_min) |> 
   summarise(ip_occ = sum(ip_occ)) |> 
   ggplot() +
   geom_line(aes(x = census_dttm, y = ip_occ)) +
-  facet_wrap(vars(admission_method_min), ncol = 1)+
+  facet_wrap(vars(admission_method_min))+ # , ncol = 1
   theme_bw()+
   geom_blank(aes(y = 0))
 
 df_bed_occupancy |> 
+  filter(between(date(census_dttm), as_date("2023-04-01"), as_date("2024-03-31"))) |>
   group_by(census_dttm, procode) |> 
   summarise(ip_occ = sum(ip_occ)) |> 
   ggplot() +
@@ -547,3 +555,66 @@ df_bed_occupancy |>
 # 8. SAVE FILE --------------------------------------------------------------
 
 saveRDS(df_bed_occupancy, "df_diagnostics_bed_occupancy.RDS")
+
+
+# 9. OCCUPANCY VAR --------------------------------------------------------
+# TODO: WHAT TO DO ABOUT BANK HOLIDAYS / UNUSUAL DAYS / STRIKE DAYS??
+
+tmpl <- df_bed_occupancy |> 
+  filter(between(date(census_dttm), as_date("2023-04-01"), as_date("2024-03-31"))) |>
+  mutate(wkday = lubridate::wday(census_dttm, week_start = 1, label = T)) |> 
+  count(procode, year, month, day, wkday, hour, wt = ip_occ, name = "occ") |> 
+  group_by(procode, wkday, hour) |> 
+  mutate(mean_occ = mean(occ)) |> 
+  ungroup() |> 
+  mutate(occ_scaled = occ/mean_occ)
+
+# tmpl |> 
+#   slice_sample(n=10e3) |> 
+#   ggplot()+
+#   geom_histogram(aes(scale))
+
+tmpl |> 
+  mutate(occ_decile = ntile(scale, 10)) |> 
+  count(occ_decile)
+
+tmpl |> 
+  slice_sample(prop =.2) |>
+  ggplot()+
+  geom_violin(aes(scale, procode, fill = procode))+
+  # facet_wrap(vars(procode))+
+  coord_flip()
+
+library("ggbeeswarm")  
+
+# TODO: vs
+# when bed occ increased 20-30% over mean then were % likely
+# when bed occ in highest quantile then were % likely
+
+tmpl |> 
+  mutate(occ_decile = ntile(scale, 10)) |> 
+  select(procode, month, day, hour, scale, occ_decile) |> 
+  filter(occ_decile == 1) |> 
+  arrange(scale)
+# TODO BANK HOLS AND HOLS (CHRISTMAS)/ UNUSUAL DAYS / STRIKE DAYS SHOULD BE EXCEPTIONS
+
+tmpl |> 
+  mutate(occ_decile = ntile(scale, 10)) |>
+  group_by(occ_decile) |> 
+  mutate(cut = min(scale)) |> 
+  ungroup() |> 
+  slice_sample(prop =.05) |>
+  mutate(occ_decile = as.factor(occ_decile)) |> 
+  ggplot()+
+  # geom_jitter(aes("", scale), alpha = .02)+
+  # ggbeeswarm::geom_quasirandom(aes("", scale), alpha = .02)+
+  ggbeeswarm::geom_beeswarm(aes("", scale, col = occ_decile), alpha = 0.6)+
+  geom_hline(aes(yintercept = cut))+
+  scale_color_viridis_d()+
+  # scale_color_discrete_qualitative()+
+  # coord_flip()+
+  facet_wrap(vars(procode), nrow = 1)+
+  theme(legend.position = "bottom")
+
+# TODO OR KEEP AS % RELATIVE TO MEAN - BUT GROUPS
+# when bed occ increased 20-30% over mean then were % likely
