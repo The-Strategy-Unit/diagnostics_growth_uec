@@ -22,8 +22,8 @@ library("ggplot2")
 library("stringr")
 library("lubridate")
 
-source("create_study_dataset.R")
-source("lkp_tests_ec_to_aea.R")
+source(here("R", "create_study_dataset.R"))
+source(here("R","lkp_tests_ec_to_aea.R"))
 
 
 # 1. ODDS DF ----------------------------------------------------------
