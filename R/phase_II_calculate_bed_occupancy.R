@@ -173,36 +173,36 @@ df_apcs_times <- df_raw_apcs_times |>
 
 # 2. CHECK MISSINGNESS OF TIMES ----------------------------------------------------------
 
-df_apcs_times |> 
-  # filter(der_financial_year == "2023/24") |>
-  group_by(at_dt_status, admission_method_min) |> 
-  summarise(n = n()) |> 
-  ungroup() |> 
-  group_by(admission_method_min) |> 
-  mutate(p = n / sum(n, na.rm = TRUE)) |> 
-  ungroup() |> 
-  select(-p) |> 
-  pivot_wider(
-    names_from = "at_dt_status", 
-    values_from = "n",
-    values_fill = 0
-  )
-
-# apc_times_imputation_df |> 
-#   filter(admission_method_min == "emer") |> 
-#   group_by(admi_wkend) |> 
-#   summarise(n = n())
-# 
-# apc_times_imputation_df |> 
-#   filter(admission_method_min == "emer") |> 
-#   group_by(disc_wkend) |> 
-#   summarise(n = n())
-
-# apc_times_imputation_df |>
-#   filter(admission_method_min == "emer") |>
-#   group_by(los) |>
+# df_apcs_times |> 
+#   # filter(der_financial_year == "2023/24") |>
+#   group_by(at_dt_status, admission_method_min) |> 
 #   summarise(n = n()) |> 
-#   arrange(-n)
+#   ungroup() |> 
+#   group_by(admission_method_min) |> 
+#   mutate(p = n / sum(n, na.rm = TRUE)) |> 
+#   ungroup() |> 
+#   select(-p) |> 
+#   pivot_wider(
+#     names_from = "at_dt_status", 
+#     values_from = "n",
+#     values_fill = 0
+#   )
+# 
+# # apc_times_imputation_df |> 
+# #   filter(admission_method_min == "emer") |> 
+# #   group_by(admi_wkend) |> 
+# #   summarise(n = n())
+# # 
+# # apc_times_imputation_df |> 
+# #   filter(admission_method_min == "emer") |> 
+# #   group_by(disc_wkend) |> 
+# #   summarise(n = n())
+# 
+# # apc_times_imputation_df |>
+# #   filter(admission_method_min == "emer") |>
+# #   group_by(los) |>
+# #   summarise(n = n()) |> 
+# #   arrange(-n)
 
 
 # 3. IMPUTE MISSING TIMES  ----------------------------------------------------------
@@ -406,18 +406,6 @@ df_imputed_only |>
     admission_date_days, discharge_date_days,
     admission_time_sec, discharge_time_sec
   )
-# identity() |> 
-# select(
-#   procode, admission_method_min,
-#   at_dt_status, same_day,
-#   admi_wkend,
-#   disc_wkend,
-#   der_spell_los,
-#   admission_date_days, discharge_date_days,
-#   admission_time_sec, discharge_time_sec
-#   ) |> 
-# view("")
-# MEAN FOR PROVIDER
 
 # visual imputed values follow similar distribution as non-imputed values
 
@@ -496,7 +484,7 @@ gc()
 # by provider hour and day - at half past the hour
 
 start_datetime <- as_datetime("2023-03-31 00:30:00")
-end_datetime <- as_datetime("2024-04-04 23:30:00")
+end_datetime <- as_datetime("2024-04-01 23:30:00")
 
 clock <- tibble(census_dttm = seq(start_datetime, end_datetime, by = "hours"))
 
@@ -552,15 +540,10 @@ df_bed_occupancy |>
   geom_blank(aes(y = 0))
 
 
-# 8. SAVE FILE --------------------------------------------------------------
-
-saveRDS(df_bed_occupancy, "df_diagnostics_bed_occupancy.RDS")
-
-
-# 9. OCCUPANCY VAR --------------------------------------------------------
+# 8. OCCUPANCY VAR --------------------------------------------------------
 # TODO: WHAT TO DO ABOUT BANK HOLIDAYS / UNUSUAL DAYS / STRIKE DAYS??
 
-tmpl <- df_bed_occupancy |> 
+df_occ_prep <- df_bed_occupancy |> 
   filter(between(date(census_dttm), as_date("2023-04-01"), as_date("2024-03-31"))) |>
   mutate(wkday = lubridate::wday(census_dttm, week_start = 1, label = T)) |> 
   count(procode, year, month, day, wkday, hour, wt = ip_occ, name = "occ") |> 
@@ -574,11 +557,11 @@ tmpl <- df_bed_occupancy |>
 #   ggplot()+
 #   geom_histogram(aes(scale))
 
-tmpl |> 
+df_occ_prep |> 
   mutate(occ_decile = ntile(scale, 10)) |> 
   count(occ_decile)
 
-tmpl |> 
+df_occ_prep |> 
   slice_sample(prop =.2) |>
   ggplot()+
   geom_violin(aes(scale, procode, fill = procode))+
@@ -591,24 +574,24 @@ library("ggbeeswarm")
 # when bed occ increased 20-30% over mean then were % likely
 # when bed occ in highest quantile then were % likely
 
-tmpl |> 
+df_occ_prep |> 
   mutate(occ_decile = ntile(scale, 10)) |> 
   select(procode, month, day, hour, scale, occ_decile) |> 
   filter(occ_decile == 1) |> 
   arrange(scale)
 # TODO BANK HOLS AND HOLS (CHRISTMAS)/ UNUSUAL DAYS / STRIKE DAYS SHOULD BE EXCEPTIONS
 
-tmpl |> 
-  mutate(occ_decile = ntile(scale, 10)) |>
+df_occ_prep |> 
+  mutate(occ_decile = ntile(occ_scaled, 10)) |>
   group_by(occ_decile) |> 
-  mutate(cut = min(scale)) |> 
+  mutate(cut = min(occ_scaled)) |> 
   ungroup() |> 
   slice_sample(prop =.05) |>
   mutate(occ_decile = as.factor(occ_decile)) |> 
   ggplot()+
   # geom_jitter(aes("", scale), alpha = .02)+
   # ggbeeswarm::geom_quasirandom(aes("", scale), alpha = .02)+
-  ggbeeswarm::geom_beeswarm(aes("", scale, col = occ_decile), alpha = 0.6)+
+  ggbeeswarm::geom_beeswarm(aes("", occ_scaled, col = occ_decile), alpha = 0.6)+
   geom_hline(aes(yintercept = cut))+
   scale_color_viridis_d()+
   # scale_color_discrete_qualitative()+
@@ -616,5 +599,36 @@ tmpl |>
   facet_wrap(vars(procode), nrow = 1)+
   theme(legend.position = "bottom")
 
+# OR - DECILES FOR THAT PROVIDER...? PROBABLY NOT.
 # TODO OR KEEP AS % RELATIVE TO MEAN - BUT GROUPS
 # when bed occ increased 20-30% over mean then were % likely
+
+# -------------------------------------------------------------------------
+
+# TODO: vs
+# when bed occ increased 20-30% over mean then were % likely
+# when bed occ in highest quantile then were % likely
+
+lkp_occupancy <- df_occ_prep |> 
+  mutate(occ_decile = ntile(occ_scaled, 10)) |> 
+  select(procode, month, day, hour, occ_scaled, occ_decile) 
+# filter(occ_decile == 1) |> 
+# arrange(scale)
+# TODO BANK HOLS AND HOLS (CHRISTMAS)/  UNUSUAL DAYS / STRIKE DAYS SHOULD BE EXCEPTIONS
+
+# MEANING - ROW 2
+# RBK         4     1     1      0.958          2
+# relative to that hour and wkday - it is scale gives idea of occupancy.
+# "96% of the mean for that hour and weekday, at that provider"
+# Then, decile is how a clinician might view the occ situation, 
+# independently of provider or time (if all providers and times were 
+# expected to have same occupancy?)
+
+
+# 9. SAVE FILE --------------------------------------------------------------
+
+saveRDS(lkp_occupancy, "lkp_occupancy.RDS")
+
+
+
+
