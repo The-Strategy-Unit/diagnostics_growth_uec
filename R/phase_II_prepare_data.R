@@ -2,23 +2,20 @@
 # [NCDR]
 # Prepare data for models used in Phase II.
 
-# library("gt")
 library("DBI")
 library("here") 
 library("dplyr")
 library("purrr") 
+library("furrr") 
 library("readr") 
 library("tidyr")
 library("dbplyr")
+library("tibble") 
 library("forcats")
 library("ggplot2") 
 library("janitor")
 library("stringr")
-# library("gtExtras")
 library("lubridate")
-
-source(here("R", "lkp_tests_ec_to_aea.R"))
-source(here("R", "lkp_tests_ec_to_aea.R"))
 
 
 # 0. CONNECTIONS ----------------------------------------------------------
@@ -37,14 +34,6 @@ con_sus_plus <- dbConnect(
   Database = "NHSE_SUSPlus_Live",
   Trusted_Connection = "True"
 )
-con_reporting <- dbConnect(
-  odbc::odbc(),
-  Driver = "SQL Server",
-  Server = "PRODNHSESQL101",
-  Database = "NHSE_SUSPlus_Reporting",
-  Trusted_Connection = "True"
-)
-
 
 con_nhse_reference <- dbConnect(
   odbc::odbc(),
@@ -86,14 +75,10 @@ tb_ecds_0 <- tbl(con_sandbox_su, in_schema("dbo", "1208_ind_action_model_extract
 ecds_extract <- tb_ecds_0 |>
   filter(fyear == "2023/24") |>
   filter(procode %in% local(vec_provider_selection)) |>
-  # head(10) |> 
-  collect() |> 
-  # colnames()
-  identity()
+  collect() 
 
-
-select(-matches("fyear|disdest|dur"))
-
+ecds_extract <- ecds_extract |> 
+  select(-matches("fyear|disdest|dur|inj|treat_|imd_|ethnic|_icb")) 
 
 
 # 2. MISSING VALUES - DELETE RECORDS -----------------------------------------------
@@ -104,11 +89,7 @@ df_odds_na_rm <- ecds_extract |>
   filter(!is.na(chief_comp_grp)) |>
   # ALTERNATIVELY, COULD ASSUME NA IS NO INVESTIGATION? (AND IMPUTE)
   filter(!is.na(invst_all)) |>
-  filter(!is.na(age)) |>
-  # NOT USING IN FINAL MODEL:
-  # filter(!is.na(imd_dec)) |> 
-  # filter(!is.na(inj_flag)) |>
-  identity()
+  filter(!is.na(age)) 
 
 
 # # BY DELETING ALL MISSING VALUES FROM KEY FIELDS,
@@ -199,42 +180,16 @@ df_odds_fe3 <- df_odds_fe2 |>
   # select(-dttm_arr) |> 
   identity()
 
+
 # 4. ADD OCCUPANCY VARIABLE --------------------------------------------------------
 
-# TODO: vs
-# when bed occ increased 20-30% over mean then were % likely
-# when bed occ in highest quantile then were % likely
-
-lkp_occupancy <- tmpl |> 
-  mutate(occ_decile = ntile(occ_scaled, 10)) |> 
-  select(procode, month, day, hour, occ_scaled, occ_decile) 
-# filter(occ_decile == 1) |> 
-# arrange(scale)
-# TODO BANK HOLS AND HOLS (CHRISTMAS)/  UNUSUAL DAYS / STRIKE DAYS SHOULD BE EXCEPTIONS
-
-# MEANING - ROW 2
-# RBK         4     1     1      0.958          2
-# relative to that hour and wkday - it is scale gives idea of occupancy.
-# "96% of the mean for that hour and weekday, at that provider"
-# Then, decile is how a clinician might view the occ situation, 
-# independently of provider or time (if all providers and times were 
-# expected to have same occupancy?)
+# lkp_occupancy <- readRDS("lkp_occupancy.RDS")
 
 df_odds_occ <- df_odds_fe3 |> 
   left_join(
     lkp_occupancy, 
     join_by(procode, month, day, hour)
   )
-
-lkp_occupancy |> 
-  filter(month == 4, day == 1)
-
-df_odds_occ |> 
-  # count(is.na(occ_scaled), is.na(occ_decile)) |> 
-  filter(is.na(occ_scaled)) 
-# count(date(dttm_depart))
-# count(date(dttm_arr), procode)
-select(dttm_arr)
 
 # 5. SAMPLE 35% (OR > 1 MILLION RECORDS) ------------------------
 
@@ -247,13 +202,11 @@ select(dttm_arr)
 # # SHORTER MODEL RUN TIME FOR FASTER FEEDBACK
 set.seed(1822)
 df_odds_sample <- df_odds_occ |>
-  slice_sample(prop = 0.12)
+  slice_sample(prop = 0.3)
 
 gc()
 
 # 6. OUTCOME VARIABLES ------------------------------------------
-
-# TODO REACHED HERE - THUR 27TH PM.
 
 # TODO URINE CULT SITUATION
 ## a. CREATE ----------------------------------------------------
@@ -269,7 +222,7 @@ vec_invst_codes_ec <- lkp_invst |>
 # BUT LATER ADJUSTED TO BINARY (TEST Y/N).
 list_invst_counts <- imap(vec_invst_codes_ec, function(x, y) {
   df_odds_sample %>%
-    transmute({{ y }} := str_count(Der_EC_Investigation_All, str_c("^", x, "| ", x, "|,", x)))
+    transmute({{ y }} := str_count(invst_all, str_c("^", x, "| ", x, "|,", x)))
 })
 
 df_odds_invst <- list_invst_counts |>
@@ -283,13 +236,20 @@ gc()
 
 df_prep_binary <- df_odds_invst |>
   ### REMOVE VARS THAT WON'T BE USED IN BASIC MODEL:
-  select(-c(ethnic_grp, acuity_desc)) |>
+  select(-matches("acuity_desc|^dttm|grp|invst_all|day|month|hour")) |>
+  # colnames()
   # SWITCH OUTCOMES TO BINARY:
-  mutate(across(starts_with("invst_"), ~ if_else(. > 0, 1, 0))) 
+  mutate(across(starts_with("invst_"), ~ if_else(. > 0, 1, 0))) |> 
+  mutate(occ_decile = fct_relevel(as.factor(occ_decile), "5")) |> 
+  mutate(across(c(sex, arr_mode, acuity, procode), ~ as.factor(.))) |> 
+  mutate(sex = fct_relevel(sex, "m")) |> 
+  mutate(acuity = fct_relevel(acuity, "1")) |> 
+  mutate(arr_mode = fct_relevel(arr_mode, "walk_in")) |>
+  mutate(age = as.integer(age)) 
 
 glimpse(df_prep_binary)
 
-
+df_prep_binary |> count((age)) |> tail()
 # ~~~~~~~~~ -------------------------------------------------------------------
 
 # 8. FUNCTIONAL PROGRAMMING SETUP (FOR MULTIPLE MODELS) ---------------------
@@ -309,7 +269,8 @@ df1 <- df_prep_binary |>
   arrange(-value) |>
   mutate(id = row_number()) |> 
   # X to Y (OF TOP Z) BY APPEARANCES:
-  slice(1:4) |>
+  slice(c(2:4, 9)) |>
+  # slice(9) |>
   mutate(InvestigationKey = as.numeric(str_extract(name, "[:digit:]{2}"))) |>
   left_join(lkp_invst, join_by(InvestigationKey)) |>
   select(name, value, InvestigationDescription, id) |> 
@@ -340,3 +301,119 @@ gc()
 # PREVIEW:
 df2
 
+
+# -------------------------------------------------------------------------
+
+df2$data[[1]] |> 
+  count(arr_mode)
+
+plan(multisession, workers = 4)
+
+tictoc::tic()
+df3 <- df2 |>
+  mutate(model = future_map(data, function(df) {
+    mgcv::gam(
+      formula = invst ~
+        # VAR OF INTEREST:
+        occ_decile +
+        # DEMOGRAPHICS:
+        s(age, by = sex) + sex + # imd_dec +
+        # CASE-MIX-RELATED:
+        arr_mode + acuity + chief_comp_desc + refer_sorc +
+        # TIME-RELATED:
+        is_winter + is_wkend + is_night +
+        # PROVIDER (RANDOM INTERCEPT):
+        s(procode, bs = "re"),
+      family = "binomial",
+      method = "REML",
+      data = df
+    )
+  })) 
+tictoc::toc()
+# < 1.5 hours
+# 4925.32 /60
+
+gc()
+
+df
+df3$model[[1]] |> summary()
+
+df3$model[[3]] |> 
+  broom::tidy(parametric = TRUE) |> 
+  filter(str_detect(term, "decile")) |>
+  mutate(odds = exp(estimate)) |>
+  mutate(lci = exp(estimate - 1.96*std.error)) |> 
+  mutate(uci = exp(estimate + 1.96*std.error)) |> 
+  select(term, odds, lci, uci)
+
+24*25*10
+
+# 9. SAVE MODEL RESULTS -------------------------------------------------------------
+
+df3 %>% 
+  saveRDS(str_c("models_odds_top_", min(.$id), "to", max(.$id), ".rds"))
+
+df_odds_results <- df3 |>
+  mutate(results = map(model, function(df) {
+    df |>
+      broom::tidy(parametric = TRUE) |>
+      filter(str_detect(term, "decile")) |>
+      mutate(odds = exp(estimate)) |>
+      mutate(lci = exp(estimate - 1.96*std.error)) |> 
+      mutate(uci = exp(estimate + 1.96*std.error)) |> 
+      select(term, odds, lci, uci)
+    # pull(odds)
+  })) |> 
+  select(-c(data, model, value)) |>
+  unnest(results) |>
+  # # relocate(odds, .after = pdA) |> 
+  # # relocate(std_error, .after = odds) |> 
+  # # ADJUSTMENTS IF SMALLER SAMPLE SIZE FOR MODELS 13:28 (FACTOR OR 0.35/0.17):
+  # # mutate(across(matches("^t"), ~ if_else(id %in% 13:28, . * (0.35 / 0.17), .))) %>%
+  # saveRDS(str_c("from_ncdr_growth_attrb_v4_", min(.$id), "to", max(.$id), ".rds"))
+  identity()
+
+df_odds_results
+
+
+# 10. PLOT ----------------------------------------------------------------
+
+df_odds_results |>
+  mutate(term = (str_remove_all(term, "[:alpha:]|_"))) |> 
+  mutate(term = if_else(term == 10, term, str_c(0, term))) |> 
+  # mutate(term = as.factor(term)) |> 
+  # mutate(term = fct_relevel(term, ""))
+  
+  # filter(InvestigationDescription != "Serologic test") |>
+  # mutate(invst_group = as_factor(invst_group)) |> 
+  ggplot() +
+  geom_hline(yintercept = 1, lty = "dashed", colour = "grey20", alpha = 0.5) +
+  # geom_pointrange(aes(reorder(InvestigationDescription, odds), odds, ymin = lci, ymax = uci), col = "grey40", stroke = NA)+
+  geom_pointrange(aes(term, odds, ymin = lci, ymax = uci), col = "grey40", stroke = NA)+
+  theme_bw() +
+  coord_flip() +
+  scale_y_log10(
+    limits = c(0.85, 1.15),
+    breaks = c(0.9, 1, 1.1),
+    labels = c(
+      # "Half\nas likely in\n2023/24",
+      # "Equally\nas likely in\n2023/24",
+      # "2x\nas likely in\n2023/24",
+      "90%\nas likely as\nav. occupancy",
+      "Equally\nas likely as\nav. occupancy",
+      "110%x\nas likely as\nav. occupancy"
+    )
+  )+
+  theme(
+    # axis.title.y = element_blank(),
+    axis.title = element_text(size = 9),
+    # plot.margin = margin(5, 20, 5, 5),
+    panel.grid.minor = element_blank(),
+    axis.ticks = element_blank(),
+    strip.text = element_text(size = 9)
+  ) +
+  labs(
+    x = "Occupany decile (10 = highest occupancy)",
+    y = "\nCase-mix-adjusted odds ratio of test (occupancy decile vs 'average' occ) on log scale")+
+  # facet_grid(invst_group ~ ., space = "free", scales = "free_y")
+  facet_wrap(vars(InvestigationDescription))
