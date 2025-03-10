@@ -1,5 +1,5 @@
 ---
-title: "Are ED test thresholds falling in response to lack of bed availability?<br><br>DRAFT"
+title: "Are Test Thresholds in Emergency Departments Falling in Response to Lack of Bed Availability?<br><br>DRAFT - edit title?"
 subtitle: "<br>March 2025"
 author:
   - name: Steven Wyatt
@@ -17,7 +17,7 @@ format:
     # code-tools: true
     embed-resources: true
     grid:
-      margin-width: 280px
+      margin-width: 240px
   pdf: default
 reference-location: margin
 citation-location: margin
@@ -40,9 +40,9 @@ editor_options:
 
 # Introduction
 
-This is the second of two reports examining the impact of the growth in diagnostic testing on urgent and emergency care services.
+This is the second of two NHSE-commissioned reports that examine the impact of the growth in diagnostic testing on urgent and emergency care services.
 
-Our work in the first phase of this project, *Growth in Diagnostic Testing and Its Impact on Emergency Departments* (Strategy Unit, 2025), indicated that the casemix-adjusted odds of a patient receiving a test increased for most test types in recent years. Moreover, we found that the casemix-adjusted *odds of admission* having received a test, have reduced.
+Our work in the first phase of this project, *Growth in Diagnostic Testing and Its Impact on Emergency Departments* (Strategy Unit, 2025), indicated that, between 2019/20 and 2023/24, the casemix-adjusted odds of a patient receiving a test increased for most test types. Moreover, having received a test, the casemix-adjusted odds that a patient would be *admitted* fell.
 
 The analysis we present here examines ... whether these two changes are causally (?) related / the association between these two changes. One theory here is that, by testing more, clinicians are able to rule out conditions that would otherwise involve admission. It is unclear, however, if clinical practice in EDs is leading this change, or if practice is responding to changes in the operational context (in particular, to the reduced availability of beds).
 
@@ -64,9 +64,7 @@ Whilst sampling should improve the reliability and validity of our results, we c
 
 There is a trade-off to be made here. The larger our sample of providers, the more likely it is to be representative of the population of providers. However, the larger we make our sample, the more we compromise on data quality, which will likely to decrease the reliability of our results.
 
-Details of the sampling methods, our approach to the trade-off, and the measures of representation can be found in @sec-appendix.
-
-Using the EC and APC datasets, identified 25 providers that passed our data quality criteria for this analysis. For further details of our sampling approach and data quality criteria see @sec-approach-sampling and @sec-appendix.
+Details of our approach to this trade-off, as well as our data quality criteria, sampling methods, and the measures of representation, can be found in @sec-appendix-1.
 
 ### **Excluded attendances**
 
@@ -74,7 +72,7 @@ For providers within our sample, the analyses covers all unplanned attendances o
 
 ### Data preparation
 
-Approximately 5.5% of the 2.5 million records in our sample had missing values in one or more key field. (Our "key fields" are given in @sec-appendix.) As our chosen model type will not accept missing values, we opted to delete these records. This involved the assumption that these values are missing at random.
+Approximately 5.5% of the 2.5 million records in our sample had missing values in one or more key field. (Our "key fields" are given in @sec-appendix-1.) As our chosen model type will not accept missing values, we opted to delete these records. This involved the assumption that these values are missing at random.
 
 Production of the bed occupancy variable involved several steps. To begin with, we calculated the total number of patients in hospital beds (a proxy for overall hospital busyness) at each of the providers in our sample, for every hour in 2023/24. For this, we required admission and discharge times provided in the SUS APC data set.
 
@@ -132,30 +130,27 @@ Selected characteristics of the patients covered by our analysis data set are sh
 
 ```{r}
 #| label: tbl-one
-#| tbl-cap: "A summary of selected characteristics of the patients in Sample 2"
+#| tbl-cap: "A summary of selected characteristics of patients in the analysis data set"
 #| echo: false
 #| message: false
 #| warning: false
 #| column: page
 #| width: 8
 
-# CREATED BY R/prep_table_1.R
-readRDS(here("data", "prep_table_1.rds")) |> 
+# CREATED BY R/phase_II_prep_table1.R
+readRDS(here("data", "df_phase_II_prep_table_1.rds")) |> 
  gt(groupname_col = "grouping") |> 
   tab_options(row_group.as_column = TRUE) |> 
-  fmt_number(columns = c(`attendances 2019/20`, `attendances 2023/24`),
+  fmt_number(columns = c(`attendances 2023/24`),
              decimals = 0) |> 
-  fmt_percent(columns = c(`p_atts_2019/20`, `p_atts_2023/24`),
+  fmt_percent(columns = c(`p atts 2023/24`),
               decimals = 1) |> 
-  cols_merge(columns = c(`attendances 2019/20`, `p_atts_2019/20`),
-             pattern = "{1} ({2})") |> 
-  cols_merge(columns = c(`attendances 2023/24`, `p_atts_2023/24`),
-             pattern = "{1} ({2})") |> 
-  cols_label(subgroup = "", 
-             `attendances 2019/20` = '2019/20',
-             `attendances 2023/24` = '2023/24') |> 
-  tab_spanner(label = 'attendances (%)',
-              columns = c(`attendances 2019/20`, `attendances 2023/24`)) |> 
+  cols_merge(columns = c(`attendances 2023/24`, `p atts 2023/24`),
+             pattern = "{1} ({2})") |>
+  cols_label(subgroup = "",
+             `attendances 2023/24` = '') |>
+  tab_spanner(label = 'Attendances (%)',
+              columns = c(`attendances 2023/24`)) |> 
   tab_options(
     data_row.padding = px(1),
     table.font.size = "small"
@@ -163,15 +158,22 @@ readRDS(here("data", "prep_table_1.rds")) |>
 
 ```
 
+### Occupancy scaled?
+
+hour = colour scaled,
+
+by day type (also option provider)
+
+@fig-odds-5pc suggests that the relationship high bed occupancy varies by test.
+
+Patients were significantly (2 %) more likely to receive CT scans... when bed occupancy levels were 5% higher than average for the day of the week and the hour of the day. These effects were small but significant.
+
+By contrast, Patients were significantly (2 %) more likely to receive CT scans... when bed occupancy levels were 5% higher than expected.
+
 The models give odds ratios - interpreted as a one unit increase in scaled occupancy.
 
-@fig-odds-5pc suggests that for most tests provided in EDs, patients were more likely to receive the test in 2023/24 than they were in 2019/20. In many cases, the increased odds of receiving a test were substantial. The adjusted odds of receiving the following tests increased by between 50% and 100%: hepatic function panel; CT scan; bone profile; analysis of arterial blood gases and pH; D-dimer assay; creatine kinase measurement; and MRI scan. Moreover, the adjusted odds of receiving C-reactive protein; urine sent for culture; serum lactate measurement; wound microscopy culture and sensitivities; lipid panel; and serologic tests more than doubled. 
-
-For 6 of the 32 tests, the odds of receiving the test *fell* between 2019/20 and 2023/24. These tests were: erythrocyte sedimentation rate measurement, group and save, electrocardiography, serum lipase measurement, urinalysis, and human chorionic gonadotropin measurement.
-
-In context of KH03 returns
-
-**sensitivity analysis. ??? Appendix.**
+1.  **In context of KH03 returns**
+2.  **Sensitivity analysis. ??? Appendix.**
 
 ```{r}
 #| label: fig-odds-5pc
@@ -236,15 +238,95 @@ We have labelled our estimates as "casemix-adjusted" as we controlled for a rang
 
 Finally, as noted in the Methods section above, we decided to delete approximately 6% of records from our sample that had missing values for any of the variables used in the model. If these missing values were missing completely at random, this decision will have a limited impact on our results (by reducing our sample size in this way, we may have marginally increased the standard errors around our model coefficients). There is, however, some potential for bias in our results if these missing data were not missing completely at random.
 
-# Appendix
+# Appendix 1 {#sec-appendix-1}
 
-To increase the chances that our findings would be valid and reliable, we conducted the analysis on data from a sample of providers. We were able to identify 25 providers two distinct samples that met our needs for the four questions. The first sample, of 28 providers, was used in Analysis 1 (to address Question 1). A second sample, of 16 providers, was used in the analyses relating to Questions 2 to 4.
+To carry out this analysis, we required the SUS EC and APC data sets. We looked at the financial year 2023/24, only. We identified 121 providers who recorded data for the entire year. These 121 providers represent the total population of providers that we might have used for our analysis had data quality been universally high.
 
-To carry out this analysis, we required the SUS EC and APC data sets. We looked at the financial year 2023/24, only. We identified **XXX** providers who recorded data for the entire year. These **XXX** providers represent the total population of providers that we might have used for our analysis had data quality been universally high.
+However, since data quality was highly variable, we conducted the analysis on data from a sample of providers. We included a provider in our sample if, within the:
 
-Providers were included in our sample if :
+-   EC data set: they had all three of Der_EC_Investigation_All*,* Chief_Complaint*,* and Acuity complete for 90% of records . (Relaxing this requirement to 85% gave us only a few more providers and no improvement in representation.)
 
-1.  Within the EC data set, they had all three of *Der_EC_Investigation_All, chiefcompgrp,* and *acuity* complete for 90% of records . (Relaxing this requirement to 85% gave us only a few more providers and no improvement in representation.)
-2.  Within the APC data set, providers recorded admission and discharge times in at least 99% of cases.
+-   APC data set: providers recorded admission and discharge times in at least 99% of cases.
 
-We established that 25 providers met these criteria. These providers are given in [Table 6](file:///C:/Users/andrew.jones/Downloads/report_ed_diagnostic_growth(7).html#tbl-sample-q2-6). In the adjacent tab, [Table 7](file:///C:/Users/andrew.jones/Downloads/report_ed_diagnostic_growth(7).html#tbl-representation-q2-6) suggests that this sample of 25 providers is generally representative of the population of providers. **We note that the sample includes higher proportions of larger providers and providers in the Midlands. One of the seven regions, the East of England, is not represented.**
+We established that 25 providers met both these criteria. These providers are given in @tbl-sample. In the adjacent tab, @tbl-representation suggests that this sample of 25 providers is generally representative of the population of providers. We note that the sample includes higher proportions of medium-sized providers and providers in the Midlands.
+
+::: panel-tabset
+## Provider Sample for A2-A4
+
+```{r}
+#| label: tbl-sample
+#| tbl-cap: "Provider sample used for analysis"
+#| echo: false
+#| message: false
+
+
+# FROM PROVIDER SAMPLE SCRIPT: 
+read_rds(here("data", "df_phase_II_provider_selection.rds")) |>
+  gt() |>
+  fmt_auto() |>
+  tab_style(
+    style = list(
+      cell_text(weight = "bold")
+    ),
+    locations = cells_column_labels(c(Provider_Name, Provider_Code))
+  ) |>
+  tab_options(
+    data_row.padding = px(1),
+    table.font.size = "small"
+  )
+```
+
+## Sample representation statistics
+
+```{r}
+#| label: tbl-representation
+#| tbl-cap: "Is the Sample Representative of the Wider Provider Population?"
+#| echo: false
+#| message: false
+
+
+# FROM PROVIDER SAMPLE SCRIPT:
+read_rds(here("data", "df_phase_II_table_representation.rds")) |> 
+   gt() |> 
+  opt_row_striping(row_striping = F) |> 
+  fmt_auto() |> 
+  tab_style(
+    style = list(
+      cell_text(transform = "capitalize", weight = "bold")
+    ),
+    # different location
+    locations = cells_column_labels(everything())
+  ) |> 
+  fmt_percent(rows = c(2:25), decimals = 1) |>
+  tab_row_group(
+    label = "Patient demographics:",
+    rows =  str_detect(variable, "age|urban|depriv|region_")
+  ) |> 
+  tab_row_group(
+    label = "Case-mix-related:",
+    rows =  str_detect(variable, "arrive_|admitted")
+  ) |> 
+  tab_row_group(
+    label = "Provider-related (23/24):",
+    rows =  str_detect(variable, "att|also|4h|12h")
+  ) |> 
+  tab_row_group(
+    label = "",
+    rows =  str_detect(variable, "n_prov|23")
+  ) |>
+  tab_style(
+    style = cell_text(weight = "bold"),
+    locations = cells_row_groups(groups = c(1, 2, 3, 4))
+  ) |> 
+  sub_values(values = -96, replacement = "") |> 
+  gt_highlight_cols(sample, fill = "grey", alpha = 0.1) |> 
+  tab_options(
+    data_row.padding = px(1),
+    table.font.size = "small"
+  )
+```
+:::
+
+# Appendix 2 {#sec-appendix-2}
+
+In the primary analysis, we measured bed occupancy at the time of a patient's arrival at the ED. In this sensitivity analysis, we take the mid-point between the patient's arrival and departure time.
