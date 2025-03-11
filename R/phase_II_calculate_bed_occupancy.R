@@ -19,6 +19,7 @@ library("janitor")
 library("stringr")
 library("gtExtras")
 library("lubridate")
+library("ggbeeswarm")  
 
 
 # 0. CONNECTIONS ----------------------------------------------------------
@@ -477,6 +478,7 @@ df_apcs_times_imputed <- df_imputed_only |>
 # 6. SAVE FILE --------------------------------------------------------------
 
 saveRDS(df_apcs_times_imputed, "df_diagnostics_apcs_times_imputed.RDS")
+df_apcs_times_imputed <- readRDS("df_diagnostics_apcs_times_imputed.RDS")
 
 gc()
 
@@ -508,8 +510,9 @@ df_bed_occupancy <- clock |>
 
 # visual checks
 df_bed_occupancy |>
-  # EITHER PERIOD OF INTEREST:
-  filter(between(date(census_dttm), as_date("2023-04-01"), as_date("2024-03-31"))) |>
+  count(admission_method_min)
+# EITHER PERIOD OF INTEREST:
+filter(between(date(census_dttm), as_date("2023-04-01"), as_date("2024-03-31"))) |>
   # OR CLOSER LOOK AT TRANSITIONS:
   # filter(date(census_dttm) <= as_date("2023-04-30")) |> 
   # filter(date(census_dttm) >= as_date("2024-03-01")) |> 
@@ -521,6 +524,7 @@ df_bed_occupancy |>
   geom_blank(aes(y = 0))
 
 df_bed_occupancy |> 
+  filter(admission_method_min == "emer") |> 
   filter(between(date(census_dttm), as_date("2023-04-01"), as_date("2024-03-31"))) |>
   group_by(census_dttm, admission_method_min) |> 
   summarise(ip_occ = sum(ip_occ)) |> 
@@ -545,21 +549,113 @@ df_bed_occupancy |>
 
 df_occ_prep <- df_bed_occupancy |> 
   filter(between(date(census_dttm), as_date("2023-04-01"), as_date("2024-03-31"))) |>
-  mutate(wkday = lubridate::wday(census_dttm, week_start = 1, label = T)) |> 
-  count(procode, year, month, day, wkday, hour, wt = ip_occ, name = "occ") |> 
+  mutate(wkday = as.character(wday(census_dttm, week_start = 1, label = T))) |> 
+  count(procode, year, month, day, wkday, hour, wt = ip_occ, name = "occ") 
+
+
+df_occ_prep <- df_occ_prep |> 
+  left_join(
+    df_unusual_dates,
+    join_by(year, month, day)
+  ) |> 
+  mutate(wkday = case_when(
+    str_detect(strike_type, "industrial|radiographers") ~ "strike",
+    str_detect(strike_type, "bank holiday") ~ "bank hol",
+    TRUE ~ wkday
+  )) |> 
+  # count(strike_type, wkday)
   group_by(procode, wkday, hour) |> 
   mutate(mean_occ = mean(occ)) |> 
   ungroup() |> 
   mutate(occ_scaled = occ/mean_occ)
 
-# tmpl |> 
+df_occ_prep |> 
+  mutate(occ_decile = ntile(occ_scaled, 10)) |>
+  mutate(occ_decile = case_when(
+    occ_decile %in% 1:2 ~ 1,
+    occ_decile %in% 3:4 ~ 2,
+    occ_decile %in% 5:6 ~ 3,
+    occ_decile %in% 7:8 ~ 4,
+    occ_decile %in% 9:10 ~ 5,
+    T~ NA_integer_
+  )) |>
+  group_by(occ_decile) |>
+  mutate(cut = min(occ_scaled)) |>
+  ungroup() |>
+  slice_sample(prop =.05) |>
+  mutate(occ_decile = as.factor(occ_decile)) |>
+  ggplot()+
+  # geom_jitter(aes("", scale), alpha = .02)+
+  # ggbeeswarm::geom_quasirandom(aes("", scale), alpha = .02)+
+  ggbeeswarm::geom_beeswarm(aes("", occ_scaled, col = strike_type), alpha = 0.6)+
+  geom_hline(aes(yintercept = cut))+
+  # scale_color_viridis_d()+
+  # scale_color_discrete_qualitative()+
+  # coord_flip()+
+  # facet_wrap(vars(procode), nrow = 1)+
+  facet_wrap(vars(wkday), nrow = 1)+
+  theme(legend.position = "bottom")
+
+
+
+###
+# tmpx <- df_occ_prep |>
+#   mutate(occ_decile = ntile(occ_scaled, 10)) |>
+#   right_join(
+#     df_unusual_dates |> 
+#       mutate(
+#         year = year(date), 
+#         month = month(date), 
+#         day = day(date), 
+#         )
+#       ,
+#     join_by(year, month, day)
+#     )
+#   
+# 
+# tmpx |> 
+#   # mutate(occ_decile = ntile(occ_scaled, 10)) |>
+#   mutate(strike_type = if_else(
+#     strike_type %in% c(
+#       "before strike",
+#       "nurse strike cut short"
+#       ), NA_character_, strike_type)) |> 
+#   mutate(occ_decile = case_when(
+#     occ_decile %in% 1:2 ~ 1,
+#     occ_decile %in% 3:4 ~ 2,
+#     occ_decile %in% 5:6 ~ 3,
+#     occ_decile %in% 7:8 ~ 4,
+#     occ_decile %in% 9:10 ~ 5,
+#     T~ NA_integer_
+#   )) |>
+#   group_by(occ_decile) |> 
+#   mutate(cut = min(occ_scaled)) |> 
+#   ungroup() |> 
+#   slice_sample(prop =.05) |>
+#   mutate(occ_decile = as.factor(occ_decile)) |> 
+#   ggplot()+
+#   # geom_jitter(aes("", scale), alpha = .02)+
+#   # ggbeeswarm::geom_quasirandom(aes("", scale), alpha = .02)+
+#   ggbeeswarm::geom_beeswarm(aes("", occ_scaled, col = strike_type), alpha = 0.6)+
+#   geom_hline(aes(yintercept = cut))+
+#   # scale_color_viridis_d()+
+#   # scale_color_discrete_qualitative()+
+#   # coord_flip()+
+#   # facet_wrap(vars(procode), nrow = 1)+
+#   facet_wrap(vars(strike_type), nrow = 1)+
+#   theme(legend.position = "bottom")
+
+
+###
+
+# df_occ_prep |> 
 #   slice_sample(n=10e3) |> 
 #   ggplot()+
 #   geom_histogram(aes(scale))
 
-df_occ_prep |> 
-  mutate(occ_decile = ntile(scale, 10)) |> 
-  count(occ_decile)
+# df_occ_prep |> 
+#   mutate(occ_decile = ntile(scale, 10)) |> 
+#   count(occ_decile)
 
 df_occ_prep |> 
   slice_sample(prop =.2) |>
@@ -567,8 +663,6 @@ df_occ_prep |>
   geom_violin(aes(scale, procode, fill = procode))+
   # facet_wrap(vars(procode))+
   coord_flip()
-
-library("ggbeeswarm")  
 
 # TODO: vs
 # when bed occ increased 20-30% over mean then were % likely
@@ -583,6 +677,14 @@ df_occ_prep |>
 
 df_occ_prep |> 
   mutate(occ_decile = ntile(occ_scaled, 10)) |>
+  mutate(occ_decile = case_when(
+    occ_decile %in% 1:2 ~ 1,
+    occ_decile %in% 3:4 ~ 2,
+    occ_decile %in% 5:6 ~ 3,
+    occ_decile %in% 7:8 ~ 4,
+    occ_decile %in% 9:10 ~ 5,
+    T~ NA_integer_
+  )) |>
   group_by(occ_decile) |> 
   mutate(cut = min(occ_scaled)) |> 
   ungroup() |> 
