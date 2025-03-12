@@ -89,23 +89,11 @@ WHERE 1 = 1
     'RVW', 'REM', 'RBK', 'RTF', 'RX1',
     'RYR', 'RQW', 'RWD', 'RYJ', 'RNN',
     'RNZ', 'RTG', 'RHQ', 'RXC', 'RFS'
-    --'RKB', 'RWJ', 'RCB', 'RHM', 'RCU', 'RVJ',
-    --'RWA', 'RJC', 'RWW', 'RK9', 'RWH', 'RLT',
-    --'RFF', 'RVW', 'REM', 'RBK', 'RTF', 'RX1',
-    --'RYR', 'RQW', 'RWD', 'RYJ', 'RXF', 'RNN',
-    --'RNZ', 'RTG', 'RHQ', 'RCD', 'RXC', 'RFS'
-    )
+   )
 "
 
 df_raw_apcs_times <- dbGetQuery(con_sus_plus, query_apcs) |> 
   tibble()
-
-# df_raw_apcs_times |>
-#   filter(is.na(Admission_Time) & is.na(Discharge_Time)) |>
-# #   # filter(Der_Financial_Year == "2023/24") |> 
-#   count(procode,  sort = T)
-# #   count(procode, is.na(Admission_Time) & is.na(Discharge_Time), sort = T)
-#   
 
 df_apcs_times <- df_raw_apcs_times |> 
   # set null discharge times to some date well past 2024-07-31
@@ -217,11 +205,6 @@ provider_selection <- c(
   "RVW", "REM", "RBK", "RTF", "RX1", 
   "RYR", "RQW", "RWD", "RYJ", "RNN", 
   "RNZ", "RTG", "RHQ", "RXC", "RFS"
-  # "RKB", "RWJ", "RCB", "RHM", "RCU", "RVJ",
-  # "RWA", "RJC", "RWW", "RK9", "RWH", "RLT", 
-  # "RFF", "RVW", "REM", "RBK", "RTF", "RX1",
-  # "RYR", "RQW", "RWD", "RYJ", "RXF", "RNN",
-  # "RNZ", "RTG", "RHQ", "RCD", "RXC", "RFS"
 ) |> 
   enframe(name = NULL, value = "procode")
 
@@ -545,22 +528,21 @@ df_bed_occupancy |>
 
 
 # 8. OCCUPANCY VAR --------------------------------------------------------
-# TODO: WHAT TO DO ABOUT BANK HOLIDAYS / UNUSUAL DAYS / STRIKE DAYS??
 
 df_occ_prep <- df_bed_occupancy |> 
   filter(between(date(census_dttm), as_date("2023-04-01"), as_date("2024-03-31"))) |>
   mutate(wkday = as.character(wday(census_dttm, week_start = 1, label = T))) |> 
   count(procode, year, month, day, wkday, hour, wt = ip_occ, name = "occ") 
 
-
-df_occ_prep <- df_occ_prep |> 
+# INCORPORATE UNUSUAL DATES:
+df_occ_prep_udates <- df_occ_prep |> 
   left_join(
     df_unusual_dates,
     join_by(year, month, day)
   ) |> 
   mutate(wkday = case_when(
-    str_detect(strike_type, "industrial|radiographers") ~ "strike",
-    str_detect(strike_type, "bank holiday") ~ "bank hol",
+    str_detect(strike_type, "industrial|radiographers") ~ "Strike",
+    str_detect(strike_type, "bank holiday") ~ "Bank Hol.",
     TRUE ~ wkday
   )) |> 
   # count(strike_type, wkday)
@@ -569,168 +551,14 @@ df_occ_prep <- df_occ_prep |>
   ungroup() |> 
   mutate(occ_scaled = occ/mean_occ)
 
-df_occ_prep |> 
-  mutate(occ_decile = ntile(occ_scaled, 10)) |>
-  mutate(occ_decile = case_when(
-    occ_decile %in% 1:2 ~ 1,
-    occ_decile %in% 3:4 ~ 2,
-    occ_decile %in% 5:6 ~ 3,
-    occ_decile %in% 7:8 ~ 4,
-    occ_decile %in% 9:10 ~ 5,
-    T~ NA_integer_
-  )) |>
-  group_by(occ_decile) |>
-  mutate(cut = min(occ_scaled)) |>
-  ungroup() |>
-  slice_sample(prop =.05) |>
-  mutate(occ_decile = as.factor(occ_decile)) |>
-  ggplot()+
-  # geom_jitter(aes("", scale), alpha = .02)+
-  # ggbeeswarm::geom_quasirandom(aes("", scale), alpha = .02)+
-  ggbeeswarm::geom_beeswarm(aes("", occ_scaled, col = strike_type), alpha = 0.6)+
-  geom_hline(aes(yintercept = cut))+
-  # scale_color_viridis_d()+
-  # scale_color_discrete_qualitative()+
-  # coord_flip()+
-  # facet_wrap(vars(procode), nrow = 1)+
-  facet_wrap(vars(wkday), nrow = 1)+
-  theme(legend.position = "bottom")
+df_occ_prep_udates |> saveRDS("df_occ_prep_udates.rds")
 
-
-
-###
-# tmpx <- df_occ_prep |>
-#   mutate(occ_decile = ntile(occ_scaled, 10)) |>
-#   right_join(
-#     df_unusual_dates |> 
-#       mutate(
-#         year = year(date), 
-#         month = month(date), 
-#         day = day(date), 
-#         )
-#       ,
-#     join_by(year, month, day)
-#     )
-#   
-# 
-# tmpx |> 
-#   # mutate(occ_decile = ntile(occ_scaled, 10)) |>
-#   mutate(strike_type = if_else(
-#     strike_type %in% c(
-#       "before strike",
-#       "nurse strike cut short"
-#       ), NA_character_, strike_type)) |> 
-#   mutate(occ_decile = case_when(
-#     occ_decile %in% 1:2 ~ 1,
-#     occ_decile %in% 3:4 ~ 2,
-#     occ_decile %in% 5:6 ~ 3,
-#     occ_decile %in% 7:8 ~ 4,
-#     occ_decile %in% 9:10 ~ 5,
-#     T~ NA_integer_
-#   )) |>
-#   group_by(occ_decile) |> 
-#   mutate(cut = min(occ_scaled)) |> 
-#   ungroup() |> 
-#   slice_sample(prop =.05) |>
-#   mutate(occ_decile = as.factor(occ_decile)) |> 
-#   ggplot()+
-#   # geom_jitter(aes("", scale), alpha = .02)+
-#   # ggbeeswarm::geom_quasirandom(aes("", scale), alpha = .02)+
-#   ggbeeswarm::geom_beeswarm(aes("", occ_scaled, col = strike_type), alpha = 0.6)+
-#   geom_hline(aes(yintercept = cut))+
-#   # scale_color_viridis_d()+
-#   # scale_color_discrete_qualitative()+
-#   # coord_flip()+
-#   # facet_wrap(vars(procode), nrow = 1)+
-#   facet_wrap(vars(strike_type), nrow = 1)+
-#   theme(legend.position = "bottom")
-
-
-###
-
-# df_occ_prep |> 
-#   slice_sample(n=10e3) |> 
-#   ggplot()+
-#   geom_histogram(aes(scale))
-
-# df_occ_prep |> 
-#   mutate(occ_decile = ntile(scale, 10)) |> 
-#   count(occ_decile)
-
-df_occ_prep |> 
-  slice_sample(prop =.2) |>
-  ggplot()+
-  geom_violin(aes(scale, procode, fill = procode))+
-  # facet_wrap(vars(procode))+
-  coord_flip()
-
-# TODO: vs
-# when bed occ increased 20-30% over mean then were % likely
-# when bed occ in highest quantile then were % likely
-
-df_occ_prep |> 
-  mutate(occ_decile = ntile(scale, 10)) |> 
-  select(procode, month, day, hour, scale, occ_decile) |> 
-  filter(occ_decile == 1) |> 
-  arrange(scale)
-# TODO BANK HOLS AND HOLS (CHRISTMAS)/ UNUSUAL DAYS / STRIKE DAYS SHOULD BE EXCEPTIONS
-
-df_occ_prep |> 
-  mutate(occ_decile = ntile(occ_scaled, 10)) |>
-  mutate(occ_decile = case_when(
-    occ_decile %in% 1:2 ~ 1,
-    occ_decile %in% 3:4 ~ 2,
-    occ_decile %in% 5:6 ~ 3,
-    occ_decile %in% 7:8 ~ 4,
-    occ_decile %in% 9:10 ~ 5,
-    T~ NA_integer_
-  )) |>
-  group_by(occ_decile) |> 
-  mutate(cut = min(occ_scaled)) |> 
-  ungroup() |> 
-  slice_sample(prop =.05) |>
-  mutate(occ_decile = as.factor(occ_decile)) |> 
-  ggplot()+
-  # geom_jitter(aes("", scale), alpha = .02)+
-  # ggbeeswarm::geom_quasirandom(aes("", scale), alpha = .02)+
-  ggbeeswarm::geom_beeswarm(aes("", occ_scaled, col = occ_decile), alpha = 0.6)+
-  geom_hline(aes(yintercept = cut))+
-  scale_color_viridis_d()+
-  # scale_color_discrete_qualitative()+
-  # coord_flip()+
-  facet_wrap(vars(procode), nrow = 1)+
-  theme(legend.position = "bottom")
-
-# OR - DECILES FOR THAT PROVIDER...? PROBABLY NOT.
-# TODO OR KEEP AS % RELATIVE TO MEAN - BUT GROUPS
-# when bed occ increased 20-30% over mean then were % likely
-
-# -------------------------------------------------------------------------
-
-# TODO: vs
-# when bed occ increased 20-30% over mean then were % likely
-# when bed occ in highest quantile then were % likely
-
-lkp_occupancy <- df_occ_prep |> 
+lkp_occupancy <- df_occ_prep_udates |> 
   mutate(occ_decile = ntile(occ_scaled, 10)) |> 
   select(procode, month, day, hour, occ_scaled, occ_decile) 
-# filter(occ_decile == 1) |> 
-# arrange(scale)
-# TODO BANK HOLS AND HOLS (CHRISTMAS)/  UNUSUAL DAYS / STRIKE DAYS SHOULD BE EXCEPTIONS
-
-# MEANING - ROW 2
-# RBK         4     1     1      0.958          2
-# relative to that hour and wkday - it is scale gives idea of occupancy.
-# "96% of the mean for that hour and weekday, at that provider"
-# Then, decile is how a clinician might view the occ situation, 
-# independently of provider or time (if all providers and times were 
-# expected to have same occupancy?)
 
 
 # 9. SAVE FILE --------------------------------------------------------------
 
 saveRDS(lkp_occupancy, "lkp_occupancy.RDS")
-
-
-
 
