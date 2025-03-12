@@ -50,7 +50,7 @@ We investigate this this issue by developing regression models to examine whethe
 
 The analysis we present here investigates the association between hospital bed occupancy levels and the propensity of ED clinicians to order tests.
 
-This report takes the form of a standard scientific paper. We therefore continue with details of the method used, before presenting the results and discussion sections.
+This report takes the form of a standard scientific paper: we continue with details of the method used, before presenting the Results and Discussion sections.
 
 # Method {#sec-approach}
 
@@ -78,7 +78,7 @@ Production of the bed occupancy variable involved several steps. To begin with, 
 
 Whilst the completeness of admission and discharge times in our sample was high (due to our data quality thresholds), we developed a kNN-based algorithm to impute times for (\<1%) records without these values. This was necessary since missing admission or discharge times - for even a single patient - would invalidate a provider’s occupancy count indefinitely. Within provider, admission method, and day of the week groups, the kNN algorithm identified the record that was most similar (k =1) to the record with the missing value, based on a specified combination of admission time or discharge time (where valid), and length of stay. This combination was dependent on the pattern of missingness and whether the admission was a "same-day" admission.
 
-In order to move from hourly counts of beds occupied within each provider, to a relative occupancy level that could be compared across providers and times, we scaled the instantaneous occupancy to the mean occupancy for that provider, weekday, and at the same hour. This scaled occupancy value would be our variable of interest.
+In order to move from hourly counts of beds occupied within each provider, to a relative occupancy level that could be compared across providers and times, we scaled the occupancy at a specific hour, weekday, and provider to the mean occupancy for that hour, weekday, and provider. This scaled occupancy value was our variable of interest.
 
 We then linked these provider-level occupancy values to patient-level ED attendance records, such that an attendance record would show the provider's occupancy at a patient's time of arrival.
 
@@ -107,6 +107,7 @@ The computer code used in this analysis can be found a [GitHub repository](https
 #| include: false
 
 library("gt")
+library("pals")
 library("here")
 library("dplyr")
 library("tidyr")
@@ -120,6 +121,8 @@ library("janitor")
 library("stringr")
 library("gtExtras")
 library("lubridate")
+library("ggbeeswarm")  
+
 
 lkp_invst_ec_aea <- readRDS(here("reference", "lkp_test_ec_to_aea.rds"))
 ```
@@ -158,43 +161,128 @@ readRDS(here("data", "df_phase_II_prep_table_1.rds")) |>
 
 ```
 
-### Occupancy scaled?
+### The occupancy variable
 
-hour = colour scaled,
+As detailed in the Methods section, we scaled a provider's occupancy at a specific hour, weekday, to the mean occupancy for that hour and weekday, at that provider. This scaled occupancy value was our variable of interest. @fig-occ-time and @fig-occ-prov show distributions of this variable by hour and day of the week, and by provider.
 
-by day type (also option provider)
-
-@fig-odds-5pc suggests that the relationship high bed occupancy varies by test.
-
-Patients were significantly (2 %) more likely to receive CT scans... when bed occupancy levels were 5% higher than average for the day of the week and the hour of the day. These effects were small but significant.
-
-By contrast, Patients were significantly (2 %) more likely to receive CT scans... when bed occupancy levels were 5% higher than expected.
-
-The models give odds ratios - interpreted as a one unit increase in scaled occupancy.
-
-1.  **In context of KH03 returns**
-2.  **Sensitivity analysis. ??? Appendix.**
+::: panel-tabset
+#### Occupancy by time
 
 ```{r}
-#| label: fig-odds-5pc
+#| label: fig-occ-time
 #| echo: false
 #| message: false
 #| warning: false
-#| fig-cap: "The change in case-mix-adjusted odds of test if a provider's inpatient bed occupancy level is 5% higher than average. 'Average' was taken to be the mean occupancy at a provider, given the day of week (or whether the day was a holiday or strike day), and the hour of the day."
+#| fig-cap: "Distribution of the 'occupancy scaled' variable, by day of week and hour of day.<br><br>"
 #| column: page
 #| fig-width: 10
 #| fig-asp: 0.618
 #| out-width: "85%"
 #| fig-align: center
 
-readRDS(here("data","tmp_df_odds_results.rds")) |> 
-  rename_with(~str_remove_all(string = ., pattern = "...[4-7]")) |>
-  rename_with(~str_replace_all(string = ., pattern = "...[8-9]|...[1][0-1]", replacement = "_5pc")) |>
+set.seed(1776)
+
+df_occ_prep_udates <- read_rds(here("data", "df_occ_prep_udates.rds")) |> 
+  mutate(wkday = fct_relevel(
+    as_factor(wkday), "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun", "Bank Hol.", "Strike"
+    )) |> 
+  slice_sample(prop = 0.1)
+
+
+df_occ_prep_udates |> 
+  ggplot()+
+  theme_minimal()+
+  ggbeeswarm::geom_beeswarm(aes("", occ_scaled, col = hour), alpha = 0.6, stroke = NA)+
+  scale_colour_gradientn(
+    name = "Hour of day: ",
+    colours = pals::kovesi.cyclic_wrwbw_40_90_c42_s25(24)
+    )+
+  facet_wrap(vars(wkday), nrow = 1)+
+  theme(
+    legend.position = "bottom",
+    axis.title.x = element_blank()
+    )+
+  ylab("Occupancy scaled value\n")
+  
+
+```
+
+#### Occupancy by provider
+
+```{r}
+#| label: fig-occ-prov
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-cap: "Distribution of the 'occupancy scaled' variable, by provider.<br><br>"
+#| column: page
+#| fig-width: 10
+#| fig-asp: 0.618
+#| out-width: "85%"
+#| fig-align: center
+
+
+df_occ_prep_udates |> 
+  ggplot()+
+  theme_minimal()+
+  ggbeeswarm::geom_beeswarm(aes("", occ_scaled), col = "grey40", alpha = 0.2, stroke = NA)+
+  # scale_colour_gradientn(
+  #   name = "Hour of day: ",
+  #   colours = pals::kovesi.cyclic_wrwbw_40_90_c42_s25(24)
+  #   )+
+  facet_wrap(vars(procode), nrow = 2)+
+  theme(
+    legend.position = "bottom",
+    axis.title.x = element_blank()
+    )+
+  ylab("Occupancy scaled value\n")
+  
+```
+:::
+
+### Occupancy and test thresholds
+
+@fig-odds-5pc suggests that the association between hospital bed occupancy levels and the propensity of ED clinicians to order tests varies considerably by test type.
+
+Patients were significantly more likely to receive imaging procedures when bed occupancy levels were 5% higher than average (given the day of the week and the hour of the day). Within imaging, the greatest effect was seen for MRI. Here a patient was 8% more likely to receive a scan...
+
+The models give odds ratios - interpreted as a one unit increase in scaled occupancy.
+
+**Steven** - **I have the log of the odds, and log of lci in the table below (for now) - if you wish to check the interpretation - i.e. conversion to 5% increase...**
+
+::: panel-tabset
+#### Occupancy and thresholds
+
+```{r}
+#| label: fig-odds-5pc
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-cap: "The change in case-mix-adjusted odds of test if a provider's inpatient bed occupancy level is 5% higher than average. 'Average' was taken to be the mean occupancy at a provider, given the day of week (or whether the day was a holiday or strike day), and the hour that a patient arrived at the ED.<br><br>"
+#| column: page
+#| fig-width: 10
+#| fig-asp: 0.618
+#| out-width: "85%"
+#| fig-align: right
+
+
+readRDS(here("data","model_results_collated_01to32.rds")) |> 
+   mutate(InvestigationKey = as.integer(str_extract(name, "[:digit:]{2}"))) |>
+  left_join(
+    lkp_invst_ec_aea |> 
+      select(InvestigationKey, invst_group), 
+    join_by(InvestigationKey)
+  ) |> 
+  mutate(flag_sig = if_else(
+    odds_5pc >= 1 & lci_5pc <= 1 | odds_5pc <= 1 & uci_5pc >= 1, 
+    "0", "1")) |> 
+  # filter(id ==31)
   ggplot() +
   geom_hline(yintercept = 0, lty = "dashed", colour = "grey20", alpha = 0.5) +
-  geom_pointrange(aes(reorder(InvestigationDescription, odds_5pc-1), odds_5pc-1, ymin = lci_5pc-1, ymax = uci_5pc-1), col = "grey40", stroke = NA)+
-  theme_bw() +
+  geom_pointrange(aes(reorder(InvestigationDescription, odds_5pc-1), odds_5pc-1, ymin = lci_5pc-1, ymax = uci_5pc-1, col = flag_sig), stroke = NA)+
+  theme_minimal() +
   coord_flip() +
+  scale_color_manual(values = c("grey75", "grey40"))+
   # scale_y_log10(
   #   # limits = c(0.85, 1.15),
   #   # breaks = c(0.9, 1, 1.1),
@@ -213,18 +301,65 @@ readRDS(here("data","tmp_df_odds_results.rds")) |>
     # plot.margin = margin(5, 20, 5, 5),
     panel.grid.minor = element_blank(),
     axis.ticks = element_blank(),
-    strip.text = element_text(size = 9)
+    strip.text = element_text(size = 9), 
+    legend.position = "none"
   ) +
   scale_y_continuous(labels = scales::percent_format())+
   labs(
-       y = "\nChange in case-mix-adjusted odds of test if provider occupancy is 5% higher than average")+
-  # facet_grid(invst_group ~ ., space = "free", scales = "free_y")
+       y = "\nChange in case-mix-adjusted odds of test if provider occupancy is 5% higher than average (2023/24)")+
+  facet_grid(invst_group ~ ., space = "free", scales = "free_y")+
   # facet_grid(InvestigationDescription ~ quint_dec)
   # facet_wrap(vars(InvestigationDescription))+
   NULL
 
   
 ```
+
+#### Occupancy and thresholds (table)
+
+```{r}
+#| label: tbl-occ-thresh
+#| tbl-cap: "The change in case-mix-adjusted odds of test if a provider's inpatient bed occupancy level is 5% higher than average. 'Average' was taken to be the mean occupancy at a provider, given the day of week (or whether the day was a holiday or strike day), and the hour that a patient arrived at the ED.<br><br>"
+#| echo: false
+#| message: false
+#| warning: false
+#| column: page
+#| width: 8
+
+readRDS(here("data","model_results_collated_01to32.rds")) |> 
+  arrange(-odds_5pc) |> 
+  select(
+    InvestigationDescription, 
+    odds_log, 
+    lci_log, 
+    odds_5pc, 
+    lci_5pc,
+    uci_5pc,
+    value
+    ) |> 
+  gt() |> 
+  cols_label(
+    InvestigationDescription = "Test name",
+    value = "Number of tests<br>in 1M sample", 
+    # odds = "Odds ratio of test<br>(casemix adj.)<br>2023/24 vs. 2019/20",
+    # odds_adm = "Odds ratio of admission<br>given test (casemix adj.)<br>2023/24 vs. 2019/20",
+    # adm.p.value = "OR admission<br>p value",
+    .fn = md
+  ) |>
+  fmt_auto() |>
+  # fmt_number(columns = c(adm.p.value), decimals = 3) |>
+  tab_options(
+    data_row.padding = px(1),
+    table.font.size = "small"
+  )
+  
+
+```
+:::
+
+### Consequences given trends in bed occupancy
+
+Add text here
 
 # Discussion
 
