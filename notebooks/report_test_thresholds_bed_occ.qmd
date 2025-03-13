@@ -40,15 +40,13 @@ editor_options:
 
 # Introduction
 
-This is the second of two NHSE-commissioned reports that examine the impact of the growth in diagnostic testing on urgent and emergency care services.
+In this report, we examine the association between hospital bed occupancy levels and the propensity of ED clinicians to order tests. This is the second of two NHSE-commissioned reports that examine the impact of the growth in diagnostic testing on urgent and emergency care services.
 
-Our work in the first phase of this project, *Growth in Diagnostic Testing and Its Impact on Emergency Departments* (Strategy Unit, 2025), indicated that, between 2019/20 and 2023/24, the casemix-adjusted odds of a patient receiving a test increased for most test types. Moreover, having received a test, the casemix-adjusted odds that a patient would be *admitted* fell.
+Work on the first phase of this project, detailed in *Growth in Diagnostic Testing and Its Impact on Emergency Departments* (Strategy Unit, 2025), indicated that, between 2019/20 and 2023/24, the casemix-adjusted odds of a patient receiving a test increased for most test types. Moreover, having received a test, the casemix-adjusted odds that a patient would be *admitted* fell.
 
-The analysis we present here examines ... whether these two changes are causally (?) related / the association between these two changes. One theory here is that, by testing more, clinicians are able to rule out conditions that would otherwise involve admission. It is unclear, however, if clinical practice in EDs is leading this change, or if practice is responding to changes in the operational context (in particular, to the reduced availability of beds).
+The analysis we present here examines whether the increased odds of testing and decreased odds of admission are causally **(note: this was in the original "Further Research" text - don't know if we're now suggesting we can do this) related / are associated.** One theory is that, by testing more, clinicians are able to rule out conditions that would otherwise involve admission. It is unclear, however, if clinical practice in EDs is leading this change, or if practice is responding to changes in the operational context (in particular, to the reduced availability of beds).
 
 We investigate this this issue by developing regression models to examine whether, and the extent to which, the odds of a patient receiving a test varies with bed occupancy levels. Significant evidence of a "bed occupancy" effect would indicate that increased testing may be, in part, driven by reduced bed availability.
-
-The analysis we present here investigates the association between hospital bed occupancy levels and the propensity of ED clinicians to order tests.
 
 This report takes the form of a standard scientific paper: we continue with details of the method used, before presenting the Results and Discussion sections.
 
@@ -80,7 +78,7 @@ Whilst the completeness of admission and discharge times in our sample was high 
 
 In order to move from hourly counts of beds occupied within each provider, to a relative occupancy level that could be compared across providers and times, we scaled the occupancy at a specific hour, weekday, and provider to the mean occupancy for that hour, weekday, and provider. This scaled occupancy value was our variable of interest.
 
-We then linked these provider-level occupancy values to patient-level ED attendance records, such that an attendance record would show the provider's occupancy at a patient's time of arrival.
+We then linked these provider-level occupancy values to patient-level ED attendance records, such that an attendance record would show the provider's occupancy at a patient's time of arrival. A sensitivity analysis, given in @sec-appendix-2 shows that the results would change little if we were to use a provider's occupancy at the midpoint between a patient's time of arrival and their departure.
 
 ### Model specification
 
@@ -163,10 +161,10 @@ readRDS(here("data", "df_phase_II_prep_table_1.rds")) |>
 
 ### The occupancy variable
 
-As detailed in the Methods section, we scaled a provider's occupancy at a specific hour, weekday, to the mean occupancy for that hour and weekday, at that provider. This scaled occupancy value was our variable of interest. @fig-occ-time and @fig-occ-prov show distributions of this variable by hour and day of the week, and by provider.
+As detailed in the Methods section, we scaled a provider's occupancy at a specific hour, weekday, to the mean occupancy for that hour and weekday, at that provider. This scaled occupancy value was our variable of interest. @fig-occ-time and @fig-occ-prov show distributions of this variable by hour and day of the week, and by provider. Distributions are largely centred on 1 - as expected. We note bimodal distributions for some providers.
 
 ::: panel-tabset
-#### Occupancy by time
+#### Occupancy by day of week, and time of day
 
 ```{r}
 #| label: fig-occ-time
@@ -240,18 +238,18 @@ df_occ_prep_udates |>
 ```
 :::
 
-### Occupancy and test thresholds
+### Occupancy and testing thresholds
 
 @fig-odds-5pc suggests that the association between hospital bed occupancy levels and the propensity of ED clinicians to order tests varies considerably by test type.
 
-Patients were significantly more likely to receive imaging procedures when bed occupancy levels were 5% higher than average (given the day of the week and the hour of the day). Within imaging, the greatest effect was seen for MRI. Here a patient was 8% more likely to receive a scan...
+Patients were significantly more likely to receive imaging procedures when bed occupancy levels were 5% higher than average (given the day of the week and the hour of the day). Within imaging, the greatest effect was seen for MRI. Here, a patient was 8% more likely to receive a scan when the hospital was busier than average
 
 The models give odds ratios - interpreted as a one unit increase in scaled occupancy.
 
 **Steven** - **I have the log of the odds, and log of lci in the table below (for now) - if you wish to check the interpretation - i.e. conversion to 5% increase...**
 
 ::: panel-tabset
-#### Occupancy and thresholds
+#### Occupancy and testing thresholds
 
 ```{r}
 #| label: fig-odds-5pc
@@ -315,7 +313,7 @@ readRDS(here("data","model_results_collated_01to32.rds")) |>
   
 ```
 
-#### Occupancy and thresholds (table)
+#### (Table)
 
 ```{r}
 #| label: tbl-occ-thresh
@@ -359,7 +357,104 @@ readRDS(here("data","model_results_collated_01to32.rds")) |>
 
 ### Consequences given trends in bed occupancy
 
-Add text here
+\<br\>
+
+*Here's my attempt to articulate my reflections on / understanding (or lack of it) of this section:*
+
+*We are speculating that, when occupancy is high, clinicians are testing in order to send patients home rather than admit. The key part is that bed numbers are limited. (Our titular, "lack of available beds").*
+
+*However, if we look only at bed occupancy numbers in this section, we get no sense of constraint (unless we make the assumption that numbers of beds available haven't changed- which we can't do. While bed occupancy has increased by \~10% (according to KH03), so has the number of beds available. (The % occupied has increased by just 0.2%. So, as far as I can understand, there is little more constraint / lack of availability in 2023/24 than in 2019/20.))*
+
+*And whilst it's true that we used occupancy counts to derive our model variable of interest, the scaling does (to me) imply some (necessary) sense of constraint, due to:*
+
+1.  *Central limit theorem (?) - it's highly unlikely that we'll see values exceeding a certain number). and*
+
+<!-- -->
+
+2.  *there's a mean /expected / reference level.*
+
+TODO (?) IN WHAT FORM?
+
+Figure X, KH03, shows a 10% rise in the number of beds occupied between 2019/20 and 2023/24.
+
+```{r}
+#| label: fig-todo
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-cap: "Todo?.<br><br>"
+#| column: page
+#| fig-width: 10
+#| fig-asp: 0.618
+#| out-width: "85%"
+#| fig-align: right
+
+df_provider_popn <- read_rds(here("data", "df_provider_popn.rds"))
+
+
+
+bed_trends <- read_rds(here("data_raw", "raw_beds_kh03.rds")) |> 
+  filter(sector == "General & Acute") |>
+  filter(str_detect(organisation_code, "^R")) |>
+  # FOR OUR POPULATION OF 121 PROVIDERS:
+  semi_join(df_provider_popn, join_by(organisation_code == procode)) |>
+  mutate(date = as_date(effective_snapshot_date))  |> 
+  # AND THEN JUST THOSE 108 WHO HAVE SUBMITTED ALL QUARTERS SINCE 2010:
+  complete(date, organisation_code) |>
+  group_by(organisation_code) |>
+  filter(!is.na(sum(number_of_beds))) |>
+  ungroup() |>
+  #
+  count(metric, date, wt = number_of_beds) |> 
+  filter(metric == "occ_nig") |> 
+  mutate(flag_in = if_else(
+    between(
+      date, 
+      as_date("2019-04-01"), 
+      # EXCLUDE COVID:
+      # as_date("2020-03-31")
+      as_date("2019-12-31")
+      ) 
+    |
+      between(
+        date, 
+        as_date("2023-04-01"), 
+      # EXCLUDE MARCH TO MIRROR ABOVE:
+        # as_date("2024-03-31")
+        as_date("2023-12-31")
+      ),
+    "1", "0"
+    )) |> 
+  filter(
+    date > as_date("2019-03-31") &
+      date < as_date("2024-04-01")  
+      )  
+  #
+
+hlines <- bed_trends |> 
+  filter(flag_in == 1) |> 
+  group_by(year_2019 = year(date) == 2019) |> 
+  mutate(mean_fyear = mean(n)) |> 
+  ungroup() |> 
+  distinct(year_2019, mean_fyear) 
+  # mutate(p_growth = mean_fyear[2]/mean_fyear[1])
+# hline_2023 <- 
+
+bed_trends |> 
+  ggplot()+
+  theme_bw()+
+  geom_line(aes(date, n), col = "grey85")+
+  geom_point(aes(date, n, col = flag_in))+
+  scale_color_manual(values = c("grey85", "grey40"))+
+  theme(legend.position = "none")+
+  geom_hline(
+    data = hlines,
+    aes(yintercept = mean_fyear), 
+    lty = "dashed",
+    col = "grey40"
+    )
+
+```
 
 # Discussion
 
@@ -464,4 +559,70 @@ read_rds(here("data", "df_phase_II_table_representation.rds")) |>
 
 # Appendix 2 {#sec-appendix-2}
 
-In the primary analysis, we measured bed occupancy at the time of a patient's arrival at the ED. In this sensitivity analysis, we take the mid-point between the patient's arrival and departure time.
+In the primary analysis, we measured bed occupancy at the time of a patient's arrival at the ED. We then investigated how this occupancy affected the odds that a patient would receive a test. In this sensitivity analysis, we examine the effect on results if we measure occupancy at the mid-point between the patient's arrival and departure time.
+
+TODO:
+
+@fig-odds-sens suggests that the effects are similar... but larger when we take the mid-point , and may indicate that a greater association...
+
+```{r}
+#| label: fig-odds-sens
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-cap: "Results of the sensitivity analysis. Again, on the horizontal, we show the odds that a patient will receive a test if occupancy level is 5% higher than average. This figure illustrates the extent to which these odds (for selected tests) change when we use the mid-point between the patient's arrival and departure time, rather than then arrival time.<br><br>"
+#| column: page
+#| fig-width: 10
+#| fig-asp: 0.618
+#| out-width: "85%"
+#| fig-align: right
+
+read_rds(here("data", "df_model_odds_occ_sensitivity.rds")) |>
+  mutate(Analysis = "Sensitivity") |> 
+  bind_rows(
+    readRDS(here("data","model_results_collated_01to32.rds")) |> 
+      filter(id %in% c(9, 10, 13, 31)) |> 
+        mutate(Analysis = "Primary")
+
+    
+  ) |> 
+   mutate(flag_sig = if_else(
+    odds_5pc >= 1 & lci_5pc <= 1 | odds_5pc <= 1 & uci_5pc >= 1, 
+    "0", "1")) |> 
+  # filter(id ==31)
+  ggplot() +
+  geom_hline(yintercept = 0, lty = "dashed", colour = "grey20", alpha = 0.5) +
+  geom_pointrange(aes(reorder(InvestigationDescription, odds_5pc-1), odds_5pc-1, ymin = lci_5pc-1, ymax = uci_5pc-1, col = Analysis), stroke = NA, 
+                  position=position_dodge(width=.2))+
+  theme_minimal() +
+  # theme_bw()+
+  coord_flip() +
+  # scale_color_manual(values = c("grey75", "grey40"))+
+  # scale_y_log10(
+  #   # limits = c(0.85, 1.15),
+  #   # breaks = c(0.9, 1, 1.1),
+  #   # labels = c(
+  #   #   # "Half\nas likely in\n2023/24",
+  #   #   # "Equally\nas likely in\n2023/24",
+  #   #   # "2x\nas likely in\n2023/24",
+  #   #   "90%\nas likely as\nav. occupancy",
+  #   #   "Equally\nas likely as\nav. occupancy",
+  #   #   "110%x\nas likely as\nav. occupancy"
+  #   # )
+  # )+
+  theme(
+    axis.title.y = element_blank(),
+    axis.title = element_text(size = 9),
+    # plot.margin = margin(5, 20, 5, 5),
+    panel.grid.minor = element_blank(),
+    axis.ticks = element_blank(),
+    strip.text = element_text(size = 9), 
+    legend.position = "top"
+  ) +
+  scale_y_continuous(labels = scales::percent_format())+
+  labs(
+       y = "\nChange in case-mix-adjusted odds of test if provider occupancy is 5% higher than average (2023/24)")
+
+  
+
+```
