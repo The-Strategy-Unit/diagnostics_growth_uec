@@ -161,7 +161,9 @@ readRDS(here("data", "df_phase_II_prep_table_1.rds")) |>
 
 ### The occupancy variable
 
-As detailed in the Methods section, we scaled a provider's occupancy at a specific hour, weekday, to the mean occupancy for that hour and weekday, at that provider. This scaled occupancy value was our variable of interest. @fig-occ-time and @fig-occ-prov show distributions of this variable by hour and day of the week, and by provider. Distributions are largely normal, and centred on 1, and values by hour appear to be distributed randomly, as desired. We note bimodal distributions for some providers.
+\<As with everything else, consider this very rough and replaceable \>
+
+As detailed in the Methods section, we scaled a provider's occupancy at a specific hour, weekday, to the mean occupancy for that hour and weekday, at that provider. This scaled occupancy value was our variable of interest. @fig-occ-time and @fig-occ-prov show distributions of this variable by hour and day of the week, and by provider. Distributions are largely normal, and centred on 1, and values by hour appear to be distributed randomly, all as desired. We note bimodal distributions for some providers.
 
 ::: panel-tabset
 #### Occupancy by day of week, and time of day
@@ -244,7 +246,7 @@ df_occ_prep_udates |>
 
 Patients were significantly more likely to receive imaging procedures when bed occupancy was high. Within imaging, the greatest effect was seen for MRI. Here, a patient was 8% more likely to receive an MR scan when bed occupancy levels were 5% higher than average (given the day of the week and the hour of the day). This result was significant. Other significant results were ultrasound (4%), CT (2%), x-ray (1%).
 
-Other significant positives..
+Other significant positives..,
 
 For 2 tests, the high bed occupancy was significantly associated with decreased odds that a patient would receive the test.
 
@@ -359,25 +361,11 @@ readRDS(here("data","model_results_collated_01to32.rds")) |>
 
 ### Consequences given trends in bed occupancy
 
-\<br\>
+\<As with everything else, consider this very rough and replaceable \>
 
-*Here's my attempt to articulate my reflections on / understanding (or lack of it) of this section:*
+It is sometimes suggested that the propensity of ED clinicians to order tests when bed occupancy levels are high might have contributed substantively to the growth in diagnostic testing in EDs in recent years. This theory assumes rising bed occupancy rates. However, FIG XX suggests *that occupancy rates barely changed between 2019/20 and 2023/24 .....*
 
-*We are speculating that, when occupancy is high, clinicians are more likely to test in order to send patients home rather than admit. The key part is that bed numbers are limited. (Our titular, "lack of available beds").*
-
-*However, if we look only at bed occupancy numbers in this section, we get no sense of constraint (unless we make the assumption that numbers of beds available haven't changed- which we probably shouldn't do: While overnight bed occupancy has increased by \~10% (according to KH03), so has the number of beds available. (The % occupied has increased by just 0.2%. So, as far as I can understand, there is little more constraint / lack of availability in 2023/24 than in 2019/20.))*
-
-*It's true that we used occupancy counts to derive the variable of interest in our model. But the scaling does (to me) imply some (necessary) sense of constraint, as we have:*
-
-1.  *Distrubutions (normal-ish due to central limit theorem, or close relation of (?))- so it's highly unlikely that we'll see values exceeding a certain number). and*
-
-<!-- -->
-
-2.  *Related - a mean /expected / reference level.*
-
-TODO (?) IN WHAT FORM?
-
-Figure X, KH03, shows a 10% rise in the number of beds occupied between 2019/20 and 2023/24.
+We might speculate, however, that increases in the number of beds occupied (as shown in @fig-todo ) has placed additional load on the system and leads to a perception that occupancy rates are increasing. This effect may also have influenced testing thresholds. Yet, even if we used this less conservative assumption to measure the impact of the occupancy-testing association on growth, then, as we report in @fig-growth the impact is marginal.
 
 ```{r}
 #| label: fig-todo
@@ -457,6 +445,56 @@ bed_trends |>
     )
 
 ```
+
+```{r}
+#| label: fig-growth
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-cap: "The share of growth in ED testing that might be explained by lack of bed availabilty if we use the strained assumption that the growth in the number of beds occupied is influencing testing thresholds.<br><br>"
+#| column: page
+#| fig-width: 10
+#| fig-asp: 0.618
+#| out-width: "85%"
+#| fig-align: right
+
+readRDS(here("data","model_results_collated_01to32.rds")) |> 
+  mutate(odds_10pc = exp(0.1 * odds_log), .before = name) |> 
+  arrange(-odds_10pc) |> 
+  left_join(
+    readRDS(here("data", "df_phase_II_fyear_growth_counts.rds")) |> 
+       mutate(InvestigationDescription = str_remove_all(InvestigationDescription, "[:punct:]")) |>
+  mutate(InvestigationDescription = str_remove_all(InvestigationDescription, " procedure| situation")),
+    join_by(InvestigationDescription)
+  ) |> 
+  mutate(x23_24_occ = odds_10pc * x2019_20) |> 
+  mutate(ygrowth_occ = x23_24_occ - x2019_20) |> 
+  select(InvestigationDescription, odds_10pc, x2019_20, ygrowth_abs = growth_abs, ygrowth_occ) |> 
+  pivot_longer(cols = 3:5, names_to = "component", values_to = "n_tests") |> 
+  ggplot()+
+  theme_minimal()+
+  geom_col(aes(reorder(InvestigationDescription, n_tests), n_tests))+
+  coord_flip()+
+  theme(
+    axis.title.y = element_blank()
+  )+
+  facet_wrap(vars(component))
+  
+
+
+```
+
+*Here's my attempt to articulate my reflections on / understanding (or lack of it) of this section:*
+
+*We are speculating that, when occupancy is high, clinicians are more likely to test in order to send patients home rather than admit. The key part is that bed numbers are limited. (Our titular, "lack of available beds").*
+
+*However, if we look only at bed occupancy numbers in this section, we get no sense of constraint (unless we make the assumption that numbers of beds available haven't changed- which we probably shouldn't do: While overnight bed occupancy has increased by \~10% (according to KH03), so has the number of beds available. (The % occupied has increased by just 0.2%. So, as far as I can understand, there is little more constraint / lack of availability in 2023/24 than in 2019/20.))*
+
+*It's true that we used occupancy counts to derive the variable of interest in our model. But the scaling does (to me) imply some (necessary) sense of constraint, as we have:*
+
+1.  *Distrubutions (normal-ish due to central limit theorem, or close relation of (?))- so it's highly unlikely that we'll see values exceeding a certain number). and*
+
+2.  *Related - a mean /expected / reference level.*
 
 # Discussion
 
