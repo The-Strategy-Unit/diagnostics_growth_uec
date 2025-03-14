@@ -3140,7 +3140,7 @@ background: #f8be06;
 <h1>Introduction</h1>
 <p>In this report, we examine the association between hospital bed occupancy levels and the propensity of ED clinicians to order tests. This is the second of two NHSE-commissioned reports that examine the impact of the growth in diagnostic testing on urgent and emergency care services.</p>
 <p>Work on the first phase of this project, detailed in <em>Growth in Diagnostic Testing and Its Impact on Emergency Departments</em> (Strategy Unit, 2025), indicated that, between 2019/20 and 2023/24, the casemix-adjusted odds of a patient receiving a test increased for most test types. Moreover, having received a test, the casemix-adjusted odds that a patient would be <em>admitted</em> fell.</p>
-<p>The analysis we present here examines whether the increased odds of testing and decreased odds of admission are causally <strong>(note: this was in the original “Further Research” text - don’t know if we’re now suggesting we can do this) related / are associated.</strong> One theory is that, by testing more, clinicians are able to rule out conditions that would otherwise involve admission. It is unclear, however, if clinical practice in EDs is leading this change, or if practice is responding to changes in the operational context (in particular, to the reduced availability of beds).</p>
+<p>The analysis we present here examines whether the increased odds of testing and decreased odds of admission are <strong>causally</strong> <strong>(note: this was in the original “Further Research” text - don’t know if we’re now suggesting we can do this) related / are associated.</strong> One theory is that, by testing more, clinicians are able to rule out conditions that would otherwise involve admission. It is unclear, however, if clinical practice in EDs is leading this change, or if practice is responding to changes in the operational context (in particular, to the reduced availability of beds).</p>
 <p>We investigate this this issue by developing regression models to examine whether, and the extent to which, the odds of a patient receiving a test varies with bed occupancy levels. Significant evidence of a “bed occupancy” effect would indicate that increased testing may be, in part, driven by reduced bed availability.</p>
 <p>This report takes the form of a standard scientific paper: we continue with details of the method used, before presenting the Results and Discussion sections.</p>
 </section>
@@ -3193,20 +3193,20 @@ Table 1: A summary of selected characteristics of patients in the analysis data
 </figcaption>
 <div aria-describedby="tbl-one-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca" class="page-columns page-full">
 <div class="cell-output-display column-page">
-<div id="qxgugcrtvp" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#qxgugcrtvp table {
+<div id="joffsfzmkn" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#joffsfzmkn table {
 font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
-#qxgugcrtvp thead, #qxgugcrtvp tbody, #qxgugcrtvp tfoot, #qxgugcrtvp tr, #qxgugcrtvp td, #qxgugcrtvp th {
+#joffsfzmkn thead, #joffsfzmkn tbody, #joffsfzmkn tfoot, #joffsfzmkn tr, #joffsfzmkn td, #joffsfzmkn th {
 border-style: none;
 }
-#qxgugcrtvp p {
+#joffsfzmkn p {
 margin: 0;
 padding: 0;
 }
-#qxgugcrtvp .gt_table {
+#joffsfzmkn .gt_table {
 display: table;
 border-collapse: collapse;
 line-height: normal;
@@ -3231,11 +3231,11 @@ border-left-style: none;
 border-left-width: 2px;
 border-left-color: #D3D3D3;
 }
-#qxgugcrtvp .gt_caption {
+#joffsfzmkn .gt_caption {
 padding-top: 4px;
 padding-bottom: 4px;
 }
-#qxgugcrtvp .gt_title {
+#joffsfzmkn .gt_title {
 color: #333333;
 font-size: 125%;
 font-weight: initial;
@@ -3246,7 +3246,7 @@ padding-right: 5px;
 border-bottom-color: #FFFFFF;
 border-bottom-width: 0;
 }
-#qxgugcrtvp .gt_subtitle {
+#joffsfzmkn .gt_subtitle {
 color: #333333;
 font-size: 85%;
 font-weight: initial;
@@ -3257,7 +3257,7 @@ padding-right: 5px;
 border-top-color: #FFFFFF;
 border-top-width: 0;
 }
-#qxgugcrtvp .gt_heading {
+#joffsfzmkn .gt_heading {
 background-color: #FFFFFF;
 text-align: center;
 border-bottom-color: #FFFFFF;
@@ -3268,12 +3268,12 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#qxgugcrtvp .gt_bottom_border {
+#joffsfzmkn .gt_bottom_border {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#qxgugcrtvp .gt_col_headings {
+#joffsfzmkn .gt_col_headings {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -3287,7 +3287,7 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#qxgugcrtvp .gt_col_heading {
+#joffsfzmkn .gt_col_heading {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -3306,7 +3306,7 @@ padding-left: 5px;
 padding-right: 5px;
 overflow-x: hidden;
 }
-#qxgugcrtvp .gt_column_spanner_outer {
+#joffsfzmkn .gt_column_spanner_outer {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -3317,13 +3317,13 @@ padding-bottom: 0;
 padding-left: 4px;
 padding-right: 4px;
 }
-#qxgugcrtvp .gt_column_spanner_outer:first-child {
+#joffsfzmkn .gt_column_spanner_outer:first-child {
 padding-left: 0;
 }
-#qxgugcrtvp .gt_column_spanner_outer:last-child {
+#joffsfzmkn .gt_column_spanner_outer:last-child {
 padding-right: 0;
 }
-#qxgugcrtvp .gt_column_spanner {
+#joffsfzmkn .gt_column_spanner {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
@@ -3334,10 +3334,10 @@ overflow-x: hidden;
 display: inline-block;
 width: 100%;
 }
-#qxgugcrtvp .gt_spanner_row {
+#joffsfzmkn .gt_spanner_row {
 border-bottom-style: hidden;
 }
-#qxgugcrtvp .gt_group_heading {
+#joffsfzmkn .gt_group_heading {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3362,7 +3362,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 text-align: left;
 }
-#qxgugcrtvp .gt_empty_group_heading {
+#joffsfzmkn .gt_empty_group_heading {
 padding: 0.5px;
 color: #333333;
 background-color: #FFFFFF;
@@ -3376,13 +3376,13 @@ border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 vertical-align: middle;
 }
-#qxgugcrtvp .gt_from_md > :first-child {
+#joffsfzmkn .gt_from_md > :first-child {
 margin-top: 0;
 }
-#qxgugcrtvp .gt_from_md > :last-child {
+#joffsfzmkn .gt_from_md > :last-child {
 margin-bottom: 0;
 }
-#qxgugcrtvp .gt_row {
+#joffsfzmkn .gt_row {
 padding-top: 1px;
 padding-bottom: 1px;
 padding-left: 5px;
@@ -3400,7 +3400,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 overflow-x: hidden;
 }
-#qxgugcrtvp .gt_stub {
+#joffsfzmkn .gt_stub {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -3412,7 +3412,7 @@ border-right-color: #D3D3D3;
 padding-left: 5px;
 padding-right: 5px;
 }
-#qxgugcrtvp .gt_stub_row_group {
+#joffsfzmkn .gt_stub_row_group {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -3425,13 +3425,13 @@ padding-left: 5px;
 padding-right: 5px;
 vertical-align: top;
 }
-#qxgugcrtvp .gt_row_group_first td {
+#joffsfzmkn .gt_row_group_first td {
 border-top-width: 2px;
 }
-#qxgugcrtvp .gt_row_group_first th {
+#joffsfzmkn .gt_row_group_first th {
 border-top-width: 2px;
 }
-#qxgugcrtvp .gt_summary_row {
+#joffsfzmkn .gt_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -3440,14 +3440,14 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#qxgugcrtvp .gt_first_summary_row {
+#joffsfzmkn .gt_first_summary_row {
 border-top-style: solid;
 border-top-color: #D3D3D3;
 }
-#qxgugcrtvp .gt_first_summary_row.thick {
+#joffsfzmkn .gt_first_summary_row.thick {
 border-top-width: 2px;
 }
-#qxgugcrtvp .gt_last_summary_row {
+#joffsfzmkn .gt_last_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3456,7 +3456,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#qxgugcrtvp .gt_grand_summary_row {
+#joffsfzmkn .gt_grand_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -3465,7 +3465,7 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#qxgugcrtvp .gt_first_grand_summary_row {
+#joffsfzmkn .gt_first_grand_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3474,7 +3474,7 @@ border-top-style: double;
 border-top-width: 6px;
 border-top-color: #D3D3D3;
 }
-#qxgugcrtvp .gt_last_grand_summary_row_top {
+#joffsfzmkn .gt_last_grand_summary_row_top {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3483,10 +3483,10 @@ border-bottom-style: double;
 border-bottom-width: 6px;
 border-bottom-color: #D3D3D3;
 }
-#qxgugcrtvp .gt_striped {
+#joffsfzmkn .gt_striped {
 background-color: rgba(128, 128, 128, 0.05);
 }
-#qxgugcrtvp .gt_table_body {
+#joffsfzmkn .gt_table_body {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -3494,7 +3494,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#qxgugcrtvp .gt_footnotes {
+#joffsfzmkn .gt_footnotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -3507,7 +3507,7 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#qxgugcrtvp .gt_footnote {
+#joffsfzmkn .gt_footnote {
 margin: 0px;
 font-size: 90%;
 padding-top: 4px;
@@ -3515,7 +3515,7 @@ padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#qxgugcrtvp .gt_sourcenotes {
+#joffsfzmkn .gt_sourcenotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -3528,64 +3528,64 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#qxgugcrtvp .gt_sourcenote {
+#joffsfzmkn .gt_sourcenote {
 font-size: 90%;
 padding-top: 4px;
 padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#qxgugcrtvp .gt_left {
+#joffsfzmkn .gt_left {
 text-align: left;
 }
-#qxgugcrtvp .gt_center {
+#joffsfzmkn .gt_center {
 text-align: center;
 }
-#qxgugcrtvp .gt_right {
+#joffsfzmkn .gt_right {
 text-align: right;
 font-variant-numeric: tabular-nums;
 }
-#qxgugcrtvp .gt_font_normal {
+#joffsfzmkn .gt_font_normal {
 font-weight: normal;
 }
-#qxgugcrtvp .gt_font_bold {
+#joffsfzmkn .gt_font_bold {
 font-weight: bold;
 }
-#qxgugcrtvp .gt_font_italic {
+#joffsfzmkn .gt_font_italic {
 font-style: italic;
 }
-#qxgugcrtvp .gt_super {
+#joffsfzmkn .gt_super {
 font-size: 65%;
 }
-#qxgugcrtvp .gt_footnote_marks {
+#joffsfzmkn .gt_footnote_marks {
 font-size: 75%;
 vertical-align: 0.4em;
 position: initial;
 }
-#qxgugcrtvp .gt_asterisk {
+#joffsfzmkn .gt_asterisk {
 font-size: 100%;
 vertical-align: 0;
 }
-#qxgugcrtvp .gt_indent_1 {
+#joffsfzmkn .gt_indent_1 {
 text-indent: 5px;
 }
-#qxgugcrtvp .gt_indent_2 {
+#joffsfzmkn .gt_indent_2 {
 text-indent: 10px;
 }
-#qxgugcrtvp .gt_indent_3 {
+#joffsfzmkn .gt_indent_3 {
 text-indent: 15px;
 }
-#qxgugcrtvp .gt_indent_4 {
+#joffsfzmkn .gt_indent_4 {
 text-indent: 20px;
 }
-#qxgugcrtvp .gt_indent_5 {
+#joffsfzmkn .gt_indent_5 {
 text-indent: 25px;
 }
-#qxgugcrtvp .katex-display {
+#joffsfzmkn .katex-display {
 display: inline-flex !important;
 margin-bottom: 0.75em !important;
 }
-#qxgugcrtvp div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#joffsfzmkn div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
 height: 0px !important;
 }
 </style>
@@ -4413,15 +4413,15 @@ height: 0px !important;
 <h3 class="anchored" data-anchor-id="consequences-given-trends-in-bed-occupancy">Consequences given trends in bed occupancy</h3>
 <p>&lt;br&gt;</p>
 <p><em>Here’s my attempt to articulate my reflections on / understanding (or lack of it) of this section:</em></p>
-<p><em>We are speculating that, when occupancy is high, clinicians are testing in order to send patients home rather than admit. The key part is that bed numbers are limited. (Our titular, “lack of available beds”).</em></p>
-<p><em>However, if we look only at bed occupancy numbers in this section, we get no sense of constraint (unless we make the assumption that numbers of beds available haven’t changed- which we can’t do. While bed occupancy has increased by ~10% (according to KH03), so has the number of beds available. (The % occupied has increased by just 0.2%. So, as far as I can understand, there is little more constraint / lack of availability in 2023/24 than in 2019/20.))</em></p>
-<p><em>And whilst it’s true that we used occupancy counts to derive our model variable of interest, the scaling does (to me) imply some (necessary) sense of constraint, due to:</em></p>
+<p><em>We are speculating that, when occupancy is high, clinicians are more likely to test in order to send patients home rather than admit. The key part is that bed numbers are limited. (Our titular, “lack of available beds”).</em></p>
+<p><em>However, if we look only at bed occupancy numbers in this section, we get no sense of constraint (unless we make the assumption that numbers of beds available haven’t changed- which we probably shouldn’t do: While overnight bed occupancy has increased by ~10% (according to KH03), so has the number of beds available. (The % occupied has increased by just 0.2%. So, as far as I can understand, there is little more constraint / lack of availability in 2023/24 than in 2019/20.))</em></p>
+<p><em>It’s true that we used occupancy counts to derive the variable of interest in our model. But the scaling does (to me) imply some (necessary) sense of constraint, as we have:</em></p>
 <ol type="1">
-<li><em>Central limit theorem (?) - it’s highly unlikely that we’ll see values exceeding a certain number). and</em></li>
+<li><em>Distrubutions (normal-ish due to central limit theorem, or close relation of (?))- so it’s highly unlikely that we’ll see values exceeding a certain number). and</em></li>
 </ol>
 <!-- -->
 <ol start="2" type="1">
-<li><em>there’s a mean /expected / reference level.</em></li>
+<li><em>Related - a mean /expected / reference level.</em></li>
 </ol>
 <p>TODO (?) IN WHAT FORM?</p>
 <p>Figure X, KH03, shows a 10% rise in the number of beds occupied between 2019/20 and 2023/24.</p>

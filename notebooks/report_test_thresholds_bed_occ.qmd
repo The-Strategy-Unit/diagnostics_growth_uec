@@ -44,7 +44,7 @@ In this report, we examine the association between hospital bed occupancy levels
 
 Work on the first phase of this project, detailed in *Growth in Diagnostic Testing and Its Impact on Emergency Departments* (Strategy Unit, 2025), indicated that, between 2019/20 and 2023/24, the casemix-adjusted odds of a patient receiving a test increased for most test types. Moreover, having received a test, the casemix-adjusted odds that a patient would be *admitted* fell.
 
-The analysis we present here examines whether the increased odds of testing and decreased odds of admission are causally **(note: this was in the original "Further Research" text - don't know if we're now suggesting we can do this) related / are associated.** One theory is that, by testing more, clinicians are able to rule out conditions that would otherwise involve admission. It is unclear, however, if clinical practice in EDs is leading this change, or if practice is responding to changes in the operational context (in particular, to the reduced availability of beds).
+The analysis we present here examines whether the increased odds of testing and decreased odds of admission are **causally** **(note: this was in the original "Further Research" text - don't know if we're now suggesting we can do this) related / are associated.** One theory is that, by testing more, clinicians are able to rule out conditions that would otherwise involve admission. It is unclear, however, if clinical practice in EDs is leading this change, or if practice is responding to changes in the operational context (in particular, to the reduced availability of beds).
 
 We investigate this this issue by developing regression models to examine whether, and the extent to which, the odds of a patient receiving a test varies with bed occupancy levels. Significant evidence of a "bed occupancy" effect would indicate that increased testing may be, in part, driven by reduced bed availability.
 
@@ -361,17 +361,17 @@ readRDS(here("data","model_results_collated_01to32.rds")) |>
 
 *Here's my attempt to articulate my reflections on / understanding (or lack of it) of this section:*
 
-*We are speculating that, when occupancy is high, clinicians are testing in order to send patients home rather than admit. The key part is that bed numbers are limited. (Our titular, "lack of available beds").*
+*We are speculating that, when occupancy is high, clinicians are more likely to test in order to send patients home rather than admit. The key part is that bed numbers are limited. (Our titular, "lack of available beds").*
 
-*However, if we look only at bed occupancy numbers in this section, we get no sense of constraint (unless we make the assumption that numbers of beds available haven't changed- which we can't do. While bed occupancy has increased by \~10% (according to KH03), so has the number of beds available. (The % occupied has increased by just 0.2%. So, as far as I can understand, there is little more constraint / lack of availability in 2023/24 than in 2019/20.))*
+*However, if we look only at bed occupancy numbers in this section, we get no sense of constraint (unless we make the assumption that numbers of beds available haven't changed- which we probably shouldn't do: While overnight bed occupancy has increased by \~10% (according to KH03), so has the number of beds available. (The % occupied has increased by just 0.2%. So, as far as I can understand, there is little more constraint / lack of availability in 2023/24 than in 2019/20.))*
 
-*And whilst it's true that we used occupancy counts to derive our model variable of interest, the scaling does (to me) imply some (necessary) sense of constraint, due to:*
+*It's true that we used occupancy counts to derive the variable of interest in our model. But the scaling does (to me) imply some (necessary) sense of constraint, as we have:*
 
-1.  *Central limit theorem (?) - it's highly unlikely that we'll see values exceeding a certain number). and*
+1.  *Distrubutions (normal-ish due to central limit theorem, or close relation of (?))- so it's highly unlikely that we'll see values exceeding a certain number). and*
 
 <!-- -->
 
-2.  *there's a mean /expected / reference level.*
+2.  *Related - a mean /expected / reference level.*
 
 TODO (?) IN WHAT FORM?
 
