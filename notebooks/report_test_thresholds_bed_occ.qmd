@@ -161,7 +161,7 @@ readRDS(here("data", "df_phase_II_prep_table_1.rds")) |>
 
 ### The occupancy variable
 
-As detailed in the Methods section, we scaled a provider's occupancy at a specific hour, weekday, to the mean occupancy for that hour and weekday, at that provider. This scaled occupancy value was our variable of interest. @fig-occ-time and @fig-occ-prov show distributions of this variable by hour and day of the week, and by provider. Distributions are largely centred on 1 - as expected. We note bimodal distributions for some providers.
+As detailed in the Methods section, we scaled a provider's occupancy at a specific hour, weekday, to the mean occupancy for that hour and weekday, at that provider. This scaled occupancy value was our variable of interest. @fig-occ-time and @fig-occ-prov show distributions of this variable by hour and day of the week, and by provider. Distributions are largely normal, and centred on 1, and values by hour appear to be distributed randomly, as desired. We note bimodal distributions for some providers.
 
 ::: panel-tabset
 #### Occupancy by day of week, and time of day
@@ -240,11 +240,13 @@ df_occ_prep_udates |>
 
 ### Occupancy and testing thresholds
 
-@fig-odds-5pc suggests that the association between hospital bed occupancy levels and the propensity of ED clinicians to order tests varies considerably by test type.
+@fig-odds-5pc suggests that the association between hospital bed occupancy levels and the propensity of ED clinicians to order tests varies considerably by test type. For 10 of 32 tests, the effect was significant and positive.
 
-Patients were significantly more likely to receive imaging procedures when bed occupancy levels were 5% higher than average (given the day of the week and the hour of the day). Within imaging, the greatest effect was seen for MRI. Here, a patient was 8% more likely to receive a scan when the hospital was busier than average
+Patients were significantly more likely to receive imaging procedures when bed occupancy was high. Within imaging, the greatest effect was seen for MRI. Here, a patient was 8% more likely to receive an MR scan when bed occupancy levels were 5% higher than average (given the day of the week and the hour of the day). This result was significant. Other significant results were ultrasound (4%), CT (2%), x-ray (1%).
 
-The models give odds ratios - interpreted as a one unit increase in scaled occupancy.
+Other significant positives..
+
+For 2 tests, the high bed occupancy was significantly associated with decreased odds that a patient would receive the test.
 
 **Steven** - **I have the log of the odds, and log of lci in the table below (for now) - if you wish to check the interpretation - i.e. conversion to 5% increase...**
 
