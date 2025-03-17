@@ -119,6 +119,7 @@ library("janitor")
 library("stringr")
 library("gtExtras")
 library("lubridate")
+library("patchwork")  
 library("ggbeeswarm")  
 
 
@@ -365,7 +366,9 @@ readRDS(here("data","model_results_collated_01to32.rds")) |>
 
 It is sometimes suggested that the propensity of ED clinicians to order tests when bed occupancy levels are high might have contributed substantively to the growth in diagnostic testing in EDs in recent years. This theory assumes rising bed occupancy rates. However, FIG XX suggests *that occupancy rates barely changed between 2019/20 and 2023/24 .....*
 
-We might speculate, however, that increases in the number of beds occupied (as shown in @fig-todo ) has placed additional load on the system and leads to a perception that occupancy rates are increasing. This effect may also have influenced testing thresholds. Yet, even if we used this less conservative assumption to measure the impact of the occupancy-testing association on growth, then, as we report in @fig-growth the impact is marginal.
+We might speculate, however, that increases in the number of beds occupied (as shown in @fig-todo) has placed additional load on the system and leads to a perception that occupancy rates are increasing. This effect may also have influenced testing thresholds. Yet, even if we used this less conservative assumption to measure the impact of the occupancy-testing association on growth, then, as we report in @fig-growth the impact is marginal.
+
+These are national numbers.
 
 ```{r}
 #| label: fig-todo
@@ -458,7 +461,7 @@ bed_trends |>
 #| out-width: "85%"
 #| fig-align: right
 
-readRDS(here("data","model_results_collated_01to32.rds")) |> 
+preplot_growth <- readRDS(here("data","model_results_collated_01to32.rds")) |> 
   mutate(odds_10pc = exp(0.1 * odds_log), .before = name) |> 
   arrange(-odds_10pc) |> 
   left_join(
@@ -470,21 +473,139 @@ readRDS(here("data","model_results_collated_01to32.rds")) |>
   mutate(x23_24_occ = odds_10pc * x2019_20) |> 
   mutate(ygrowth_occ = x23_24_occ - x2019_20) |> 
   select(InvestigationDescription, odds_10pc, x2019_20, ygrowth_abs = growth_abs, ygrowth_occ) |> 
-  pivot_longer(cols = 3:5, names_to = "component", values_to = "n_tests") |> 
+  pivot_longer(cols = 3:5, names_to = "component", values_to = "n_tests") |> group_by(InvestigationDescription) |> 
+  arrange(component) |> 
+  mutate(inorder = n_tests[1]) |> 
+  ungroup() |> 
+  rename(Component = component) |> 
+  mutate(n_tests = n_tests/1e6)
+
+my_red <- pals::kovesi.cyclic_wrwbw_40_90_c42_s25(24)[15]
+my_other <- pals::kovesi.cyclic_wrwbw_40_90_c42_s25(24)[18]
+# my_other <- pals::kovesi.cyclic_wrwbw_40_90_c42_s25(24)[19]
+
+p1 <- preplot_growth |> 
+  filter(Component == "x2019_20") |> 
+  mutate(type = "2019/20\nnumber of tests in EDs") |> 
   ggplot()+
   theme_minimal()+
-  geom_col(aes(reorder(InvestigationDescription, n_tests), n_tests))+
+  geom_col(aes(reorder(InvestigationDescription, inorder), n_tests), fill = my_other)+
   coord_flip()+
+  theme(
+    axis.title = element_blank()
+  )+
+  ylim(-0, 5.5)+
+    # scale_y_continuous(limits = c(-250e3, 5.5e6),  labels = comma)+
+  facet_wrap(vars(type))
+
+# p1
+  
+# p2 <- preplot_growth |>
+#   filter(Component != "x2019_20") |> 
+#   mutate(type = "Growth in tests 2019/20 to 2023/24") |> 
+#   mutate(Component = as_factor(if_else(
+#     Component ==  "ygrowth_abs", "Total activity", "Growth due occupancy"
+#     ))) |> 
+#   ggplot()+
+#   theme_minimal()+
+#   geom_col(
+#     aes(reorder(InvestigationDescription, inorder), n_tests,  fill = Component), position="dodge")+
+#   coord_flip()+
+#   # scale_fill_manual(values = c("grey50" my_red))+
+#   scale_fill_manual(values = c(my_other, my_red))+
+#   theme(
+#     axis.title.y = element_blank()
+#   )+
+#   facet_wrap(vars(type))+
+#   guides(
+#     fill  = guide_legend(position = "inside")
+#   ) +
+#   theme(
+#     axis.title = element_blank(),
+#     axis.text.y = element_blank(),
+#     # legend.position = "none"
+#     legend.position.inside = c(0.75,0.75)
+#   )+
+#   ylim(-250e3, 5.5e6)+
+#   NULL
+
+# p2
+
+
+# p1 + p2
+
+
+p3 <- preplot_growth |>
+  filter(Component == "ygrowth_abs") |> 
+  mutate(type = "19/20  to  23/24\ntotal growth in ED tests") |> 
+  # mutate(Component = as_factor(if_else(
+  #   Component ==  "ygrowth_abs", "Total activity", "Growth due occupancy"
+  #   ))) |> 
+  ggplot()+
+  theme_minimal()+
+  geom_col(
+    aes(reorder(InvestigationDescription, inorder), n_tests,  fill = Component), position="dodge")+
+  coord_flip()+
+  # scale_fill_manual(values = c("grey50" my_red))+
+  scale_fill_manual(values = c(my_other))+
   theme(
     axis.title.y = element_blank()
   )+
-  facet_wrap(vars(component))
-  
+  facet_wrap(vars(type))+
+  guides(
+    fill  = guide_legend(position = "inside")
+  ) +
+  theme(
+    # axis.title = element_blank(),
+    axis.text.y = element_blank(),
+    legend.position = "none"
+    # legend.position.inside = c(0.75,0.75)
+  )+
+  ylim(-0.250, 5.5)+
+  ylab("Number of tests (millions)")+
+    # scale_y_continuous(limits = c(-250e3, 5.5e6),  labels = comma)+
+
+  NULL
+
+# p3
 
 
+p4 <- preplot_growth |>
+  filter(Component == "ygrowth_occ") |> 
+  mutate(type = "19/20  to  23/24\ngrowth in ED tests due to high occupancy") |> 
+  # mutate(Component = as_factor(if_else(
+  #   Component ==  "ygrowth_abs", "Total activity", "Growth due occupancy"
+  #   ))) |> 
+  ggplot()+
+  theme_minimal()+
+  geom_col(
+    aes(reorder(InvestigationDescription, inorder), n_tests,  fill = Component), position="dodge")+
+  coord_flip()+
+  # scale_fill_manual(values = c("grey50" my_red))+
+  scale_fill_manual(values = c(my_red))+
+  theme(
+    axis.title.y = element_blank()
+  )+
+  facet_wrap(vars(type))+
+  guides(
+    fill  = guide_legend(position = "inside")
+  ) +
+  theme(
+    axis.title = element_blank(),
+    axis.text.y = element_blank(),
+    legend.position = "none"
+    # legend.position.inside = c(0.75,0.75)
+  )+
+  ylim(-0.250, 5.5)+
+  # scale_y_continuous(limits = c(-250e3, 5.5e6),  labels = comma)+
+  NULL
+# p4
+
+p1+p3+p4
 ```
 
-*Here's my attempt to articulate my reflections on / understanding (or lack of it) of this section:*
+*\
+Here's my attempt to articulate my reflections on / understanding (or lack of it) of this section:*
 
 *We are speculating that, when occupancy is high, clinicians are more likely to test in order to send patients home rather than admit. The key part is that bed numbers are limited. (Our titular, "lack of available beds").*
 
