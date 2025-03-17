@@ -27,6 +27,7 @@ con_sandbox_su <- dbConnect(
   Database = "NHSE_Sandbox_StrategyUnit",
   Trusted_Connection = "True"
 )
+
 con_sus_plus <- dbConnect(
   odbc::odbc(),
   Driver = "SQL Server",
@@ -189,6 +190,31 @@ df_odds_occ <- df_odds_fe3 |>
     join_by(procode, month, day, hour)
   )
 
+
+# 4.* SENSITIVITY ANALYSIS ------------------------------------------------
+
+# # *ONLY RUN WHEN SENSITIVITY ANALYSIS REQUIRED*
+# df_odds_fe3 <- df_odds_fe3 |> 
+#   # head(20) |> 
+#   # select(starts_with("dttm")) |> 
+#   mutate(half_stay = 
+#            round_half_up(
+#            as.integer(difftime(dttm_depart, dttm_arr, units = "mins"))/2
+#            )
+#          ) |> 
+#   mutate(dttm_arr_half = dttm_arr + minutes(half_stay)) |> 
+#   mutate(month_half = month(dttm_arr_half)) |>
+#   mutate(day_half = day(dttm_arr_half)) |> 
+#   mutate(hour_half = hour(dttm_arr_half))
+#   
+# lkp_occupancy <- readRDS("lkp_occupancy.RDS")
+# 
+# df_odds_occ <- df_odds_fe3 |> 
+#   left_join(
+#     lkp_occupancy, 
+#     join_by(procode, month_half == month, day_half == day, hour_half == hour)
+#   ) 
+#   
 # 5. SAMPLE 1 MILLION RECORDS (~43%) ------------------------
 
 set.seed(1822)
