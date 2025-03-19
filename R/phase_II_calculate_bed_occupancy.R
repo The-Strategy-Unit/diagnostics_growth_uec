@@ -561,4 +561,6 @@ lkp_occupancy <- df_occ_prep_udates |>
 # 9. SAVE FILE --------------------------------------------------------------
 
 saveRDS(lkp_occupancy, "lkp_occupancy.RDS")
+saveRDS(df_occ_prep, "ncdr_df_occ_prep.RDS")
+
 
