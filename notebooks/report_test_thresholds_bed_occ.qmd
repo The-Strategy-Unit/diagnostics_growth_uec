@@ -52,7 +52,7 @@ This report takes the form of a standard scientific paper: we continue with deta
 
 This analysis covers ED attendances at major (Type 1) emergency departments. For ED attendance data, we relied on the SUS ECDS, whilst for a provider's bed occupancy levels we used the SUS APC data set. These are both high-quality, patient-level sources. However, we observed considerable variation in recording practices, both across the population of provider trusts and over time. If overlooked, this variation would adversely affect both the [reliability](https://en.wikipedia.org/wiki/Reliability_(statistics)) and [validity](https://en.wikipedia.org/wiki/Validity_(statistics)#Reliability) of our results.
 
-### The use of provider sampling {#sec-approach-sampling}
+#### The use of provider sampling {#sec-approach-sampling}
 
 To increase the chances that our findings would be both valid and reliable, we conducted the analysis on data from a sample of 25 providers. This sample was non-random: we included a provider in the sample if the quality of their data submissions met our requirements.
 
@@ -62,11 +62,11 @@ There is a trade-off to be made here. The larger our sample of providers, the mo
 
 Details of our approach to this trade-off, as well as our data quality criteria, sampling methods, and the measures of representation, can be found in @sec-appendix-1.
 
-### **Excluded attendances**
+#### **Excluded attendances**
 
 For providers within our sample, the analyses covers all unplanned attendances of persons with an English postcode, with some exceptions: We excluded cases were a person left the ED before being treated, and persons streamed to other care services. In addition, we excluded cases where the patient died during an attendance and those where the patient was found to be dead on arrival at the ED.
 
-### Data preparation
+#### Data preparation
 
 Approximately 5.5% of the 2.5 million records in our sample had missing values in one or more key field. (Our "key fields" are given in @sec-appendix-1.) As our chosen model type will not accept missing values, we opted to delete these records. This involved the assumption that these values are missing at random.
 
@@ -76,9 +76,9 @@ Whilst the completeness of admission and discharge times in our sample was high 
 
 In order to move from hourly counts of beds occupied within each provider, to a relative occupancy level that could be compared across providers and times, we scaled the occupancy at a specific hour, weekday, and provider to the mean occupancy for that hour, weekday, and provider. This scaled occupancy value was our variable of interest.
 
-We then linked these provider-level occupancy values to patient-level ED attendance records, such that an attendance record would show the provider's occupancy at a patient's time of arrival. A sensitivity analysis, given in @sec-appendix-2 shows that the results would change little if we were to use a provider's occupancy at the midpoint between a patient's time of arrival and their departure.
+We then linked these provider-level occupancy values to patient-level ED attendance records, such that an attendance record would show the provider's occupancy at a patient's time of arrival. A sensitivity analysis, given in @sec-appendix-3 shows that the results would change little if we were to use a provider's occupancy at the midpoint between a patient's time of arrival and their departure.
 
-### Model specification
+#### Model specification
 
 Moving from data preparation to the modelling stage, we built 32 distinct models to predict casemix-adjusted odds-of-test ratios for 32 (of 49) test types that appear in the EC data set. These 32 tests account for over 99% of all tests recorded in EDs.
 
@@ -92,7 +92,7 @@ We developed preliminary models, in which the scaled occupancy values were appor
 
 Our final models were run on the same random sub-sample of 1 million attendance records (from a possible 2.3 million). This sample size offered a pragmatic balance between model run times and the precision of effect size estimates.
 
-### Reproducibility
+#### Reproducibility
 
 The computer code used in this analysis can be found a [GitHub repository](https://github.com/The-Strategy-Unit/diagnostic_growth_uec) (permissions currently required).
 
@@ -129,9 +129,9 @@ my_other <- pals::kovesi.cyclic_wrwbw_40_90_c42_s25(24)[18]
 
 ```
 
-### Characteristics of patients in the study
+#### Characteristics of patients in the study
 
-Selected characteristics of the patients covered by our analysis data set are shown in @tbl-one.
+Selected characteristics of patients covered by the analysis dataset are shown in @tbl-one.
 
 ```{r}
 #| label: tbl-one
@@ -163,94 +163,11 @@ readRDS(here("data", "df_phase_II_prep_table_1.rds")) |>
 
 ```
 
-## The occupancy variable
+## Occupancy
 
-\<As with everything else, consider this very rough and replaceable \>
+As detailed in the Methods section, we scaled a provider's occupancy at a specific hour, on a given weekday, to the mean occupancy for that hour and weekday at that provider. This scaled occupancy value was our variable of interest. We show distributions of this variable by hour and day of the week, and by provider, alongside statistics on the underlying occupancy counts, in @sec-appendix-2. Distributions are largely normal (centred on 1), and values by hour appear to be distributed randomly, all as desired. For providers with fewer beds, the occupancy variable displays greater variation. We note bimodal distributions for some providers.
 
-As detailed in the Methods section, we scaled a provider's occupancy at a specific hour, weekday, to the mean occupancy for that hour and weekday, at that provider. This scaled occupancy value was our variable of interest. @fig-occ-time and @fig-occ-prov show distributions of this variable by hour and day of the week, and by provider. Note that this measure does not take account of the number of available beds, since we assume that changes in the number of available beds would change little within a provider over the study period (2023/24). Distributions are largely normal, centred on 1, and values by hour appear to be distributed randomly, all as desired. We note bimodal distributions for some providers.
-
-**Also I have a couple of questions – just thoughts at the moment for us to discuss**
-
-**are the providers with lower variation on occupancy those with the more beds? If so then perhaps we should draw this out in the text. might the bimodal distributions indicating some seasonal (summer / winter split). Or perhaps that the trust opened beds mid-year?**
-
-Figure 1  
-
-**I think we should move this to an appendix. Both tabs to appendix - or swap tabs? Could we also add some data on unscaled occupancy in this appendix.  Maybe a table by provider showing quartiles of occupancy (min, lq, median, uq, max).**
-
-::: panel-tabset
-#### Occupancy by day of week, and time of day
-
-```{r}
-#| label: fig-occ-time
-#| echo: false
-#| message: false
-#| warning: false
-#| fig-cap: "Distribution of the 'occupancy scaled' variable, by day of week and hour of day.<br><br>"
-#| column: page
-#| fig-width: 10
-#| fig-asp: 0.618
-#| out-width: "85%"
-#| fig-align: center
-
-set.seed(1776)
-
-df_occ_prep_udates <- read_rds(here("data", "df_occ_prep_udates.rds")) |> 
-  mutate(wkday = fct_relevel(
-    as_factor(wkday), "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun", "Bank Hol.", "Strike"
-    )) |> 
-  slice_sample(prop = 0.1)
-
-
-df_occ_prep_udates |> 
-  ggplot()+
-  theme_minimal()+
-  ggbeeswarm::geom_beeswarm(aes("", occ_scaled, col = hour), alpha = 0.6, stroke = NA)+
-  scale_colour_gradientn(
-    name = "Hour of day: ",
-    colours = pals::kovesi.cyclic_wrwbw_40_90_c42_s25(24)
-    )+
-  facet_wrap(vars(wkday), nrow = 1)+
-  theme(
-    legend.position = "bottom",
-    axis.title.x = element_blank()
-    )+
-  ylab("Occupancy scaled value\n")
-  
-
-```
-
-#### Occupancy by provider
-
-```{r}
-#| label: fig-occ-prov
-#| echo: false
-#| message: false
-#| warning: false
-#| fig-cap: "Distribution of the 'occupancy scaled' variable, by provider.<br><br>"
-#| column: page
-#| fig-width: 10
-#| fig-asp: 0.618
-#| out-width: "85%"
-#| fig-align: center
-
-
-df_occ_prep_udates |> 
-  ggplot()+
-  theme_minimal()+
-  ggbeeswarm::geom_beeswarm(aes("", occ_scaled), col = my_other, alpha = 0.2, stroke = NA)+
-  # scale_colour_gradientn(
-  #   name = "Hour of day: ",
-  #   colours = pals::kovesi.cyclic_wrwbw_40_90_c42_s25(24)
-  #   )+
-  facet_wrap(vars(procode), nrow = 2)+
-  theme(
-    legend.position = "bottom",
-    axis.title.x = element_blank()
-    )+
-  ylab("Occupancy scaled value\n")
-  
-```
-:::
+Note, finally, that our scaled occupancy measure does not take account of the number of available beds, since we assume that the number of available beds would change little within a provider over the study period (2023/24).
 
 ## Occupancy and testing thresholds
 
@@ -371,13 +288,11 @@ readRDS(here("data","model_results_collated_01to32.rds")) |>
 ```
 :::
 
-## Consequences given trends in bed occupancy
+## Possible consequences
 
-\<As with everything else, consider this very rough and replaceable \>
+It is sometimes suggested that the propensity of ED clinicians to order tests when bed occupancy levels are high may have contributed, substantively, to the growth in diagnostic testing in EDs in recent years. This theory assumes rising bed occupancy rates (a rise in the proportion of available beds that are occupied). Yet, @fig-occ-rates suggests that between 2019/20 and 2023/24 (the period covered by this project), occupancy rates have barely changed.
 
-It is sometimes suggested that the propensity of ED clinicians to order tests when bed occupancy levels are high may have contributed substantively to the growth in diagnostic testing in EDs in recent years. This theory assumes rising bed occupancy rates (a rise in the proportion of available beds that are occupied). @fig-occ-rates suggests, however, that in the years between 2019/20 and 2023/24, occupancy rates barely changed.
-
-Yet we might speculate that increases in the number of *beds* *occupied* (as shown in @fig-occ-numbers) has placed additional load on the system (and may lead to a perception that occupancy rates are increasing). This effect may also have influenced testing thresholds. However, even if we use this less conservative assumption to measure the impact of the occupancy-testing association on growth, then, as seen in @fig-growth, the impact is marginal.
+Still, we might speculate that increases in the number of *beds* *occupied* (as shown in @fig-occ-numbers ) will have just as much influence on testing thresholds. An increase in the number of beds occupied places additional load on the system (and may even lead to the perception that occupancy rates are increasing). However, if we use this less conservative assumption to gauge the contribution of the occupancy-testing association to overall growth ( @fig-growth ), the impact *remains* marginal.
 
 <br>
 
@@ -542,7 +457,7 @@ bed_occ_numbers |>
 
 ```
 
-#### Occupancy-influenced growth
+#### Occupancy-influenced growth\*
 
 ```{r}
 #| label: fig-growth
@@ -636,13 +551,15 @@ preplot_growth_2 |>
 
 Summary of Results...
 
-**Limitations**
+#### Limitations
 
 The findings of this analysis are based on a sample of 25 providers (of 121 providers active submitting returns in every month of the year). As the 25 providers were chosen on the basis of their data quality, this constitutes a non-random sample of providers. Study conclusions drawn from non-random samples are at higher risk of bias. As noted in @sec-approach-sampling, we attempted to mitigate the risk of bias by confirming that the sample was generally representative of the population of providers in various dimensions. It is, however, possible that we unknowingly omitted important dimensions of representation for this particular question, and that our findings are less generalisable than we suggest.
 
 We have labelled our estimates as "casemix-adjusted" as we controlled for a range of variables that might indicate a patient's need for a test. However, a clinician will order a test based on an array of factors and only some of these will be recorded in data sets. Therefore, as we are unable to control for unrecorded variables, part of the effect that we measured may be due to unobserved case mix factors.
 
-Finally, as noted in the Methods section above, we decided to delete approximately 6% of records from our sample that had missing values for any of the variables used in the model. If these missing values were missing completely at random, this decision will have a limited impact on our results (by reducing our sample size in this way, we may have marginally increased the standard errors around our model coefficients). There is, however, some potential for bias in our results if these missing data were not missing completely at random.
+Furthermore, as noted in the Methods section, above, we decided to delete approximately 6% of records from our sample that had missing values for any of the variables used in the model. If these missing values were missing completely at random, this decision will have a limited impact on our results (by reducing our sample size in this way, we may have marginally increased the standard errors around our model coefficients). There is, however, some potential for bias in our results if these missing data were not missing completely at random.
+
+Finally, we have assumed that the number of available beds changed little within a provider over the year study period. If there were such changes (unobserved by us), this will have affected our occupancy scaled variable. (Note that whilst there was some seasonality evident in the maximum number of beds occupied, we chose not to account for this variation in our occupancy scaled variable, since it was the variation itself which was of interest.)
 
 # Appendix 1: Samples {#sec-appendix-1}
 
@@ -733,7 +650,128 @@ read_rds(here("data", "df_phase_II_table_representation.rds")) |>
 ```
 :::
 
-# Appendix 2: Sensitivity Analysis {#sec-appendix-2}
+# Appendix 2: Occupancy {#sec-appendix-2}
+
+Here we supply more details about the "occupancy scaled" variable. @fig-occ-time and @fig-occ-prov show distributions of this variable by hour and day of the week, and by provider.
+
+The scaled occupancy is derived from occupancy counts and we therefore provide summary statistics of these counts for our sample of providers in @tbl-prov-occ.
+
+<br>
+
+::: panel-tabset
+#### Occupancy by day and hour
+
+```{r}
+#| label: fig-occ-time
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-cap: "Distribution of the 'occupancy scaled' variable, by day of week and hour of day.<br><br>"
+#| column: page
+#| fig-width: 10
+#| fig-asp: 0.618
+#| out-width: "85%"
+#| fig-align: center
+
+set.seed(1776)
+
+df_occ_prep_udates <- read_rds(here("data", "df_occ_prep_udates.rds")) |> 
+  mutate(wkday = fct_relevel(
+    as_factor(wkday), "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun", "Bank Hol.", "Strike"
+    )) |> 
+  slice_sample(prop = 0.1)
+
+
+df_occ_prep_udates |> 
+  ggplot()+
+  theme_minimal()+
+  ggbeeswarm::geom_beeswarm(aes("", occ_scaled, col = hour), alpha = 0.6, stroke = NA)+
+  scale_colour_gradientn(
+    name = "Hour of day: ",
+    colours = pals::kovesi.cyclic_wrwbw_40_90_c42_s25(24)
+    )+
+  facet_wrap(vars(wkday), nrow = 1)+
+  theme(
+    legend.position = "bottom",
+    axis.title.x = element_blank()
+    )+
+  ylab("Occupancy scaled value\n")
+  
+
+```
+
+#### Occupancy by provider
+
+```{r}
+#| label: fig-occ-prov
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-cap: "Distribution of the 'occupancy scaled' variable, by provider.<br><br>"
+#| column: page
+#| fig-width: 10
+#| fig-asp: 0.618
+#| out-width: "85%"
+#| fig-align: center
+
+
+df_occ_prep_udates |> 
+  ggplot()+
+  theme_minimal()+
+  ggbeeswarm::geom_beeswarm(aes("", occ_scaled), col = my_other, alpha = 0.2, stroke = NA)+
+  # scale_colour_gradientn(
+  #   name = "Hour of day: ",
+  #   colours = pals::kovesi.cyclic_wrwbw_40_90_c42_s25(24)
+  #   )+
+  facet_wrap(vars(procode), nrow = 2)+
+  theme(
+    legend.position = "bottom",
+    axis.title.x = element_blank()
+    )+
+  ylab("Occupancy scaled value\n")
+  
+```
+
+#### Occupancy counts<br>(Table)
+
+```{r}
+#| label: tbl-prov-occ
+#| tbl-cap: "Quartiles of occupancy, for each of the 25 providers in our sample (in 2023/24). Source: SUS APC dataset.<br><br>"
+#| echo: false
+#| message: false
+#| warning: false
+#| column: page
+#| width: 8
+
+read_rds(here("data", "df_phase_II_provider_selection.rds")) |> 
+  left_join(
+    read_rds(here("data", "ncdr_df_occ_prep.RDS")),
+    join_by(Provider_Code == procode)
+    )|> 
+  group_by(Provider_Code ) |> 
+  mutate(occ_quartile = ntile(occ, 4)) |> 
+  ungroup() |> 
+  group_by(id, Provider_Code, Provider_Name, occ_quartile) |> 
+  summarise(qmin = min(occ), qmax = max(occ)) |> 
+  ungroup() |> 
+   pivot_longer(cols = starts_with("q"), names_to = "type", values_to = "n") |> 
+  mutate(stat = case_when(
+    occ_quartile == 1 & type == "qmin" ~ "min",
+    occ_quartile == 1 & type == "qmax" ~ "lower quartile",
+    occ_quartile == 3 & type == "qmin" ~ "median",
+    occ_quartile == 3 & type == "qmax" ~ "upper quartile",
+    occ_quartile == 4 & type == "qmax" ~ "max",
+    TRUE ~ NA_character_
+  )) |> 
+  filter(!is.na(stat)) |> 
+  select(-c(occ_quartile, type)) |> 
+  pivot_wider(names_from = stat, values_from = n) |> 
+  gt()
+
+```
+:::
+
+# Appendix 3: Sensitivity Analysis {#sec-appendix-3}
 
 In the primary analysis, we measured bed occupancy at the time of a patient's arrival at the ED. We then investigated how this occupancy affected the odds that a patient would receive a test. In this sensitivity analysis, we examine the effect on results if we measure occupancy at the mid-point between the patient's arrival and departure time.
 
