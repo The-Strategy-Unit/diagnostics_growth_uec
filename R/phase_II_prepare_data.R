@@ -162,7 +162,7 @@ df_odds_fe2 <- df_odds_fe1 |>
   mutate(refer_sorc = fct_relevel(refer_sorc, "self")) |> 
   select(-starts_with("att")) 
 
-## c. TIME-RELATED VARS ----------------------------------------------------
+## c. TIME-RELATED ENGINEERING ---------------------------------------------
 
 df_odds_fe3 <- df_odds_fe2 |>
   mutate(month = month(dttm_arr)) |>
@@ -175,38 +175,22 @@ df_odds_fe3 <- df_odds_fe2 |>
   # NIGHT = 8 HRS FROM 22:00-05:59:
   mutate(is_night = if_else(hour %in% c(0:5, 22:23), 1, 0)) |> 
   mutate(across(starts_with("is_"), ~ as.factor(.))) |>
-  mutate(day = day(dttm_arr)) |> 
-  # select(-dttm_arr) |> 
-  identity()
+  mutate(day = day(dttm_arr))
 
+# CREATE VARIABLES FOR OCCUPANCY JOIN (MIDPOINT ARR-DEPART TIME)
+df_odds_fe3 <- df_odds_fe3 |>
+  mutate(half_stay =
+           round_half_up(
+           as.integer(difftime(dttm_depart, dttm_arr, units = "mins"))/2
+           )
+         ) |>
+  mutate(dttm_arr_half = dttm_arr + minutes(half_stay)) |>
+  mutate(month_half = month(dttm_arr_half)) |>
+  mutate(day_half = day(dttm_arr_half)) |>
+  mutate(hour_half = hour(dttm_arr_half))
 
+  
 # 4. ADD OCCUPANCY VARIABLE --------------------------------------------------------
-
-lkp_occupancy <- readRDS("lkp_occupancy.RDS")
-
-df_odds_occ <- df_odds_fe3 |> 
-  left_join(
-    lkp_occupancy, 
-    join_by(procode, month, day, hour)
-  )
-
-
-# 4.* SENSITIVITY ANALYSIS ------------------------------------------------
-
-# # *ONLY RUN WHEN SENSITIVITY ANALYSIS REQUIRED*
-# df_odds_fe3 <- df_odds_fe3 |> 
-#   # head(20) |> 
-#   # select(starts_with("dttm")) |> 
-#   mutate(half_stay = 
-#            round_half_up(
-#            as.integer(difftime(dttm_depart, dttm_arr, units = "mins"))/2
-#            )
-#          ) |> 
-#   mutate(dttm_arr_half = dttm_arr + minutes(half_stay)) |> 
-#   mutate(month_half = month(dttm_arr_half)) |>
-#   mutate(day_half = day(dttm_arr_half)) |> 
-#   mutate(hour_half = hour(dttm_arr_half))
-#   
 # lkp_occupancy <- readRDS("lkp_occupancy.RDS")
 # 
 # df_odds_occ <- df_odds_fe3 |> 
@@ -214,6 +198,18 @@ df_odds_occ <- df_odds_fe3 |>
 #     lkp_occupancy, 
 #     join_by(procode, month_half == month, day_half == day, hour_half == hour)
 #   ) 
+
+
+# 4.* SENSITIVITY ANALYSIS ------------------------------------------------
+
+## *RUN IN PLACE OF SECTION 4. WHEN SENSITIVITY ANALYSIS REQUIRED*
+# lkp_occupancy <- readRDS("lkp_occupancy.RDS")
+# 
+# df_odds_occ <- df_odds_fe3 |> 
+#   left_join(
+#     lkp_occupancy, 
+#     join_by(procode, month, day, hour)
+#   )
 #   
 # 5. SAMPLE 1 MILLION RECORDS (~43%) ------------------------
 
