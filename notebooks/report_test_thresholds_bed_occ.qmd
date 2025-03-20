@@ -38,15 +38,43 @@ editor_options:
 
 # Executive Summary
 
+This is the second of two analyses carried out by the Strategy Unit for NHS England examining rates of diagnostic testing in Emergency Departments (EDs). In the first report, we found that rates of diagnostic testing in EDs had increased substantially in recent years. This phenomenon could not be explained by changes in the casemix of patients treated in ED. For example, a patient attending an ED in 2023 was almost twice as likely to receive a CT or MRI scan as a patient presenting with similar characteristics in 2019. These changes carry implications for patients, for ED clinicians, and for healthcare systems. Most notably, we concluded that increased testing is associated both with longer stays in ED and with increased admission thresholds. 
+
+So what is driving these changes? Two core theories have been put forward. The first sees these changes as *proactive*, brought about by advances in clinical practice and standards of care, and by improvements in diagnostic testing efficiency and capacity.
+
+The competing theory proposes that these changes are driven by necessity, and, in particular, by constraints in capacity elsewhere in the hospital. That is, as the pressure on a hospital builds, more patients occupy beds. More patients in beds will demand more attention from staff, and queues of patients who require a bed, begin to develop in ED. Faced with this scenario, clinicians in ED might choose to lower thresholds for diagnostic testing. There are two motivations for this. Firstly, it might allow them to identify, more aggressively, those patients who could be safely discharged. Secondly, a clinician might expedite care pathways by ordering tests in ED that are likely to be required once the patient has been admitted. 
+
+These two theories (proactivity vs necessity) are not exclusive. It is possible that both are at work. But understanding the extent to which each might explain growth in ED test rates is critical if we are to examine the appropriateness of testing and the associated risks. This is the aim of this second analysis.
+
+We therefore examined the association between rates of diagnostic testing in EDs and inpatient occupancy levels. We considered 32 test modalities which make up the vast majority (\>99%) of all diagnostic tests carried out in EDs. Our analysis covered the financial year 2023/24, employing the Emergency Care Data Set (ECDS) and the Admitted Patient Care (APC) data set. The study was carried out on a broadly representative non-random sample of 25 providers that had high-levels of recording against key variables. We found that:
+
+#### Casemix-adjusted testing rates increased with bed occupancy for some, but not all tests
+
+We looked at the odds that a patient would receive a certain test, given a 5% increase in the number of inpatients (above the average, given the time of day and day of week). We controlled for patient casemix, temporal factors, and provider factors.
+
+For nine test modalities, we found a statistically significant and positive association between the odds of a test and increased bed occupancy. These nine tests include all of the four imaging modalities examined (MRI, CT, ultrasonography and plain X-ray); three biochemistry tests (serum lactate; arterial blood gas measurement; and venous blood gas measurement); and two other tests (wound microscopy and electrocardiography). The effect was most pronounced for MRI: a 5% increase in the number of inpatients (above the average, given the time of day and day of week) was associated with an 8.6% increase in the odds of a patient receiving an MRI scan.
+
+We also found that the odds of receiving four types of test (cardiac enzyme measurement; bone profile; urine sent for culture; and C-reactive protein measurement) reduced as bed occupancy rose. This may indicate that, in certain cases, the benefit of these tests is marginal, and that ED clinicians are less likely to order such tests when the hospital is particularly busy. For the remaining 19 test types, including, notably, all forms of haematological test, we found no evidence of a statistically significant association between testing rates and bed occupancy.
+
+#### Increases in bed occupancy can explain only a very small part of the increase in testing rates since 2019
+
+Despite the observed relationships between bed occupancy and testing frequency in EDs, the substantial increase in testing rates since 2019 cannot be readily explained by changes in bed occupancy. 
+
+Data from the KH03 (bed availability and occupancy) return - submitted by each hospital provider on a quarterly basis - suggests that the proportion of available beds that were occupied (the occupancy rate) increased negligibly between 2019 and 2023. As such, there is little room for increases in bed occupancy rates to explain the growth of diagnostic testing rates in EDs. 
+
+It is possible, however, that it is the occupancy *number* (the number of patients in beds), rather than the occupancy rate, that influences ED testing rates. Whilst the occupancy rate provides insight into the level of remaining capacity, the occupancy number could indicate the total load on the hospital. Unlike the occupancy rate, occupancy numbers increased considerably between 2019 and 2023. Even under this scenario, however, increases in the number of patients in hospital beds can perhaps explain only 18% of the increase in MRI tests in EDs over this period. And the effect is weaker or non-existent for all other test modalities.
+
+In conclusion, this analysis suggests that the growth in diagnostic testing in EDs is primarily driven by hospitals and hospital staff responding to changes in clinical norms and testing capacity. Other factors, such as changes in ED casemix and in bed occupancy, play a modest role in this story and should not distract policy makers and system managers. If growth in ED testing is generated by, and within, the NHS, then the consequences of this growth, in terms of increased ED durations and admission thresholds, should also be seen as being within the control of the NHS.
+
 # Introduction
 
 In this report, we examine the association between hospital bed occupancy levels and the propensity of ED clinicians to order tests. This is the second of two NHSE-commissioned reports that examine the impact of the growth in diagnostic testing on urgent and emergency care services.
 
 Work on the first phase of this project, detailed in *Growth in Diagnostic Testing and Its Impact on Emergency Departments* (Strategy Unit, 2025), indicated that, between 2019/20 and 2023/24, the casemix-adjusted odds of a patient receiving a test increased for most test types. Moreover, having received a test, the casemix-adjusted odds that a patient would be *admitted* fell.
 
-Whilst increases in testing rates are clear and substantial, the underlying mechanism remains subject to some debate. Is clinical practice and the availability of diagnostic testing in EDs leading this change? Or, is practice responding to changes in the operational context, and, in particular, to the increased pressure on beds. We explore the issue in this report using regression models to examine whether, and the extent to which, the odds of a patient receiving a test varies with bed occupancy, having controlled for casemix,  and temporal and provider effects. If such a relationship exists, and if we can quantify its strength, then we can estimate the proportion of the growth in testing that can be explained by increased bed occupancy. 
+Whilst increases in testing rates are clear and substantial, the underlying mechanism remains subject to some debate. Is clinical practice and the availability of diagnostic testing in EDs leading this change? Or, is practice responding to changes in the operational context, and, in particular, to the increased pressure on beds. We explore the issue in this report using regression models to examine whether, and the extent to which, the odds of a patient receiving a test varies with bed occupancy, having controlled for casemix, and temporal and provider effects. If such a relationship exists, and if we can quantify its strength, then we can estimate the proportion of the growth in testing that can be explained by increased bed occupancy. 
 
-This report takes the form of a standard scientific paper: we continue with details of the method used, before presenting the Results and Discussion sections.
+This report continues with details of the method used. We then present the Results and Discussion sections.
 
 # Method {#sec-approach}
 
@@ -76,7 +104,7 @@ Whilst the completeness of admission and discharge times in our sample was high 
 
 In order to move from hourly counts of beds occupied within each provider, to a relative occupancy level that could be compared across providers and times, we scaled the occupancy at a specific hour, weekday, and provider to the mean occupancy for that hour, weekday, and provider. This scaled occupancy value was our variable of interest.
 
-We then linked these provider-level occupancy values to patient-level ED attendance records, such that an attendance record would show the provider's occupancy at a patient's time of arrival. A sensitivity analysis, given in @sec-appendix-3 shows that the results would change little if we were to use a provider's occupancy at the midpoint between a patient's time of arrival and their departure.
+We then linked these provider-level occupancy values to patient-level ED attendance records, such that an attendance record would show the provider's occupancy at the midpoint between a patient's time of arrival and their departure. (A sensitivity analysis, given in @sec-appendix-3 shows that the results would change little if we were to use a provider's occupancy at a patient's time of arrival.)
 
 #### Model specification
 
@@ -125,13 +153,14 @@ lkp_invst_ec_aea <- readRDS(here("reference", "lkp_test_ec_to_aea.rds"))
 
 # COLOURS:
 my_red <- pals::kovesi.cyclic_wrwbw_40_90_c42_s25(24)[15]
+my_blue <- pals::kovesi.cyclic_wrwbw_40_90_c42_s25(24)[3]
 my_other <- pals::kovesi.cyclic_wrwbw_40_90_c42_s25(24)[18]
 
 ```
 
 #### Characteristics of patients in the study
 
-Selected characteristics of patients covered by the analysis dataset are shown in @tbl-one.
+Selected characteristics of patients covered by the analysis data set are shown in @tbl-one.
 
 ```{r}
 #| label: tbl-one
@@ -165,19 +194,21 @@ readRDS(here("data", "df_phase_II_prep_table_1.rds")) |>
 
 ## Occupancy
 
-As detailed in the Methods section, we scaled a provider's occupancy at a specific hour, on a given weekday, to the mean occupancy for that hour and weekday at that provider. This scaled occupancy value was our variable of interest. We show distributions of this variable by hour and day of the week, and by provider, alongside statistics on the underlying occupancy counts, in @sec-appendix-2. Distributions are largely normal (centred on 1), and values by hour appear to be distributed randomly, all as desired. For providers with fewer beds, the occupancy variable displays greater variation. We note bimodal distributions for some providers.
+As detailed in the Methods section, we scaled a provider's occupancy at a specific hour, on a given weekday, to the mean occupancy for that hour and weekday at that provider. This scaled occupancy value was our variable of interest. We show distributions of this variable by hour and day of the week, and by provider, alongside statistics on the underlying occupancy counts, in @sec-appendix-2. Distributions are largely normal (centred on 1), and values by hour appear to be distributed randomly, all as desired. For providers with fewer beds, the occupancy variable displays greater variation.
 
-Note, finally, that our scaled occupancy measure does not take account of the number of available beds, since we assume that the number of available beds would change little within a provider over the study period (2023/24).
+Note that our scaled occupancy measure does not take account of the number of available beds, since we assume that the number of available beds would change little within a provider over the study period (2023/24). A change in the number of beds could, however, explain why we observe bimodal distributions for some providers.
 
 ## Occupancy and testing thresholds
 
-@fig-odds-5pc suggests that the association between hospital bed occupancy levels and the propensity of ED clinicians to order tests varies, considerably, by test type. For 10 of 32 tests, the effect was significant and positive, indicating that these tests were more likely when occupancy was high, given the time of day and day of week.
+@fig-odds-5pc suggests that the association between hospital bed occupancy levels and the propensity of ED clinicians to order tests varies, considerably, by test type. For 9 of 32 tests, the effect was significant and positive, indicating that these tests were more likely when occupancy was high, given the time of day and day of week.
 
-Patients were significantly more likely to receive imaging procedures when bed occupancy was high and, within imaging, the greatest effect was seen for MRI. Here, a patient was 7.6% more likely to receive an MR scan when bed occupancy levels were 5% higher than average (given the day of the week and the hour of the day). Other (examined) imaging modalities were all
+Patients were significantly more likely to receive imaging procedures when bed occupancy was high. Within imaging, the greatest effect was seen for MRI. Here, a patient was 8.6% more likely to receive an MRI scan when bed occupancy levels were 5% higher than average (given the day of the week and the hour of the day).
 
-Remaining within imaging, high occupancy was associated with increased odds that a patient would receive ultrasound (4%); CT (2%); and x-ray (1%). And we found a statistically significant and positive association between increased bed occupancy the odds of four of seventeen biochemistry tests (serum lactate **(y%)**; urine pregnancy **(y%)**, venous blood gases **(y%)**, and glucose blood test strip **(y%)**), and two tests in the "other" category (wound microscop **(x%)** and electrocardiography **(y%)**).
+For the three other imaging modalities covered here, we found a statistically significant and positive association between increased bed occupancy the odds of ultrasound (4.1%); CT (2.7%); and X-ray (0.7%). Moreover, we found a statistically significant and positive association for three types of biochemistry test (serum lactate (3.8%); arterial blood gases (2.1%); and venous blood gases (1.3%)), and for two tests in the "other" category (wound microscopy (4.6%) and electrocardiograms (1.9%)).
 
-For 2 test types (bone profile and urine sent for culture), high bed occupancy was significantly associated with decreased odds that a patient would receive the test. And for the remaining 20 test types, including - notably - all forms of haematological test, we found no evidence of a statistically significant association between testing rates and bed occupancy.
+For 4 test types (cardiac enzyme measurement; bone profile; urine sent for culture; and C-reactive protein measurement), high bed occupancy was significantly associated with slightly decreased odds that a patient would receive the test. This may indicate that, in certain cases, the benefit of these tests is marginal, and that ED clinicians are less likely to order such tests when the hospital is particularly busy.
+
+For the remaining 19 test types, including - notably - all forms of haematological test, we found no evidence of a statistically significant association between testing rates and bed occupancy.
 
 **Steven** - **I have the log of the odds, and log of lci in the table below (for now) - if you wish to check the interpretation - i.e. conversion to 5% increase...**
 
@@ -197,7 +228,8 @@ For 2 test types (bone profile and urine sent for culture), high bed occupancy w
 #| fig-align: right
 
 
-readRDS(here("data","model_results_collated_01to32.rds")) |> 
+readRDS(here("data","model_results_collated_sens.rds")) |> 
+# readRDS(here("data","model_results_collated_01to32.rds")) |> 
    mutate(InvestigationKey = as.integer(str_extract(name, "[:digit:]{2}"))) |>
   left_join(
     lkp_invst_ec_aea |> 
@@ -257,7 +289,9 @@ readRDS(here("data","model_results_collated_01to32.rds")) |>
 #| column: page
 #| width: 8
 
-readRDS(here("data","model_results_collated_01to32.rds")) |> 
+readRDS(here("data","model_results_collated_sens.rds")) |> 
+
+# readRDS(here("data","model_results_collated_01to32.rds")) |> 
   arrange(-odds_5pc) |> 
   select(
     InvestigationDescription, 
@@ -288,11 +322,11 @@ readRDS(here("data","model_results_collated_01to32.rds")) |>
 ```
 :::
 
-## Possible consequences
+## Contribution to growth in testing rates
 
-It is sometimes suggested that the propensity of ED clinicians to order tests when bed occupancy levels are high may have contributed, substantively, to the growth in diagnostic testing in EDs in recent years. This theory assumes rising bed occupancy rates (a rise in the proportion of available beds that are occupied). Yet, @fig-occ-rates suggests that between 2019/20 and 2023/24 (the period covered by this project), occupancy rates have barely changed.
+It is sometimes suggested that an occupancy-related decrease in test thresholds may have contributed, substantively, to the growth in ED diagnostic testing in recent years. This theory is based on the idea that bed occupancy rates are rising (i.e. that there has been a increase in proportion of available beds that are occupied). Yet, @fig-occ-rates suggests that between 2019/20 and 2023/24 (the period covered by this project), occupancy rates changed little.
 
-Still, we might speculate that increases in the number of *beds* *occupied* (as shown in @fig-occ-numbers ) will have just as much influence on testing thresholds. An increase in the number of beds occupied places additional load on the system (and may even lead to the perception that occupancy rates are increasing). However, if we use this less conservative assumption to gauge the contribution of the occupancy-testing association to overall growth ( @fig-growth ), the impact *remains* marginal.
+Still, we might speculate that increases in the number of *beds* *occupied* over the same period (as shown in @fig-occ-numbers ) might have had just as much influence on testing thresholds. Such an increase would place additional load on the system (and may even lead to the perception that occupancy rates are increasing). However, even if we use this loose assumption to gauge the contribution of the occupancy-testing association to overall growth ( @fig-growth ), the impact *remains* marginal. Increases in the number of patients in hospital beds can perhaps explain only 18% of the increase in MRI tests in EDs over this period. And the effect is weaker or non-existent for all other test types.
 
 <br>
 
@@ -438,9 +472,9 @@ hlines_numbers <- bed_occ_numbers |>
 bed_occ_numbers |> 
   ggplot()+
   theme_minimal()+
-  geom_line(aes(date, n), col = "grey85")+
+  geom_line(aes(date, n), col = "grey90")+
   geom_point(aes(date, n, col = flag_in))+
-  scale_color_manual(values = c("grey85", "grey40"))+
+  scale_color_manual(values = c("grey90", "grey40"))+
   theme(legend.position = "none")+
    labs(
     x = "\nDate",
@@ -474,7 +508,9 @@ bed_occ_numbers |>
 # | fig-asp: 0.618
 # | out-width: "85%"
 
-preplot_growth <- readRDS(here("data", "model_results_collated_01to32.rds")) |> 
+preplot_growth <- 
+  # readRDS(here("data", "model_results_collated_01to32.rds")) |> 
+  readRDS(here("data","model_results_collated_sens.rds")) |> 
   mutate(odds_10pc = exp(0.1 * odds_log), .before = name) |> 
   arrange(-odds_10pc) |> 
   left_join(
@@ -525,7 +561,7 @@ preplot_growth_2 |>
     size = 2.5,
     colour = "grey20"
   ) +
-  scale_fill_manual(values = c(my_other, my_other, my_red))+
+  scale_fill_manual(values = c("grey85", "grey85", my_red))+
   coord_flip()+
 
   ylim(-0.25, 5.5)+
@@ -652,9 +688,7 @@ read_rds(here("data", "df_phase_II_table_representation.rds")) |>
 
 # Appendix 2: Occupancy {#sec-appendix-2}
 
-Here we supply more details about the "occupancy scaled" variable. @fig-occ-time and @fig-occ-prov show distributions of this variable by hour and day of the week, and by provider.
-
-The scaled occupancy is derived from occupancy counts and we therefore provide summary statistics of these counts for our sample of providers in @tbl-prov-occ.
+Here we supply more details about the "occupancy scaled" variable. @fig-occ-time and @fig-occ-prov show distributions of this variable by hour and day of the week, and by provider. The scaled occupancy was derived from occupancy counts. We therefore provide summary statistics of these counts, for each provider in our sample, in @tbl-prov-occ.
 
 <br>
 
@@ -736,7 +770,7 @@ df_occ_prep_udates |>
 
 ```{r}
 #| label: tbl-prov-occ
-#| tbl-cap: "Quartiles of occupancy, for each of the 25 providers in our sample (in 2023/24). Source: SUS APC dataset.<br><br>"
+#| tbl-cap: "Quartiles of occupancy, for each of the 25 providers in our sample (in 2023/24). Source: SUS APC data set.<br><br>"
 #| echo: false
 #| message: false
 #| warning: false
@@ -766,18 +800,30 @@ read_rds(here("data", "df_phase_II_provider_selection.rds")) |>
   filter(!is.na(stat)) |> 
   select(-c(occ_quartile, type)) |> 
   pivot_wider(names_from = stat, values_from = n) |> 
-  gt()
-
+  gt() |> 
+  # cols_label(
+  #   InvestigationDescription = "Test name",
+  #   value = "Number of tests<br>in 1M sample", 
+  #   # odds = "Odds ratio of test<br>(casemix adj.)<br>2023/24 vs. 2019/20",
+  #   # odds_adm = "Odds ratio of admission<br>given test (casemix adj.)<br>2023/24 vs. 2019/20",
+  #   # adm.p.value = "OR admission<br>p value",
+  #   .fn = md
+  # ) |>
+  fmt_auto() |>
+  # fmt_number(columns = c(adm.p.value), decimals = 3) |>
+  tab_options(
+    data_row.padding = px(1),
+    table.font.size = "small"
+  )
+  
 ```
 :::
 
 # Appendix 3: Sensitivity Analysis {#sec-appendix-3}
 
-In the primary analysis, we measured bed occupancy at the time of a patient's arrival at the ED. We then investigated how this occupancy affected the odds that a patient would receive a test. In this sensitivity analysis, we examine the effect on results if we measure occupancy at the mid-point between the patient's arrival and departure time.
+In the primary analysis, we measured bed occupancy at the mid-point between the patient's arrival and departure time. We then investigated how this occupancy affected the odds that a patient would receive a test. In this sensitivity analysis, we examine the effect on the results if we measure occupancy at the time of a patient's arrival at the ED.
 
-TODO:
-
-@fig-odds-sens suggests that the effects are similar... but larger when we take the mid-point , and may indicate that a greater association...
+@fig-odds-sens suggests that the effect sizes and directions are similar for the two cases. However, the effect is generally amplified when the mid-point between ED arrival and departure is used, which may justify the decision to take occupancy levels at the mid-point in our primary analysis.
 
 ```{r}
 #| label: fig-odds-sens
@@ -791,52 +837,42 @@ TODO:
 #| out-width: "85%"
 #| fig-align: right
 
-read_rds(here("data", "df_model_odds_occ_sensitivity.rds")) |>
-  mutate(Analysis = "Sensitivity") |> 
+# read_rds(here("data", "df_model_odds_occ_sensitivity.rds")) |>
+readRDS(here("data", "model_results_collated_sens.rds")) |>
+  mutate(Analysis = "Primary") |>
   bind_rows(
-    readRDS(here("data","model_results_collated_01to32.rds")) |> 
-      filter(id %in% c(9, 10, 13, 31)) |> 
-        mutate(Analysis = "Primary")
-
-    
-  ) |> 
-   mutate(flag_sig = if_else(
-    odds_5pc >= 1 & lci_5pc <= 1 | odds_5pc <= 1 & uci_5pc >= 1, 
-    "0", "1")) |> 
+    readRDS(here("data", "model_results_collated_01to32.rds")) |>
+      # filter(id %in% c(9, 10, 13, 31)) |>
+      mutate(Analysis = "Sensitivity")
+  ) |>
+  mutate(flag_sig = if_else(
+    odds_5pc >= 1 & lci_5pc <= 1 | odds_5pc <= 1 & uci_5pc >= 1,
+    "0", "1"
+  )) |>
   # filter(id ==31)
   ggplot() +
   geom_hline(yintercept = 0, lty = "dashed", colour = "grey20", alpha = 0.5) +
-  geom_pointrange(aes(reorder(InvestigationDescription, odds_5pc-1), odds_5pc-1, ymin = lci_5pc-1, ymax = uci_5pc-1, col = Analysis), stroke = NA, 
-                  position=position_dodge(width=.2))+
+  geom_pointrange(aes(reorder(InvestigationDescription, odds_5pc - 1), odds_5pc - 1, ymin = lci_5pc - 1, ymax = uci_5pc - 1, col = Analysis),
+    stroke = NA,
+    position = position_dodge(width = .5), 
+    alpha = .6
+  ) +
   theme_minimal() +
   # theme_bw()+
   coord_flip() +
-  # scale_color_manual(values = c("grey75", "grey40"))+
-  # scale_y_log10(
-  #   # limits = c(0.85, 1.15),
-  #   # breaks = c(0.9, 1, 1.1),
-  #   # labels = c(
-  #   #   # "Half\nas likely in\n2023/24",
-  #   #   # "Equally\nas likely in\n2023/24",
-  #   #   # "2x\nas likely in\n2023/24",
-  #   #   "90%\nas likely as\nav. occupancy",
-  #   #   "Equally\nas likely as\nav. occupancy",
-  #   #   "110%x\nas likely as\nav. occupancy"
-  #   # )
-  # )+
+  scale_color_manual(values = c("grey25", my_red)) +
   theme(
     axis.title.y = element_blank(),
     axis.title = element_text(size = 9),
     # plot.margin = margin(5, 20, 5, 5),
     panel.grid.minor = element_blank(),
     axis.ticks = element_blank(),
-    strip.text = element_text(size = 9), 
+    strip.text = element_text(size = 9),
     legend.position = "top"
   ) +
-  scale_y_continuous(labels = scales::percent_format())+
+  scale_y_continuous(labels = scales::percent_format()) +
   labs(
-       y = "\nChange in case-mix-adjusted odds of test if provider occupancy is 5% higher than average (2023/24)")
-
-  
+    y = "\nChange in case-mix-adjusted odds of test if provider occupancy is 5% higher than average (2023/24)"
+  )
 
 ```
