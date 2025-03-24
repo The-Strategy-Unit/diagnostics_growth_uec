@@ -42,21 +42,21 @@ This is the second of two analyses carried out by the Strategy Unit for NHS Engl
 
 So what is driving these changes? Two core theories have been put forward. The first sees these changes as *proactive*, brought about by advances in clinical practice and standards of care, and by improvements in diagnostic testing efficiency and capacity.
 
-The competing theory proposes that these changes are driven by necessity, and, in particular, by constraints in capacity elsewhere in the hospital. That is, as the pressure on a hospital builds, more patients occupy beds. More patients in beds will demand more attention from staff, and queues of patients who require a bed, begin to develop in ED. Faced with this scenario, clinicians in ED might choose to lower thresholds for diagnostic testing. There are two motivations for this. Firstly, it might allow them to identify, more aggressively, those patients who could be safely discharged. Secondly, a clinician might expedite care pathways by ordering tests in ED that are likely to be required once the patient has been admitted. 
+The competing theory proposes that these changes are driven by necessity, and, in particular, by constraints in capacity elsewhere in the hospital. That is, as the pressure on a hospital builds, more patients occupy beds. More patients in beds will demand more attention from staff, and queues of patients who require a bed, begin to develop in ED. Faced with this scenario, clinicians in ED might choose to lower thresholds for diagnostic testing. There are two main motivations for this. Firstly, it might allow them to identify, more aggressively, those patients who could be safely discharged. Secondly, a clinician might expedite care pathways by ordering tests in ED that are likely to be required once the patient has been admitted. 
 
 These two theories (proactivity vs necessity) are not exclusive. It is possible that both are at work. But understanding the extent to which each might explain growth in ED test rates is critical if we are to examine the appropriateness of testing and the associated risks. This is the aim of this second analysis.
 
-We therefore examined the association between rates of diagnostic testing in EDs and inpatient occupancy levels. We considered 32 test modalities which make up the vast majority (\>99%) of all diagnostic tests carried out in EDs. Our analysis covered the financial year 2023/24, employing the Emergency Care Data Set (ECDS) and the Admitted Patient Care (APC) data set. The study was carried out on a broadly representative non-random sample of 25 providers that had high-levels of recording against key variables. We found that:
+We therefore examined the association between rates of diagnostic testing in EDs and inpatient occupancy levels. We considered 32 test modalities which make up the vast majority (\>99%) of all diagnostic tests carried out in EDs. Our analysis covered the financial year 2023/24, employing the Emergency Care Data Set (ECDS) and the Admitted Patient Care (APC) data set. The study was carried out on a broadly representative non-random sample of 25 providers that had high levels of recording against key variables. We found that:
 
-#### Casemix-adjusted testing rates increased with bed occupancy for some, but not all tests
+#### 1. Casemix-adjusted testing rates increased with bed occupancy for some, but not all tests
 
-We looked at the odds that a patient would receive a certain test, given a 5% increase in the number of inpatients (above the average, given the time of day and day of week). We controlled for patient casemix, temporal factors, and provider factors.
+We looked at the odds that a patient would receive a certain test in the ED, given a 5% increase in the number of inpatients (above the average, given the time of day and day of week). We controlled for patient casemix, temporal factors, and provider factors.
 
-For nine test modalities, we found a statistically significant and positive association between the odds of a test and increased bed occupancy. These nine tests include all of the four imaging modalities examined (MRI, CT, ultrasonography and plain X-ray); three biochemistry tests (serum lactate; arterial blood gas measurement; and venous blood gas measurement); and two other tests (wound microscopy and electrocardiography). The effect was most pronounced for MRI: a 5% increase in the number of inpatients (above the average, given the time of day and day of week) was associated with an 8.6% increase in the odds of a patient receiving an MRI scan.
+For nine test types, we found a statistically significant and positive association between the odds of a test and increased bed occupancy. These nine tests include all of the four imaging modalities examined (MRI, CT, ultrasonography and plain X-ray); three biochemistry tests (serum lactate; arterial blood gas measurement; and venous blood gas measurement); and two other tests (wound microscopy and electrocardiography). The effect was most pronounced for MRI: a 5% increase in the number of inpatients was associated with an 8.6% increase in the odds that a patient would receive an MRI scan in the ED.
 
 We also found that the odds of receiving four types of test (cardiac enzyme measurement; bone profile; urine sent for culture; and C-reactive protein measurement) reduced as bed occupancy rose. This may indicate that, in certain cases, the benefit of these tests is marginal, and that ED clinicians are less likely to order such tests when the hospital is particularly busy. For the remaining 19 test types, including, notably, all forms of haematological test, we found no evidence of a statistically significant association between testing rates and bed occupancy.
 
-#### Increases in bed occupancy can explain only a very small part of the increase in testing rates since 2019
+#### 2. Increases in bed occupancy can explain only a very small part of the increase in testing rates since 2019
 
 Despite the observed relationships between bed occupancy and testing frequency in EDs, the substantial increase in testing rates since 2019 cannot be readily explained by changes in bed occupancy. 
 
@@ -278,7 +278,7 @@ readRDS(here("data","model_results_collated_sens.rds")) |>
   
 ```
 
-#### (Table)
+#### Table of results
 
 ```{r}
 #| label: tbl-occ-thresh
@@ -588,7 +588,9 @@ preplot_growth_2 |>
 
 # Discussion
 
-Summary of Results...
+The objective of this analysis was (1) to understand the impact of bed occupancy on ED clinician’s propensity to order diagnostic tests; and (2) to examine whether the observed growth in testing rates could be attributed to pressures on hospital beds. We found that patients were more likely to receive nine types of tests in ED as inpatient occupancy levels increased, having controlled for casemix and contextual factors. These tests included all four major forms of diagnostic imaging: plain X-ray; CT; MRI; and ultrasound scans. For the majority of tests, however, we found no association between testing rates and inpatient occupancy levels. Moreover, for 4 tests, we found a negative association.
+
+For those tests where the evidence suggested that testing rates increased with inpatient occupancy, the effect was unable to explain the high levels of growth in testing in EDs that has been observed in recent years.
 
 #### Limitations
 
