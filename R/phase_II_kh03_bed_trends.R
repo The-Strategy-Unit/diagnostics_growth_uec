@@ -1,0 +1,51 @@
+# README
+# [NCDR]
+# Get KH03 bed returns used in results section of Phase II report.
+
+library("DBI")
+library("here") 
+library("dplyr")
+library("purrr") 
+library("furrr") 
+library("readr") 
+library("tidyr")
+library("dbplyr")
+library("tibble") 
+library("forcats")
+library("ggplot2") 
+library("janitor")
+library("stringr")
+library("lubridate")
+
+
+# 0. CONNECTION ----------------------------------------------------------
+
+con_ukhf <- dbConnect(
+  odbc::odbc(),
+  Driver = "SQL Server",
+  Server = "PRODNHSESQL101",
+  Database = "NHSE_UKHF",
+  Trusted_Connection = "True"
+)
+
+
+# 1. LOAD DATA --------------------------------------------------------
+
+# FROM PROVIDER SAMPLE SCRIPT 
+df_provider_popn <- read_rds(here("data", "df_provider_popn.rds"))
+
+tb_kh_avl_day <- tbl(con_ukhf, in_schema("Bed_Availability", "vw_Provider_By_Sector_Available_Day_Only_Beds1"))
+tb_kh_avl_nig <- tbl(con_ukhf, in_schema("Bed_Availability", "vw_Provider_By_Sector_Available_Overnight_Beds1"))
+tb_kh_occ_day <- tbl(con_ukhf, in_schema("Bed_Availability", "vw_Provider_By_Sector_Occupied_Day_Only_Beds1"))
+tb_kh_occ_nig <- tbl(con_ukhf, in_schema("Bed_Availability", "vw_Provider_By_Sector_Occupied_Overnight_Beds1"))
+
+raw_beds <- 
+  bind_rows(
+    tb_kh_avl_day |> collect() |> mutate(metric = "avl_day"), 
+    tb_kh_avl_nig |> collect() |> mutate(metric = "avl_nig"), 
+    tb_kh_occ_day |> collect() |> mutate(metric = "occ_day"), 
+    tb_kh_occ_nig |> collect() |> mutate(metric = "occ_nig")
+  ) |> 
+  clean_names()
+
+raw_beds <- read_rds(here("data_raw", "raw_beds_kh03.rds"))
